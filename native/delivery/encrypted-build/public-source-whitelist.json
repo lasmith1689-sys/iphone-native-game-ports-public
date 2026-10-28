@@ -1,0 +1,20 @@
+{
+  "format": "NGP-public-tooling-whitelist-v1",
+  "files": [
+    "transport.mjs",
+    "bundle-builder.mjs",
+    "run-build.mjs",
+    "decrypt.mjs",
+    "prepare_workflow.py",
+    "validate_workflow.py",
+    "test_transport.mjs",
+    "test_builder.mjs",
+    "test_runner.mjs",
+    "test_decrypt.mjs",
+    "README.md",
+    "public-source-whitelist.json"
+  ],
+  "dynamicCiphertextOnlyFiles": ["input.ngp", "public-manifest.json"],
+  "workflowPath": ".github/workflows/native-encrypted-cod-loading-renderer-sdk-v13.yml",
+  "excluded": ["private/", "evidence/", "all source closures", "all keys", "all decrypted inputs and build outputs"]
+}
