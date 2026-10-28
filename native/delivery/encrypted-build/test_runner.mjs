@@ -17,7 +17,7 @@ if(fs.existsSync(target)){
     fs.writeFileSync(path.join(src,'driver.py'),driver);
     const closure=Buffer.from(t.canonical({files:{'driver.py':{bytes:driver.length,sha256:t.sha(driver)}}}));
     const recipe={format:'NGP-python-sdk-v1',driver:'driver.py',timeoutSeconds:20,outputPaths:['result.json']};
-    const ctx={repository:'lasmith1689-sys/iphone-native-game-ports-public',ref:'refs/heads/codex/native-cod-sdk-v9-20261028',purpose:'synthetic-test',bundleId:good?'00000000-0000-4000-8000-000000000001':'00000000-0000-4000-8000-000000000002',sourceClosureSha256:t.sha(closure)};
+    const ctx={repository:'lasmith1689-sys/iphone-native-game-ports-public',ref:'refs/heads/codex/native-cod-loading-sdk-v12-20261028',purpose:'synthetic-test',bundleId:good?'00000000-0000-4000-8000-000000000001':'00000000-0000-4000-8000-000000000002',sourceClosureSha256:t.sha(closure)};
     const envelope=t.seal(t.pack(b.collect(src,JSON.parse(closure),recipe,closure)),key,ctx,'input');
     const manifest={format:'NGP-public-input-v1',context:ctx,cipherSha256:t.sha(envelope),cipherBytes:envelope.length,sourceFiles:1,sourceBytes:driver.length,recipeSha256:t.sha(Buffer.from(t.canonical(recipe)))};
     const input=path.join(root,n+'.ngp'),publicPath=path.join(root,n+'.json');fs.writeFileSync(input,envelope);fs.writeFileSync(publicPath,t.canonical(manifest));

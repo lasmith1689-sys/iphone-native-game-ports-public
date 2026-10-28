@@ -53,7 +53,7 @@ jobs:
 
         if(execFileSync(''git'',[''rev-parse'',''HEAD''],{encoding:''utf8''}).trim()!==process.env.GITHUB_SHA)throw new Error(''Checkout identity rejected'');
 
-        const expected={"native/delivery/encrypted-build/bundle-builder.mjs":"3479d6da0c1e3940059864c0e8b5f44e8f9492c3f0156d342417e9e9464d100f","native/delivery/encrypted-build/public-manifest.json":"a3d3889d89be20b825c4b9dff1a565bd1cae72766f60ffe2ae122fa87abe1cc0","native/delivery/encrypted-build/run-build.mjs":"fe7c4dcf4ccd4b71f9686ee067f051884e9abdc27951e986fd4ac8748d46e215","native/delivery/encrypted-build/transport.mjs":"023ca81702ef3e35327c5aad50971b0b3cdf5cf9107af957487cc4151f62b5f2"};
+        const expected={"native/delivery/encrypted-build/bundle-builder.mjs":"3479d6da0c1e3940059864c0e8b5f44e8f9492c3f0156d342417e9e9464d100f","native/delivery/encrypted-build/public-manifest.json":"a3d3889d89be20b825c4b9dff1a565bd1cae72766f60ffe2ae122fa87abe1cc0","native/delivery/encrypted-build/run-build.mjs":"f764049b9bdfcab71b19a850ad0cc5aa06908bb03f00e5c02a656bbf2fe7dfb9","native/delivery/encrypted-build/transport.mjs":"023ca81702ef3e35327c5aad50971b0b3cdf5cf9107af957487cc4151f62b5f2"};
 
         for(const [file,digest] of Object.entries(expected))if(crypto.createHash(''sha256'').update(fs.readFileSync(file)).digest(''hex'')!==digest)throw new Error(''Public tooling identity rejected'');
 

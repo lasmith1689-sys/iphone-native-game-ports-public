@@ -9,7 +9,7 @@ const target = new URL('./transport.mjs', import.meta.url);
 test('transport implementation exists', () => assert.equal(fs.existsSync(target), true));
 if (fs.existsSync(target)) {
  const t = await import(target.href);
- const ctx={repository:'lasmith1689-sys/iphone-native-game-ports-public',ref:'refs/heads/codex/native-cod-sdk-v9-20261028',purpose:'resource-posix-sdk',bundleId:'00000000-0000-4000-8000-000000000001',sourceClosureSha256:'a'.repeat(64)};
+ const ctx={repository:'lasmith1689-sys/iphone-native-game-ports-public',ref:'refs/heads/codex/native-cod-loading-sdk-v12-20261028',purpose:'resource-posix-sdk',bundleId:'00000000-0000-4000-8000-000000000001',sourceClosureSha256:'a'.repeat(64)};
  const key=randomBytes(32);
  const entries=[{name:'source/alpha.c',data:Buffer.from('own synthetic source\n')},{name:'recipe.json',data:Buffer.from('{}\n')}];
  test('deterministic framed/gzip payload and exact closure',()=>{

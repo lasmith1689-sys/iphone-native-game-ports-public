@@ -11,7 +11,7 @@ if(fs.existsSync(target)){
  test('expected outer hash/size and exact output context required before filesystem extraction',()=>{
   const root=fs.mkdtempSync(path.join(os.tmpdir(),'ngp-decrypt-test-')),key=randomBytes(32);
   try{
-   const ctx={repository:'lasmith1689-sys/iphone-native-game-ports-public',ref:'refs/heads/codex/native-cod-sdk-v9-20261028',purpose:'test',bundleId:'00000000-0000-4000-8000-000000000001',sourceClosureSha256:'a'.repeat(64)};
+   const ctx={repository:'lasmith1689-sys/iphone-native-game-ports-public',ref:'refs/heads/codex/native-cod-loading-sdk-v12-20261028',purpose:'test',bundleId:'00000000-0000-4000-8000-000000000001',sourceClosureSha256:'a'.repeat(64)};
    const input=t.seal(t.pack([{name:'own.txt',data:Buffer.from('synthetic')}]),key,ctx,'input');fs.writeFileSync(path.join(root,'input'),input);fs.writeFileSync(path.join(root,'ctx'),t.canonical(ctx));
    const opt={input:path.join(root,'input'),context:path.join(root,'ctx'),role:'input','expected-sha256':t.sha(input),'expected-size':String(input.length),output:path.join(root,'plain'),ledger:path.join(root,'ledger')};
    for(const change of [{'expected-sha256':'0'.repeat(64)},{'expected-size':String(input.length+1)},{role:'output'}]){assert.throws(()=>d.decrypt({...opt,...change},key));assert(!fs.existsSync(opt.output));}

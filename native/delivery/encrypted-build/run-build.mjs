@@ -12,7 +12,7 @@ import {spawn} from 'node:child_process';
 import {canonical,sha,seal,openExtract,pack,safeName,noSymlinkParents,validateContext,fail,MAX_BYTES} from './transport.mjs';
 import {args,readKey,validateRecipe} from './bundle-builder.mjs';
 export const REPOSITORY='lasmith1689-sys/iphone-native-game-ports-public';
-export const REF='refs/heads/codex/native-cod-sdk-v9-20261028';
+export const REF='refs/heads/codex/native-cod-loading-sdk-v12-20261028';
 function need(v){if(!v)fail();}
 export function validateManifest(m){
  need(m&&Object.keys(m).sort().join('|')==='cipherBytes|cipherSha256|context|format|recipeSha256|sourceBytes|sourceFiles');
