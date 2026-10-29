@@ -68,6 +68,15 @@ jobs:
             echo 'GDScript compiler reported errors.'
             exit 1
           fi
+      - name: Run headless scene startup smoke test
+        run: |
+          set -o pipefail
+          timeout 40s godot --headless --path . --quit-after 90 2>&1 | tee build/godot-startup.log
+          # Hardware XR is unavailable in CI. Reject Godot script runtime failures only.
+          if grep -E 'SCRIPT ERROR:|Invalid call|Invalid access|Attempt to call function|Cannot call method' build/godot-startup.log; then
+            echo 'Godot headless startup reported runtime errors.'
+            exit 1
+          fi
       - name: Export Android ARM64 OpenXR APK
         run: |
           set -o pipefail
