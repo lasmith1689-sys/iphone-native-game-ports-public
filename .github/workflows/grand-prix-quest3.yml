@@ -16,7 +16,7 @@ jobs:
       - name: Source, geometry, and packaging tests
         shell: bash
         run: |
-          python3 -m unittest discover -s GrandPrixTimeMachine_Quest3_Godot/tests -p "test_*.py" -v 2>&1 | tee source_tests.log
+          PYTHONPATH=GrandPrixTimeMachine_Quest3_Godot python3 -m unittest discover -s GrandPrixTimeMachine_Quest3_Godot/tests -p "test_*.py" -v 2>&1 | tee source_tests.log
           test ${PIPESTATUS[0]} -eq 0
       - name: Upload test diagnostics
         if: always()
@@ -37,6 +37,16 @@ jobs:
         working-directory: GrandPrixTimeMachine_Quest3_Godot
     steps:
       - uses: actions/checkout@v4
+      - name: Configure Godot Android export templates and JDK
+        run: |
+          set -eu
+          mkdir -p "$HOME/.local/share/godot/export_templates" "$HOME/.config/godot"
+          # Godot CI builds the image under /root; GitHub sets HOME=/github/home.
+          cp -a /root/.local/share/godot/export_templates/4.6.3.stable "$HOME/.local/share/godot/export_templates/"
+          cp /root/.config/godot/editor_settings-4.6.tres "$HOME/.config/godot/"
+          test -s "$HOME/.local/share/godot/export_templates/4.6.3.stable/android_debug.apk"
+          grep -F 'export/android/java_sdk_path' "$HOME/.config/godot/editor_settings-4.6.tres"
+          test -x /usr/lib/android-sdk/platform-tools/adb
       - name: Show build environment
         run: |
           mkdir -p build
@@ -47,6 +57,11 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --editor --path . --quit --verbose 2>&1 | tee build/godot-import.log
+          # Godot can exit 0 even with parser errors; treat them as a hard stop.
+          if grep -E 'SCRIPT ERROR: Parse Error|SCRIPT ERROR: Compile Error|Failed to load script' build/godot-import.log; then
+            echo 'GDScript compiler reported errors.'
+            exit 1
+          fi
       - name: Export Android ARM64 OpenXR APK
         run: |
           set -o pipefail

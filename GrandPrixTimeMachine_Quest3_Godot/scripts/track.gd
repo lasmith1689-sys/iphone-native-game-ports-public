@@ -32,7 +32,7 @@ func _init() -> void:
 func _raw_position(t: float) -> Vector3:
     var x := fposmod(t, 1.0) * float(CONTROLS.size())
     var i := int(floor(x))
-    var u := x - floor(x)
+    var u: float = x - floor(x)
     var n := CONTROLS.size()
     var a: Vector2 = CONTROLS[(i - 1 + n) % n]
     var b: Vector2 = CONTROLS[i % n]
