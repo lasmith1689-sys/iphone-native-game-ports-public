@@ -6,6 +6,10 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 class QuestInstallationContracts(unittest.TestCase):
+    def test_android_etc2_astc_import_is_enabled(self):
+        project = (ROOT / "project.godot").read_text()
+        self.assertIn("textures/vram_compression/import_etc2_astc=true", project)
+
     def test_named_controller_trackers(self):
         scene = (ROOT / 'scenes/main.tscn').read_text()
         self.assertIn('tracker = "left_hand"', scene)
