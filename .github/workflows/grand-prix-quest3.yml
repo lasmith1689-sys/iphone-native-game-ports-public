@@ -47,6 +47,12 @@ jobs:
           test -s "$HOME/.local/share/godot/export_templates/4.6.3.stable/android_debug.apk"
           grep -F 'export/android/java_sdk_path' "$HOME/.config/godot/editor_settings-4.6.tres"
           test -x /usr/lib/android-sdk/platform-tools/adb
+      - name: Install Python for APK verification and Windows installer ZIP
+        run: |
+          set -eu
+          apt-get update -qq
+          apt-get install -y --no-install-recommends python3
+          python3 --version
       - name: Show build environment
         run: |
           mkdir -p build
