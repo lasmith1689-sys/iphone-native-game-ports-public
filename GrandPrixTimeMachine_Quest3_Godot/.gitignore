@@ -1,0 +1,7 @@
+.godot/
+build/
+*.apk
+*.aab
+*.log
+*.keystore
+android/

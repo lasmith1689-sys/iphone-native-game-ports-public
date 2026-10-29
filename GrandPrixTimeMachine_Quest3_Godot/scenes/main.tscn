@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+
+[node name="GrandPrixTimeMachine" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+current = true
+
+[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+tracker = "left_hand"
+pose = "aim"
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+tracker = "right_hand"
+pose = "aim"
+
+[node name="DesktopPreviewCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.916, 0.402, 0, -0.402, 0.916, 0, 1.55, 0)
+current = false
+fov = 75.0

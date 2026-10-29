@@ -1,0 +1,30 @@
+; Grand Prix Time Machine — standalone Quest OpenXR 3D application
+; Dedicated Godot port of the v0.2 Unity prototype, no proprietary assets.
+config_version=5
+
+[application]
+config/name="Grand Prix Time Machine"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+viewport/transparent_background=true
+
+[xr]
+openxr/enabled=true
+shaders/enabled=true
+openxr/default_blend_mode=2
+
+[physics]
+3d/default_gravity=9.8
+
+[display]
+window/size/viewport_width=1440
+window/size/viewport_height=900
+window/stretch/mode="canvas_items"
+
+[debug]
+settings/stdout/print_fps=false

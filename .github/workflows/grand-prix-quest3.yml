@@ -1,0 +1,107 @@
+name: Quest 3 APK / Fuji 1976
+on:
+  # Build after each source change on the isolated public game branch.
+  push:
+    branches: [quest3/grand-prix-time-machine]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-source:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source, geometry, and packaging tests
+        shell: bash
+        run: |
+          python3 -m unittest discover -s GrandPrixTimeMachine_Quest3_Godot/tests -p "test_*.py" -v 2>&1 | tee source_tests.log
+          test ${PIPESTATUS[0]} -eq 0
+      - name: Upload test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: GrandPrixTimeMachine_source_diagnostics
+          path: source_tests.log
+          if-no-files-found: warn
+
+  build-quest-apk:
+    # Build independently even if verification fails, preserving diagnostic files.
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.6.3
+    defaults:
+      run:
+        shell: bash
+        working-directory: GrandPrixTimeMachine_Quest3_Godot
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show build environment
+        run: |
+          mkdir -p build
+          godot --version 2>&1 | tee build/godot-version.log
+          java -version 2>&1 | tee build/java-version.log
+          env | grep -E '^(ANDROID_HOME|ANDROID_SDK_ROOT|GODOT_VERSION|GODOT_BIN)=' || true
+      - name: Godot import and GDScript parser validation
+        run: |
+          set -o pipefail
+          godot --headless --editor --path . --quit --verbose 2>&1 | tee build/godot-import.log
+      - name: Export Android ARM64 OpenXR APK
+        run: |
+          set -o pipefail
+          godot --headless --path . --export-debug "Quest3" build/GrandPrixTimeMachine_Quest3.apk 2>&1 | tee build/godot-export.log
+          test -s build/GrandPrixTimeMachine_Quest3.apk
+          python3 tools/verify_apk.py build/GrandPrixTimeMachine_Quest3.apk | tee build/apk-verification.json
+          # Never ship an APK if Android's cryptographic signature wasn't verified.
+          SIGNER="$(command -v apksigner || true)"
+          if [ -z "$SIGNER" ]; then
+            SIGNER="$(find "${ANDROID_HOME:-/usr/lib/android-sdk}/build-tools" -type f -name apksigner -print -quit 2>/dev/null || true)"
+          fi
+          if [ -z "$SIGNER" ]; then
+            echo 'ERROR: Android apksigner is missing; refusing to release unverified APK.' | tee build/apksigner.log
+            exit 1
+          fi
+          "$SIGNER" verify --verbose build/GrandPrixTimeMachine_Quest3.apk 2>&1 | tee build/apksigner.log
+          sha256sum build/GrandPrixTimeMachine_Quest3.apk > build/SHA256SUMS.txt
+      - name: Package Windows one-click Quest installer
+        run: |
+          python3 - <<'PY2'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          root = Path('.')
+          files = {
+              root/'build/GrandPrixTimeMachine_Quest3.apk': 'GrandPrixTimeMachine_Quest3.apk',
+              root/'build/SHA256SUMS.txt': 'SHA256SUMS.txt',
+              root/'install/INSTALL_ON_QUEST3.cmd': 'INSTALL_ON_QUEST3.cmd',
+              root/'install/INSTALL_ON_QUEST3.ps1': 'INSTALL_ON_QUEST3.ps1',
+              root/'install/READ_ME_FIRST.txt': 'READ_ME_FIRST.txt',
+          }
+          dest = root/'build/GrandPrixTimeMachine_Quest3_Easy_Install.zip'
+          with ZipFile(dest,'w',ZIP_DEFLATED,compresslevel=6) as archive:
+              for path,name in files.items():
+                  if not path.is_file():
+                      raise SystemExit(f'Installer asset missing: {path}')
+                  archive.write(path,name)
+          with ZipFile(dest) as archive:
+              assert archive.testzip() is None
+              assert set(archive.namelist()) == set(files.values())
+          print(f'Complete Quest Easy Install kit: {dest}, bytes={dest.stat().st_size}')
+          PY2
+      - name: Upload logs (even for failed exports)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: GrandPrixTimeMachine_build_diagnostics
+          path: |
+            GrandPrixTimeMachine_Quest3_Godot/build/*.log
+          if-no-files-found: warn
+      - name: Upload Quest APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: GrandPrixTimeMachine_Quest3_v0.5_Easy_Install
+          path: |
+            GrandPrixTimeMachine_Quest3_Godot/build/GrandPrixTimeMachine_Quest3.apk
+            GrandPrixTimeMachine_Quest3_Godot/build/SHA256SUMS.txt
+            GrandPrixTimeMachine_Quest3_Godot/build/GrandPrixTimeMachine_Quest3_Easy_Install.zip
+          if-no-files-found: error
