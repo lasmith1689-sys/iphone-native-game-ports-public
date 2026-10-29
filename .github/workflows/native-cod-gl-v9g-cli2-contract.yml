@@ -1,0 +1,94 @@
+name: Native CoD v9g CLI2 installed help contract only
+'on':
+  push:
+    branches:
+    - codex/native-cod-gl-v9g-cli2-contract-20261028
+    paths:
+    - .github/workflows/native-cod-gl-v9g-cli2-contract.yml
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  installed-help-only:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.ref == 'refs/heads/codex/native-cod-gl-v9g-cli2-contract-20261028'
+    runs-on: xcode-27
+    timeout-minutes: 8
+    steps:
+    - name: Read bounded installed help and clean only the owned help Simulator
+      id: contract
+      shell: bash
+      run: "set -euo pipefail\npython3 - <<'PY'\nimport os,json,pathlib\nassert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public'\n\
+        assert os.environ['GITHUB_REF']=='refs/heads/codex/native-cod-gl-v9g-cli2-contract-20261028'\nassert os.environ['GITHUB_EVENT_NAME']\
+        \ in ('push','workflow_dispatch')\nevent=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())\n\
+        assert event['repository']['private'] is False and event['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public'\n\
+        if os.environ['GITHUB_EVENT_NAME']=='push':assert event['after']==os.environ['GITHUB_SHA'] and not event.get('deleted',False)\n\
+        \"\"\"Installed help contracts only: no application, graphics build or log query.\"\"\"\nimport datetime,hashlib,json,os,pathlib,re,signal,subprocess,sys,threading,time\n\
+        MAX_STREAM=262144\nRUNTIME='com.apple.CoreSimulator.SimRuntime.iOS-27-1'\nDEVICE='com.apple.CoreSimulator.SimDeviceType.iPhone-Duo'\n\
+        def bounded_command(folder,label,args,environment,timeout):\n # Bound parent-side pipes only. Never constrain\
+        \ xcrun/cache file writes.\n out=folder/(label+'.stdout');err=folder/(label+'.stderr');start=time.monotonic();timed=False;cap=threading.Event();buffers=[bytearray(),bytearray()];reader_errors=[]\n\
+        \ process=subprocess.Popen(list(map(str,args)),stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=environment,start_new_session=True)\n\
+        \ def pump(handle,buffer):\n  try:\n   while len(buffer)<=MAX_STREAM:\n    chunk=handle.read(min(4096,MAX_STREAM+1-len(buffer)))\n\
+        \    if not chunk:break\n    buffer.extend(chunk)\n    if len(buffer)>MAX_STREAM:cap.set();break\n  except\
+        \ Exception as error:reader_errors.append(type(error).__name__)\n  finally:handle.close()\n threads=[threading.Thread(target=pump,args=(handle,buffer),daemon=True)\
+        \ for handle,buffer in zip([process.stdout,process.stderr],buffers)]\n for thread in threads:thread.start()\n\
+        \ while process.poll() is None:\n  timed=time.monotonic()-start>timeout\n  if timed or cap.is_set():\n \
+        \  try:\n    if os.name=='posix':os.killpg(process.pid,signal.SIGKILL)\n    else:process.kill()\n   except\
+        \ ProcessLookupError:pass\n   break\n  cap.wait(.05)\n code=process.wait(timeout=5)\n for thread in threads:thread.join(timeout=1)\n\
+        \ incomplete=any(thread.is_alive() for thread in threads);raw=bytes(buffers[0][:MAX_STREAM]);errors=bytes(buffers[1][:MAX_STREAM])\n\
+        \ out.write_bytes(raw);err.write_bytes(errors)\n metadata={'label':label,'exitCode':code,'timedOut':timed,'outputCapped':cap.is_set()\
+        \ or incomplete or bool(reader_errors),'readersIncomplete':incomplete,'readerErrors':reader_errors,\n  'stdoutBytes':len(raw),'stderrBytes':len(errors),'stdoutSha256':hashlib.sha256(raw).hexdigest(),'stderrSha256':hashlib.sha256(errors).hexdigest(),\n\
+        \  'captureByteLimitPerStream':MAX_STREAM,'childFileSizeLimitsChanged':False}\n return raw,errors,metadata\n\
+        def selected_help(text):\n # Publish actual static CLI usage/options/key names, never log content.\n rows=[]\n\
+        \ for line in text.splitlines():\n  if re.search(r'usage|log show|log help|predicate|processID|processIdentifier|processImage|subsystem|category|spawn|<device>|(^|\\\
+        s)--',line,re.I):rows.append(line[:240])\n  if len(rows)==48:break\n result='\\n'.join(rows);return result.encode()[:6000].decode(errors='ignore')\n\
+        def ps_self_row(raw,pid):\n text=raw.decode('utf-8').strip();assert '\\n' not in text\n match=re.fullmatch(r'([1-9][0-9]*)\\\
+        s+(.+?)\\s+([A-Za-z+<>-]+)\\s+([A-Za-z]{3}\\s+[A-Za-z]{3}\\s+[0-9]{1,2}\\s+[0-9:]{8}\\s+[0-9]{4})',text)\n\
+        \ assert match and int(match[1])==pid\n started=datetime.datetime.strptime(match[4],'%a %b %d %H:%M:%S %Y').replace(tzinfo=datetime.timezone.utc)\n\
+        \ return {'pid':pid,'commandBasename':pathlib.PurePosixPath(match[2]).name,'commandPathHasSpaces':' ' in\
+        \ match[2],\n  'commandIsAbsolutePath':match[2].startswith('/'),'matchesInterpreterBasename':pathlib.PurePosixPath(match[2]).name==pathlib.Path(sys.executable).name,\n\
+        \  'state':match[3],'startUTC':started.isoformat(),'fullArgumentsAndEnvironmentExcluded':True}\ndef tool_error(text):\n\
+        \ rows=[line[:240] for line in text.splitlines() if re.search(r'error|unable|invalid|failed|xcrun:|xcode-select:',line,re.I)]\n\
+        \ if not rows:rows=[line[:240] for line in text.splitlines()[:8]]\n return re.sub(r'/Users/[^\\s\"\\n]+','<path>','\\\
+        n'.join(rows[:8]))[:1800]\ndef probe(root,runner=bounded_command):\n root.mkdir(parents=True,exist_ok=False);environment=dict(os.environ)\n\
+        \ records=[];helps=[];created=None;owned=False;failure=None;tool_errors=[]\n report={'status':'installed-CLI-help-observation-only','appCreatedOrLaunched':False,'graphicsCompiled':False,'logContentQueried':False,\n\
+        \  'wholeGameOrProfileSuccessEstablished':False,'helpUsageExit64NotAutomaticallyAccepted':True,'contractStillRequiresReview':True,'commands':records,'helpObservations':helps,'selectedToolErrors':tool_errors,'appLivenessContractEstablished':False}\n\
+        \ def run(label,args,timeout=10,help_only=False,command_env=None):\n  raw,errors,metadata=runner(root,label,args,command_env\
+        \ or environment,timeout);records.append({**metadata,'arguments':list(map(str,args))})\n  if metadata['exitCode']!=0\
+        \ and label not in ['host-log-help-show','host-log-help-predicates','owned-simulator-log-help-show','owned-simulator-log-help-predicates']:\n\
+        \   tool_errors.append({'label':label,'exitCode':metadata['exitCode'],'selectedActualErrorText':tool_error((raw+errors).decode(errors='replace'))})\n\
+        \  assert not metadata['timedOut'] and not metadata['outputCapped'],label\n  if help_only:\n   text=(raw+errors).decode(errors='replace');selected=selected_help(text)\n\
+        \   helps.append({'label':label,'exitCode':metadata['exitCode'],'selectedActualUsageText':selected,'selectedTextMayBeTruncated':len(selected.encode())>=6000,\n\
+        \    'requiredShowFlagsPresent':{k:k in text for k in ['--style','--start','--end','--timezone','--predicate']},\n\
+        \    'predicateKeysPresent':{k:bool(re.search(r'\\b'+k+r'\\b',text)) for k in ['process','processID','processIdentifier','processImageUUID','processImagePath']},\n\
+        \    'usageFormObserved':bool(re.search(r'usage|log show|predicate',text,re.I)),'nonzeroStatusIsEvidenceOnly':metadata['exitCode']!=0})\n\
+        \   if label=='installed-simctl-spawn-help':assert metadata['exitCode']==0,label\n   else:assert metadata['exitCode']\
+        \ in (0,64) and helps[-1]['usageFormObserved'],label\n  else:assert metadata['exitCode']==0,label\n  return\
+        \ raw\n try:\n  developer=pathlib.Path(run('selected-developer-directory',['/usr/bin/xcode-select','-p']).decode().strip());assert\
+        \ developer.is_absolute() and developer.is_dir()\n  environment['DEVELOPER_DIR']=str(developer);report['selectedDeveloperDirectory']=str(developer)\n\
+        \  simctl=pathlib.Path(run('resolve-selected-simctl',['/usr/bin/xcrun','--find','simctl']).decode().strip())\n\
+        \  assert simctl.is_absolute() and simctl.is_file() and developer.resolve() in simctl.resolve().parents\n\
+        \  report['resolvedSimctlPath']=str(simctl);simctl=str(simctl)\n  run('host-log-help-show',['/usr/bin/log','help','show'],help_only=True)\n\
+        \  run('host-log-help-predicates',['/usr/bin/log','help','predicates'],help_only=True)\n  run('installed-simctl-spawn-help',[simctl,'help','spawn'],help_only=True)\n\
+        \  keywords=run('ps-supported-keywords',['/bin/ps','-L']).decode(errors='replace').split()\n  report['psSupportedKeywords']={k:k\
+        \ in keywords for k in ['pid','comm','state','lstart']}\n  if all(report['psSupportedKeywords'].values()):\n\
+        \   pid=os.getpid();psenv=dict(environment,TZ='UTC',LC_ALL='C',LANG='C');raw=run('ps-only-this-probe-process',['/bin/ps','-p',str(pid),'-o','pid=,comm=,state=,lstart='],command_env=psenv)\n\
+        \   try:report['psSelfFormatObservation']=ps_self_row(raw,pid)\n   except (AssertionError,ValueError,UnicodeError):report['psSelfFormatObservation']={'parsed':False,'stdoutSha256':hashlib.sha256(raw).hexdigest()}\n\
+        \   wide=run('ps-wide-only-this-probe-process',['/bin/ps','-ww','-p',str(pid),'-o','pid=,comm=,state=,lstart='],command_env=psenv)\n\
+        \   try:report['psWideSelfFormatObservation']=ps_self_row(wide,pid)\n   except (AssertionError,ValueError,UnicodeError):report['psWideSelfFormatObservation']={'parsed':False,'stdoutSha256':hashlib.sha256(wide).hexdigest()}\n\
+        \  runtimes=json.loads(run('installed-runtime-identifiers',[simctl,'list','runtimes','--json']))\n  types=json.loads(run('installed-device-type-identifiers',[simctl,'list','devicetypes','--json']))\n\
+        \  rows=[r for r in runtimes['runtimes'] if r['identifier']==RUNTIME];assert len(rows)==1 and rows[0]['isAvailable']\
+        \ is True\n  assert len([r for r in types['devicetypes'] if r['identifier']==DEVICE])==1\n  runid=os.environ['GITHUB_RUN_ID'];assert\
+        \ re.fullmatch('[0-9]+',runid);name='NativeGL-CLIContract-'+runid\n  created=run('create-only-owned-help-simulator',[simctl,'create',name,DEVICE,RUNTIME]).decode().strip();assert\
+        \ re.fullmatch('[0-9A-Fa-f-]{36}',created)\n  inventory=json.loads(run('verify-only-owned-help-simulator',[simctl,'list','devices','--json']))\n\
+        \  own=[r for r in inventory['devices'].get(RUNTIME,[]) if r['udid']==created];assert len(own)==1 and own[0]['name']==name;owned=True\n\
+        \  report['selectedOwnedSimulator']={'runtime':RUNTIME,'deviceType':DEVICE,'udid':created,'name':name}\n\
+        \  run('boot-only-owned-help-simulator',[simctl,'boot',created]);run('wait-only-owned-help-simulator',[simctl,'bootstatus',created,'-b'],180)\n\
+        \  run('owned-simulator-log-help-show',[simctl,'spawn',created,'log','help','show'],help_only=True)\n  run('owned-simulator-log-help-predicates',[simctl,'spawn',created,'log','help','predicates'],help_only=True)\n\
+        \ except Exception as error:failure=type(error).__name__\n finally:\n  if owned and created:\n   for label,action\
+        \ in [('shutdown-only-owned-help-simulator','shutdown'),('delete-only-owned-help-simulator','delete')]:\n\
+        \    try:run(label,[simctl,action,created],60)\n    except Exception as error:failure=(failure or '')+';\
+        \ '+label+':'+type(error).__name__\n  elif created:failure=(failure or '')+'; unverified ownership, no cleanup\
+        \ attempted'\n report['onlyOwnedSimulatorCleanupAttempted']=bool(owned);report['failure']=failure\n if failure:report['status']='incomplete-installed-CLI-help-observation'\n\
+        \ assert len(json.dumps(report).encode())<65536\n (root/'contract-observations.json').write_text(json.dumps(report,indent=2)+'\\\
+        n');return report\nif __name__=='__main__':\n result=probe(pathlib.Path('.work/cod-gl-v9g-cli2-contract').absolute());print(json.dumps(result,indent=2))\n\
+        \ if result['failure']:raise RuntimeError('Installed help probe incomplete')\n\nPY\n"
