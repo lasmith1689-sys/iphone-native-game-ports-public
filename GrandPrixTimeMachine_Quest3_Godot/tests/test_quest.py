@@ -40,9 +40,9 @@ class VerifyQuest(unittest.TestCase):
     def test_playback_jump(self): self.assertIn('"next"',SRC)
     def test_playback_back(self): self.assertIn('"previous"',SRC)
     def test_speed(self): self.assertIn('speed >= 4.0',SRC)
-    def test_scale(self): self.assertIn('5.5 if expanded',SRC)
+    def test_scale(self): self.assertIn('2.30 if expanded',SRC)
     def test_recenter(self): self.assertIn('func _recenter()',SRC)
-    def test_controller(self): self.assertIn('right_controller.get_float("trigger")',SRC)
+    def test_controller(self): self.assertIn('controller.get_float("trigger")',SRC)
     def test_ray_controls(self): self.assertIn('center - (origin + direction * along)',SRC)
     def test_passthrough_fallback(self):
         self.assertIn('XR_ENV_BLEND_MODE_ALPHA_BLEND',SRC)

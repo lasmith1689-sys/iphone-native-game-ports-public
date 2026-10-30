@@ -41,7 +41,7 @@ class SourceBehaviorContracts(unittest.TestCase):
 
     def test_buttons_have_distinct_actions(self):
         btns = re.findall(r'_add_button\("[^\"]+",\s*[-0-9.]+,\s*Color\([^\n]+?,\s*"(\w+)"\)', SOURCE)
-        self.assertEqual(set(btns), {'pause', 'previous', 'next', 'scale', 'speed'})
+        self.assertEqual(set(btns), {'pause', 'previous', 'next', 'scale', 'speed', 'center'})
         self.assertEqual(len(btns), len(set(btns)))
 
     def test_controls_stay_separate_from_scaling_diorama(self):
@@ -69,15 +69,16 @@ class SourceBehaviorContracts(unittest.TestCase):
         self.assertIn('forward = Vector3.FORWARD', SOURCE)
 
     def test_controller_action_path(self):
-        self.assertIn('right_controller.global_transform.basis.z.normalized()', SOURCE)
+        self.assertIn('controller.global_transform.basis.z.normalized()', SOURCE)
         self.assertIn('get_float("trigger")', SOURCE)
         self.assertIn('is_button_pressed("trigger_click")', SOURCE)
-        self.assertIn('if pressed and not last_trigger:', SOURCE)
+        self.assertIn('if pressed and not bool(trigger_down[side]) and hit != "":', SOURCE)
         self.assertIn('if along < 0.025 or along > 2.0:', SOURCE)
 
     def test_xr_nodes_match_controller_path(self):
         self.assertIn('[node name="RightController" type="XRController3D" parent="XROrigin3D"]', SCENE)
         self.assertIn('tracker = "right_hand"', SCENE)
+        self.assertIn('tracker = "left_hand"', SCENE)
         self.assertIn('[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]', SCENE)
 
     def test_mr_has_transparent_alpha_environment(self):

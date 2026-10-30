@@ -1,19 +1,24 @@
-# Grand Prix Time Machine | Quest 3 public build branch
+# Grand Prix Time Machine | public Quest 3 development branch
 
-This branch contains only the standalone Quest 3 Godot project and its build automation.
-The default branch of this repository is unchanged.
+This isolated public branch contains a native standalone Godot 4.6.3 Quest 3
+historical racing exhibit. The repository's default branch remains unchanged.
 
-The **Fuji 1976** scene features a miniature racing diorama, original low-poly cars,
-six sourced historical chapters, OpenXR support, and a Windows one-click installer
-script. Racing positions and circuit geometry are illustrative rather than
-historically reconstructed telemetry.
+The [first verified v0.5 build](https://github.com/lasmith1689-sys/iphone-native-game-ports-public/actions/runs/40946624259)
+passed Android APK export, apksigner validation, 69 source tests and Windows
+one-click installer packaging on October 29, 2026.
 
-**Build state:** the [successful October 29 public CI run](https://github.com/lasmith1689-sys/iphone-native-game-ports-public/actions/runs/40945928592)
-exported and debug-signed an ARM64 Android APK, and packaged it with a one-click
-Windows installer. Its artifact is named `GrandPrixTimeMachine_Quest3_v0.5_Easy_Install`.
-The 69 automated source tests passed. Headset startup, controller tracking and
-passthrough performance still require physical Quest testing. Do not sideload a
-source-only ZIP; use the **Easy Install** archive containing an actual APK.
+**v0.6** adds independent left/right controller rays, hover indication,
+six more readable controls including recenter, 14 low-poly trees and reduced
+room-scale growth to help keep the exhibit comfortable. See the
+[Actions history](https://github.com/lasmith1689-sys/iphone-native-game-ports-public/actions/workflows/grand-prix-quest3.yml)
+for the newer `GrandPrixTimeMachine_Quest3_v0.6_Easy_Install` artifact
+**only after that build succeeds**. Source ZIPs are not installable APKs.
 
-See [Quest 3 installation steps](GrandPrixTimeMachine_Quest3_Godot/install/READ_ME_FIRST.txt)
-and [device verification checklist](GrandPrixTimeMachine_Quest3_Godot/docs/QUEST_ACCEPTANCE.md).
+[Project README](GrandPrixTimeMachine_Quest3_Godot/README.md) |
+[Windows installation](GrandPrixTimeMachine_Quest3_Godot/install/READ_ME_FIRST.txt) |
+[Physical Quest acceptance](GrandPrixTimeMachine_Quest3_Godot/docs/QUEST_ACCEPTANCE.md) |
+[Historical research](GrandPrixTimeMachine_Quest3_Godot/docs/HISTORICAL_SOURCES.md)
+
+VR-first. Headset startup, controller behavior and true passthrough are not
+physically tested, and the OpenXR Vendors plugin for Meta passthrough is not
+yet bundled. All geometry and on-track animations are illustrative.

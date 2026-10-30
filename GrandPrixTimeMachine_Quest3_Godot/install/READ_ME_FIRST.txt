@@ -1,4 +1,4 @@
-GRAND PRIX TIME MACHINE | QUEST 3 EASY INSTALL
+GRAND PRIX TIME MACHINE | QUEST 3 v0.6 EASY INSTALL
 =========================================
 
 THIS FOLDER IS A SOURCE/INSTALLER PREPARATION KIT UNTIL IT ALSO CONTAINS:
@@ -22,7 +22,9 @@ INSTALL (Windows 11)
   4. If prompted, put on the headset and allow USB debugging.
   5. The installer downloads Google's Android USB tool on its first run,
      checks the APK SHA-256, installs the app and confirms its presence.
-  6. Disconnect USB. In Quest's App Library, open Unknown Sources and
+  6. Aim either controller and squeeze trigger to select PLAY/BACK/NEXT/SCALE/SPEED/CENTER.
+     Press B or Y to recenter. These interactions require headset testing.
+  7. Disconnect USB. In Quest's App Library, open Unknown Sources and
      launch Grand Prix Time Machine (the exact filter location can vary).
 
 NO WINDOWS SCRIPT WANTED?

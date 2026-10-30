@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.5 Quest 3 source (APK awaiting build)
+# Grand Prix Time Machine — v0.6 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -12,7 +12,7 @@ otherwise it uses a dark immersive VR environment. **Meta Quest passthrough also
 requires the Godot OpenXR Vendors plugin, which is not yet bundled in this
 prototype. Therefore current builds must be regarded as VR-first, with MR unverified.**
 The target is a native, on-headset Android ARM64 app with no PCVR streaming or
-network requirement. Source tests passing does not mean an APK is built.
+network requirement. The v0.5 APK was built October 29, 2026. Only an independently successful v0.6 GitHub Actions run proves the updated APK was built.
 
 **The circuit, car positions, model details and playback time are illustrative, not
 reconstructed historical telemetry.** Narrative beats are sourced; see
@@ -20,7 +20,9 @@ reconstructed historical telemetry.** Narrative beats are sourced; see
 
 ## Controls
 
-- Aim the right controller at the green/gold/blue/red buttons, press trigger.
+- Aim EITHER controller at the six colored buttons and press trigger. Each press selects one action. Hovered buttons enlarge for visual feedback.
+- Press B or Y to recenter. CENTER is also a visible button.
+- The pointer hides when tracking is lost. Keep a safe Quest boundary.
 - The fixed-scale floating control rail remains accessible when the diorama expands.
 - Green = play/pause; grey = previous chapter; gold = next chapter;
   blue = expand/shrink; red = 1x/2x/4x speed.

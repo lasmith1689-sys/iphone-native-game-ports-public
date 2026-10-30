@@ -1,6 +1,7 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
+## v0.6: two-controller aim/trigger actions, hover feedback and recenter.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 123.0
@@ -24,6 +25,7 @@ const COLORS := {
 @onready var xr_camera: XRCamera3D = $XROrigin3D/XRCamera3D
 @onready var desktop_camera: Camera3D = $DesktopPreviewCamera
 @onready var right_controller: XRController3D = $XROrigin3D/RightController
+@onready var left_controller: XRController3D = $XROrigin3D/LeftController
 var xr_interface: XRInterface
 var xr_active := false
 var passthrough_active := false
@@ -40,13 +42,17 @@ var speed := 1.0
 var chapter := -1
 var expanded := false
 var tabletop_scale := 0.94
-var last_trigger := false
+var trigger_down := {"left": false, "right": false}
+var center_down := {"left": false, "right": false}
+var beams: Dictionary = {}
+var hovered_action := ""
 var intro_time := 0.0
 
 func _ready() -> void:
     _make_environment()
     _build_diorama()
-    _add_pointer()
+    _add_pointer(left_controller, "left")
+    _add_pointer(right_controller, "right")
     _recenter()
     call_deferred("_start_xr")
 
@@ -169,8 +175,25 @@ func _track_surface(name: String, width: float, height: float, color: Color) -> 
     var inst := MeshInstance3D.new()
     inst.name = name
     inst.mesh = mesh.commit()
-    inst.material_override = _material(color)
+    # Damp pavement sheen without expensive full-screen reflections.
+    inst.material_override = _material(color, 0.27 if name == "asphalt" else 0.82)
     board.add_child(inst)
+
+func _pine_tree(center: Vector3, height: float) -> void:
+    _box(board, "tree trunk", center + Vector3.UP * height * 0.17,
+        Vector3(0.006, height * 0.34, 0.006), Color(0.20, 0.14, 0.08))
+    for layer in range(3):
+        var crown := MeshInstance3D.new()
+        crown.name = "six-sided pine crown"
+        var cone := CylinderMesh.new()
+        cone.top_radius = 0.0
+        cone.bottom_radius = 0.023 - 0.004 * layer
+        cone.height = height * 0.47
+        cone.radial_segments = 6
+        crown.mesh = cone
+        crown.material_override = _material(Color(0.07 + layer * 0.012, 0.24, 0.18))
+        crown.position = center + Vector3.UP * height * (0.48 + 0.19 * layer)
+        board.add_child(crown)
 
 func _make_car(key: String, body_color: Color, accent_color: Color) -> void:
     var car := Node3D.new()
@@ -218,6 +241,11 @@ func _build_diorama() -> void:
         p.y = 0.038
         var slot := _box(board, "grid", p, Vector3(0.035, 0.002, 0.002), COLORS.cream)
         slot.rotation.y = atan2(track.tangent(t).x, track.tangent(t).z)
+    # Low-poly trees remain outside the car route.
+    for side in [-1.0, 1.0]:
+        for i in range(7):
+            _pine_tree(Vector3(side * (0.594 + 0.004 * float(i % 2)), 0.011,
+                -0.24 + 0.084 * float(i)), 0.068 + 0.013 * float(i % 3))
     for i in range(3):
         _box(board, "grandstand", Vector3(-0.22 + 0.2 * i, 0.047, 0.345), Vector3(0.17, 0.042, 0.034), COLORS.charcoal)
         for row in range(3):
@@ -237,27 +265,33 @@ func _build_diorama() -> void:
     _label("disclaimer", "ILLUSTRATIVE MODEL | NOT LAP ACCURATE", Vector3(0.56, 0.031, 0.39), 0.011, COLORS.cream, true)
     _label("state", "PLAY 1X", Vector3(0.55, 0.070, -0.36), 0.018, COLORS.gold, true)
     _label("chapter", "01 / 06", Vector3(0.55, 0.046, -0.385), 0.014, COLORS.gold, true)
-    _add_button("PLAY / PAUSE", -0.50, Color(0.29, 0.63, 0.57), "pause")
-    _add_button("BACK", -0.25, Color(0.76, 0.75, 0.73), "previous")
-    _add_button("NEXT", 0.0, Color(0.94, 0.70, 0.24), "next")
-    _add_button("SCALE", 0.25, Color(0.34, 0.53, 0.89), "scale")
-    _add_button("SPEED", 0.50, Color(0.78, 0.36, 0.37), "speed")
+    _add_button("PLAY", -0.50, Color(0.29, 0.63, 0.57), "pause")
+    _add_button("BACK", -0.30, Color(0.76, 0.75, 0.73), "previous")
+    _add_button("NEXT", -0.10, Color(0.94, 0.70, 0.24), "next")
+    _add_button("SCALE", 0.10, Color(0.34, 0.53, 0.89), "scale")
+    _add_button("SPEED", 0.30, Color(0.78, 0.36, 0.37), "speed")
+    _add_button("CENTER", 0.50, Color(0.43, 0.70, 0.79), "center")
+    var hint := _label("control_hint", "AIM + TRIGGER TO SELECT   |   B/Y TO RECENTER",
+        Vector3(0.0, 0.130, 0.0), 0.014, COLORS.cream, false, ui_panel)
+    hint.rotation.x = 0.0
+    hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     _update_story()
     _update_cars()
 
 func _add_button(label_text: String, x: float, color: Color, action: String) -> void:
-    # Keep controls physically accessible in both tabletop and room-scale modes.
-    # The controls are a separate fixed-scale panel, never children of the board.
-    var orb := _sphere(ui_panel, "Action " + label_text, Vector3(x, 0.028, 0.0), 0.034, color)
-    var label3d := _label("button_" + label_text, label_text, Vector3(x, 0.015, 0.060), 0.011, Color.WHITE, false, ui_panel)
+    _box(ui_panel, "Button backing " + label_text,
+        Vector3(x, 0.012, -0.020), Vector3(0.164, 0.135, 0.012), COLORS.charcoal)
+    var orb := _sphere(ui_panel, "Action " + label_text, Vector3(x, 0.040, 0.017), 0.034, color)
+    var label3d := _label("button_" + label_text, label_text,
+        Vector3(x, -0.032, 0.025), 0.012, Color.WHITE, false, ui_panel)
+    label3d.rotation.x = 0.0
     label3d.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     controls.append({"orb": orb, "action": action})
 
-func _add_pointer() -> void:
-    # A narrow virtual laser follows the right controller and makes the
-    # interaction discoverable without requiring proprietary hand SDKs.
+func _add_pointer(controller: XRController3D, side: String) -> void:
+    # Never show a phantom pointer if tracking is lost.
     var beam := MeshInstance3D.new()
-    beam.name = "Right controller pointing ray"
+    beam.name = side + " controller pointer"
     var ray := CylinderMesh.new()
     ray.top_radius = 0.0015
     ray.bottom_radius = 0.0015
@@ -269,7 +303,33 @@ func _add_pointer() -> void:
     beam.material_override = mat
     beam.rotation.x = PI / 2.0
     beam.position.z = -0.8
-    right_controller.add_child(beam)
+    beam.visible = false
+    controller.add_child(beam)
+    beams[side] = beam
+
+func _hit_control(controller: XRController3D) -> String:
+    var origin: Vector3 = controller.global_position
+    var direction: Vector3 = -controller.global_transform.basis.z.normalized()
+    var nearest := 100.0
+    var selected := ""
+    for b in controls:
+        var center: Vector3 = (b.orb as Node3D).global_position
+        var along: float = (center - origin).dot(direction)
+        if along < 0.025 or along > 2.0:
+            continue
+        var radius: float = 0.066
+        if (center - (origin + direction * along)).length() < radius and along < nearest:
+            nearest = along
+            selected = b.action
+    return selected
+
+func _show_hover(action: String) -> void:
+    if action == hovered_action:
+        return
+    hovered_action = action
+    for b in controls:
+        var orb := b.orb as MeshInstance3D
+        orb.scale = Vector3.ONE * (1.19 if b.action == action else 1.0)
 
 func _update_story() -> void:
     chapter = 0
@@ -318,26 +378,28 @@ func _process(delta: float) -> void:
 func _read_controller() -> void:
     if not xr_active:
         return
-    var v := right_controller.get_float("trigger")
-    var pressed := v > 0.65 or right_controller.is_button_pressed("trigger_click")
-    if pressed and not last_trigger:
-        var origin: Vector3 = right_controller.global_position
-        var direction: Vector3 = -right_controller.global_transform.basis.z.normalized()
-        var nearest := 100.0
-        var selected := ""
-        for b in controls:
-            var center: Vector3 = (b.orb as Node3D).global_position
-            var along: float = (center - origin).dot(direction)
-            if along < 0.025 or along > 2.0:
-                continue
-            # Fixed-scale controls: never multiply hit radius by diorama size.
-            var radius: float = 0.066
-            if (center - (origin + direction * along)).length() < radius and along < nearest:
-                nearest = along
-                selected = b.action
-        if selected != "":
-            _action(selected)
-    last_trigger = pressed
+    var current_hover := ""
+    # Each hand has independent rising-edge trigger and recenter latches.
+    for side in ["left", "right"]:
+        var controller: XRController3D = left_controller if side == "left" else right_controller
+        var tracked := controller.get_is_active() and controller.get_has_tracking_data()
+        (beams[side] as MeshInstance3D).visible = tracked
+        if not tracked:
+            trigger_down[side] = false
+            center_down[side] = false
+            continue
+        var hit := _hit_control(controller)
+        if current_hover == "" and hit != "":
+            current_hover = hit
+        var pressed := controller.get_float("trigger") > 0.65 or controller.is_button_pressed("trigger_click")
+        if pressed and not bool(trigger_down[side]) and hit != "":
+            _action(hit)
+        trigger_down[side] = pressed
+        var center_pressed := controller.is_button_pressed("by_button")
+        if center_pressed and not bool(center_down[side]):
+            _action("center")
+        center_down[side] = center_pressed
+    _show_hover(current_hover)
 
 func _action(action: String) -> void:
     match action:
@@ -352,7 +414,7 @@ func _action(action: String) -> void:
             _update_story()
         "scale":
             expanded = not expanded
-            board.scale = Vector3.ONE * (5.5 if expanded else tabletop_scale)
+            board.scale = Vector3.ONE * (2.30 if expanded else tabletop_scale)
             _recenter()
         "speed": speed = 1.0 if speed >= 4.0 else speed * 2.0
         "center": _recenter()
@@ -366,7 +428,7 @@ func _recenter() -> void:
         forward = Vector3.FORWARD
     else:
         forward = forward.normalized()
-    board.global_position = cam.global_position + forward * (3.7 if expanded else 0.91) - Vector3.UP * (0.90 if expanded else 0.40)
+    board.global_position = cam.global_position + forward * (2.05 if expanded else 0.91) - Vector3.UP * (0.68 if expanded else 0.40)
     # Board local +Z is its viewer-facing edge. Aim it back toward the headset;
     # the previous heading flipped the diorama 180 degrees at default forward.
     board.rotation.y = atan2(-forward.x, -forward.z)

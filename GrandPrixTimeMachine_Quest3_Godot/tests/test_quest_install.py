@@ -22,7 +22,9 @@ class QuestInstallationContracts(unittest.TestCase):
         self.assertIn('pose = "aim"', right)
         source = (ROOT / 'scripts/main.gd').read_text()
         self.assertIn('get_float("trigger")', source)
-        self.assertIn('right_controller.global_transform.basis.z', source)
+        self.assertIn('controller.global_transform.basis.z', source)
+        self.assertIn('_add_pointer(right_controller, "right")', source)
+        self.assertIn('_add_pointer(left_controller, "left")', source)
 
     def test_cmd_invokes_powershell_script(self):
         cmd = (ROOT / 'install/INSTALL_ON_QUEST3.cmd').read_text()

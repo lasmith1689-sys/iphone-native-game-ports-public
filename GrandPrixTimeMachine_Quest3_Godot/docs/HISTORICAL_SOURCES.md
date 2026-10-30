@@ -32,5 +32,5 @@ screenplay positions. They are **not race timestamps or lap assignments**.
 
 Before labeling a reconstructed circuit accurate, require a period-source map
 of the 1976 Fuji configuration, a reproducible method for mapping geometry into
-3D, and separate track-level validation. Current v0.4 fails that acceptance
+3D, and separate track-level validation. Current v0.6 fails that acceptance
 criterion by design, so its labels must continue to say `ILLUSTRATIVE`.

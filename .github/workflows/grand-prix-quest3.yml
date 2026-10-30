@@ -27,7 +27,8 @@ jobs:
           if-no-files-found: warn
 
   build-quest-apk:
-    # Build independently even if verification fails, preserving diagnostic files.
+    # Only package source that has passed the independent test gate.
+    needs: verify-source
     runs-on: ubuntu-24.04
     container:
       image: barichello/godot-ci:4.6.3
@@ -129,7 +130,7 @@ jobs:
       - name: Upload Quest APK
         uses: actions/upload-artifact@v4
         with:
-          name: GrandPrixTimeMachine_Quest3_v0.5_Easy_Install
+          name: GrandPrixTimeMachine_Quest3_v0.6_Easy_Install
           path: |
             GrandPrixTimeMachine_Quest3_Godot/build/GrandPrixTimeMachine_Quest3.apk
             GrandPrixTimeMachine_Quest3_Godot/build/SHA256SUMS.txt
