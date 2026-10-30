@@ -1,0 +1,103 @@
+name: Encrypted CoD stack iPhone object collection without product execution
+'on':
+  push:
+    branches:
+    - codex/native-cod-stack-objects-v18-iphone-20261030
+    paths:
+    - .github/workflows/native-encrypted-cod-stack-objects-v18-iphone.yml
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: Exact reviewed encrypted bundle ID
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: native-encrypted-cod-stack-v18-iphone
+  cancel-in-progress: false
+jobs:
+  resource-sdk:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/native-cod-stack-objects-v18-iphone-20261030' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: xcode-27
+    timeout-minutes: 30
+    steps:
+    - name: Require exact public repository, branch and explicit bundle request
+      id: guard
+      shell: bash
+      run: "set -euo pipefail\npython3 - <<'PY'\nimport json,os,re,pathlib\nassert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public'\nassert os.environ['GITHUB_REF']=='refs/heads/codex/native-cod-stack-objects-v18-iphone-20261030'\nkind=os.environ['GITHUB_EVENT_NAME']\nassert kind in ('push','workflow_dispatch')\nassert re.fullmatch('[a-f0-9]{40}',os.environ['GITHUB_SHA'])\ne=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())\nassert e['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public' and e['repository']['private'] is False\nif kind=='workflow_dispatch':\n assert e['inputs']['bundle_id']=='ac850ced-9762-40b2-a4ff-d88c84dce709'\nelse:\n assert e['ref']=='refs/heads/codex/native-cod-stack-objects-v18-iphone-20261030' and e['after']==os.environ['GITHUB_SHA'] and e.get('deleted',False) is False\nprint('Exact public ciphertext context accepted.')\nPY\n"
+    - name: Checkout only reviewed public tooling and ciphertext
+      id: checkout
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+        submodules: false
+        lfs: false
+        sparse-checkout: native/delivery/encrypted-build
+    - name: Verify exact public tools, ciphertext and checkout
+      id: verify
+      shell: bash
+      run: 'set -euo pipefail
+
+        node --input-type=module - <<''JS''
+
+        import fs from ''node:fs'';
+
+        import crypto from ''node:crypto'';
+
+        import {execFileSync} from ''node:child_process'';
+
+        if(!process.versions.node.startsWith(''24.''))throw new Error(''Node24 required'');
+
+        if(execFileSync(''git'',[''rev-parse'',''HEAD''],{encoding:''utf8''}).trim()!==process.env.GITHUB_SHA)throw new Error(''Checkout identity rejected'');
+
+        const expected={"native/delivery/encrypted-build/bundle-builder.mjs":"3479d6da0c1e3940059864c0e8b5f44e8f9492c3f0156d342417e9e9464d100f","native/delivery/encrypted-build/public-manifest.json":"f9c9755a2bfece9c74856a130ebbb4d00fbfdcaf5fa0d4da5a3207605f9bc66c","native/delivery/encrypted-build/run-build.mjs":"58943916378ad7a8e981ad3d991194cd70aac6423aff8cef0b797190d78823cd","native/delivery/encrypted-build/transport.mjs":"023ca81702ef3e35327c5aad50971b0b3cdf5cf9107af957487cc4151f62b5f2"};
+
+        for(const [file,digest] of Object.entries(expected))if(crypto.createHash(''sha256'').update(fs.readFileSync(file)).digest(''hex'')!==digest)throw new Error(''Public tooling identity rejected'');
+
+        const m=JSON.parse(fs.readFileSync(''native/delivery/encrypted-build/public-manifest.json'',''utf8''));
+
+        const data=fs.readFileSync(''native/delivery/encrypted-build/input.ngp'');
+
+        if(data.length!==m.cipherBytes||crypto.createHash(''sha256'').update(data).digest(''hex'')!==m.cipherSha256)throw new Error(''Ciphertext identity rejected'');
+
+        if(m.context.bundleId!=="ac850ced-9762-40b2-a4ff-d88c84dce709")throw new Error(''Bundle context rejected'');
+
+        if(m.cipherSha256!=="39b55708f7851651fcf804b58072922105c21961f5069d42e5fbb1741f2aea1c"||m.cipherBytes!==9559228)throw new Error(''Reviewed ciphertext rejected'');
+
+        console.log(JSON.stringify({status:''public-inputs-verified'',node:process.versions.node,cipherSha256:m.cipherSha256,cipherBytes:data.length}));
+
+        JS
+
+        '
+    - name: Authenticate sources, capture private build logs and seal outputs
+      id: build
+      shell: bash
+      env:
+        NGP_INPUT_KEY_20261028: ${{ secrets.NGP_INPUT_KEY_20261028 }}
+      run: "set -euo pipefail\numask 077\nmkdir \"$RUNNER_TEMP/ngp-ciphertext\"\nnode native/delivery/encrypted-build/run-build.mjs \\\n  --input native/delivery/encrypted-build/input.ngp \\\n  --manifest native/delivery/encrypted-build/public-manifest.json \\\n  --output \"$RUNNER_TEMP/ngp-ciphertext/result.ngp\" \\\n  --workspace \"$RUNNER_TEMP/ngp-private-build\"\n"
+    - name: Upload ciphertext only for one day
+      id: upload
+      if: always() && steps.build.outputs.sealed == 'true'
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: ngp-sealed-resource-sdk-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/ngp-ciphertext/result.ngp
+        if-no-files-found: error
+        retention-days: 1
+        compression-level: 0
+        include-hidden-files: false
+        archive: true
+    - name: Require actual captured build success
+      id: final
+      if: always()
+      shell: bash
+      run: 'set -euo pipefail
+
+        test ''${{ steps.build.outputs.status }}'' = ''passed''
+
+        test ''${{ steps.upload.outcome }}'' = ''success''
+
+        '
