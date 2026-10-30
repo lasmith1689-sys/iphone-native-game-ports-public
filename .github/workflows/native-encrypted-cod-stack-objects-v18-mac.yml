@@ -25,7 +25,7 @@ jobs:
     - name: Require exact public repository, branch and explicit bundle request
       id: guard
       shell: bash
-      run: "set -euo pipefail\npython3 - <<'PY'\nimport json,os,re,pathlib\nassert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public'\nassert os.environ['GITHUB_REF']=='refs/heads/codex/native-cod-stack-objects-v18-mac-20261029'\nkind=os.environ['GITHUB_EVENT_NAME']\nassert kind in ('push','workflow_dispatch')\nassert re.fullmatch('[a-f0-9]{40}',os.environ['GITHUB_SHA'])\ne=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())\nassert e['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public' and e['repository']['private'] is False\nif kind=='workflow_dispatch':\n assert e['inputs']['bundle_id']=='8cd292c0-e4f4-4ef9-8dfc-d87b4b975900'\nelse:\n assert e['ref']=='refs/heads/codex/native-cod-stack-objects-v18-mac-20261029' and e['after']==os.environ['GITHUB_SHA'] and e.get('deleted',False) is False\nprint('Exact public ciphertext context accepted.')\nPY\n"
+      run: "set -euo pipefail\npython3 - <<'PY'\nimport json,os,re,pathlib\nassert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public'\nassert os.environ['GITHUB_REF']=='refs/heads/codex/native-cod-stack-objects-v18-mac-20261029'\nkind=os.environ['GITHUB_EVENT_NAME']\nassert kind in ('push','workflow_dispatch')\nassert re.fullmatch('[a-f0-9]{40}',os.environ['GITHUB_SHA'])\ne=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())\nassert e['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public' and e['repository']['private'] is False\nif kind=='workflow_dispatch':\n assert e['inputs']['bundle_id']=='bb78c6d7-2ddd-468f-9a6a-12797c16db9d'\nelse:\n assert e['ref']=='refs/heads/codex/native-cod-stack-objects-v18-mac-20261029' and e['after']==os.environ['GITHUB_SHA'] and e.get('deleted',False) is False\nprint('Exact public ciphertext context accepted.')\nPY\n"
     - name: Checkout only reviewed public tooling and ciphertext
       id: checkout
       uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
@@ -53,7 +53,7 @@ jobs:
 
         if(execFileSync(''git'',[''rev-parse'',''HEAD''],{encoding:''utf8''}).trim()!==process.env.GITHUB_SHA)throw new Error(''Checkout identity rejected'');
 
-        const expected={"native/delivery/encrypted-build/bundle-builder.mjs":"3479d6da0c1e3940059864c0e8b5f44e8f9492c3f0156d342417e9e9464d100f","native/delivery/encrypted-build/public-manifest.json":"ada73d81ac8415cfb9601e1c7a7826507559e114c59e1141a2a7b563996c4b80","native/delivery/encrypted-build/run-build.mjs":"89c196b0afd2309fb33861d77167a6cb299e39d53d7c5ac473a5e4563aa83801","native/delivery/encrypted-build/transport.mjs":"023ca81702ef3e35327c5aad50971b0b3cdf5cf9107af957487cc4151f62b5f2"};
+        const expected={"native/delivery/encrypted-build/bundle-builder.mjs":"3479d6da0c1e3940059864c0e8b5f44e8f9492c3f0156d342417e9e9464d100f","native/delivery/encrypted-build/public-manifest.json":"1fa49f221f0d64fb3f809053033874c581e6b3b5bb8d775eecf2ab734c31397a","native/delivery/encrypted-build/run-build.mjs":"89c196b0afd2309fb33861d77167a6cb299e39d53d7c5ac473a5e4563aa83801","native/delivery/encrypted-build/transport.mjs":"023ca81702ef3e35327c5aad50971b0b3cdf5cf9107af957487cc4151f62b5f2"};
 
         for(const [file,digest] of Object.entries(expected))if(crypto.createHash(''sha256'').update(fs.readFileSync(file)).digest(''hex'')!==digest)throw new Error(''Public tooling identity rejected'');
 
@@ -63,9 +63,9 @@ jobs:
 
         if(data.length!==m.cipherBytes||crypto.createHash(''sha256'').update(data).digest(''hex'')!==m.cipherSha256)throw new Error(''Ciphertext identity rejected'');
 
-        if(m.context.bundleId!=="8cd292c0-e4f4-4ef9-8dfc-d87b4b975900")throw new Error(''Bundle context rejected'');
+        if(m.context.bundleId!=="bb78c6d7-2ddd-468f-9a6a-12797c16db9d")throw new Error(''Bundle context rejected'');
 
-        if(m.cipherSha256!=="ecbf0e19ccbda2f2282fa8dec25ff105df79abb8a38553d4165d1944052f9595"||m.cipherBytes!==9559208)throw new Error(''Reviewed ciphertext rejected'');
+        if(m.cipherSha256!=="de4db96fc1025066c8eb09b3b1486e77bdb9f109ba0bdec837911393036ac50f"||m.cipherBytes!==9559213)throw new Error(''Reviewed ciphertext rejected'');
 
         console.log(JSON.stringify({status:''public-inputs-verified'',node:process.versions.node,cipherSha256:m.cipherSha256,cipherBytes:data.length}));
 

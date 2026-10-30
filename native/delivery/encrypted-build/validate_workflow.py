@@ -40,8 +40,8 @@ def main():
   try:check(bad,expected)
   except (ValueError,KeyError):pass
   else:raise AssertionError('Exact push/artifact policy mutation accepted')
- m=json.loads((a.bundle/'public-manifest.json').read_text());assert m['sourceFiles']==197 and m['sourceBytes']==142141802 and m['context']['purpose']=='cod-stack-v18-macos-object-collection'
- assert m['context']['sourceClosureSha256']=='94bff46d092debddac27801df2197ac01d46b8e96ce2aa1872e9d185dd20f30b'
+ m=json.loads((a.bundle/'public-manifest.json').read_text());assert m['sourceFiles']==197 and m['sourceBytes']==142141815 and m['context']['purpose']=='cod-stack-v18-macos-object-collection'
+ assert m['context']['sourceClosureSha256']=='126b99216fa302439b486b1cf27a19cdd2d8f6956b4f514c5ba119a75df2d6f1'
  guard=expected['jobs']['resource-sdk']['steps'][0]['run'].split("python3 - <<'PY'\n",1)[1].rsplit('\nPY\n',1)[0]
  checks=[('push',{},True),('workflow_dispatch',{},True),('workflow_dispatch',{'bundle':'wrong'},False),('push',{'private':True},False),('push',{'after':'b'*40},False),('push',{'ref':'refs/heads/main'},False),('pull_request',{},False)]
  with tempfile.TemporaryDirectory(prefix='ngp-context-test-') as td:
