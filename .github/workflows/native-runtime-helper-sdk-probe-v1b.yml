@@ -1,0 +1,156 @@
+name: Own synthetic runtime-helper SDK probe; no execution
+permissions: {}
+concurrency:
+  group: own-runtime-helper-probe-v1b
+  cancel-in-progress: false
+'on':
+  push:
+    branches:
+    - codex/runtime-helper-sdk-probe-v1b-20261031
+    paths:
+    - .github/workflows/native-runtime-helper-sdk-probe-v1b.yml
+  workflow_dispatch: {}
+jobs:
+  probe:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/runtime-helper-sdk-probe-v1b-20261031' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: xcode-27
+    timeout-minutes: 12
+    steps:
+    - id: guard
+      name: Require exact dedicated public context
+      shell: bash
+      run: 'set -euo pipefail
+
+        python3 -B - <<''PY''
+
+        import json,os,re,stat
+
+        from pathlib import Path
+
+        assert os.environ[''GITHUB_REPOSITORY'']==''lasmith1689-sys/iphone-native-game-ports-public'' and os.environ[''GITHUB_REF'']==''refs/heads/codex/runtime-helper-sdk-probe-v1b-20261031''
+
+        assert re.fullmatch(''[0-9a-f]{40}'',os.environ[''GITHUB_SHA''])
+
+        eventpath=Path(os.environ[''GITHUB_EVENT_PATH'']);st=eventpath.lstat();assert stat.S_ISREG(st.st_mode) and not eventpath.is_symlink() and st.st_size<=262144
+
+        event=json.loads(eventpath.read_bytes());assert event[''repository''][''full_name'']==''lasmith1689-sys/iphone-native-game-ports-public'' and event[''repository''][''private''] is False
+
+        kind=os.environ[''GITHUB_EVENT_NAME''];assert kind in (''push'',''workflow_dispatch'')
+
+        if kind==''push'':assert event[''ref'']==''refs/heads/codex/runtime-helper-sdk-probe-v1b-20261031'' and event[''after'']==os.environ[''GITHUB_SHA''] and event.get(''deleted'',False) is False
+
+        else:assert event.get(''inputs'') in (None,{})
+
+        print(''Exact dedicated own-source probe context accepted.'')
+
+        PY
+
+        '
+    - id: stage
+      name: Stage four exact self-authored sources
+      shell: bash
+      run: "set -euo pipefail\npython3 -B - <<'PY'\nimport ast,base64,hashlib,os,stat,zlib\nfrom pathlib import Path,PurePosixPath\nbase=Path(os.environ['RUNNER_TEMP']).resolve()/'native-runtime-helper-sdk-probe-v1b';assert not base.exists();base.mkdir(mode=0o700);source=base/'source';source.mkdir(mode=0o700)\npayload={'helper_probe.c': 'eNqtUt1KwzAUvs9THHYhzTadkyGOulcQQcELGSFtT9tATEpyUpziuxuzra64S3uRQvj+zneymMIT6vpSBmqtwwr8zlCLpErwNrgSr+DBAknXIIHygD06wHcsA0VwsQNq423nbBGR0wWjXYcV1hCMV42JEG1Nsz8emu7xB/diXZUz8UQyugjpPTrKvPpAW2enGA6bDdzNYfIb6XZ1WaiYw3SBFg590DThOfNJCsRz61BWQttSauitjrcaR75gmk6ktIK0F73UAXPGhJBEThVxKCGyzFhltDI475VXhdKKdtkkTiWTH+fsj2SLukMnaiffcK8/GgU8YsXZJ4P4DcGGjspWOkjc17vl+mabJ1xtHYxVFGzgOo+/ezj0lUg8h9lM8URKxKSkthGdjTx49pMDZqD43sIhBWfGLnxPT8gLiHmWYTtIR+458FF3db2+DXyg5ezr/7ol3Z9rNq3wWO2Z7cYSDls+GfjsK/hi38uKCXI=', 'probe_policy.py': 'eNqtVMtu2zgU3esrBG9Up6Jjqa6bFhEwTqImRm0pkNQmRTEgKImWWUukQFJuXPTj5+rhxu10MYvZEOS5r3MfvKPRyH8imTbVgest1SwzM1HVrKTyvGR8Z9ZSbOA1MQPR3vcsp9IU0lxcLU2SV0wpJvhkNBoZySK69RPPIrKazxCp65IiJpQ7n0wtI775gD/5UbwMA89y30ycHnoIoxvPfXN56cx/OJeXF8Z6GeAw9tx5CxnX4XodBvj9anEbey8spHTuFbxxHMu2UDhtz6I7N1wgxoEwPb5KLY5XUWtWse8UKZaCSoEyUpaqkypNsh1qFCk6wwcqpZAeq+qSZUyjTcMzDfmhnGYlkaS9d3rgteGNojkqSUpLa2yslsGHZ6L5gZOKZSVLf+PzUNpgmdMNUM3tLtwR5gKTfCsynImcKlbwE8GGPTU1zraEcXUC5zRvWqpEU6DgP96HUdLGx7yo8ZaWNZV4I0lFMbQubVM8lehyP+BjYxnEyWK1wsFi7XvWX7ImegsDkAZFHTUc6kfvOqP7Vv+TM8kPbW5GHH6Mrn38frny27iD487pJINw3Q3XAjgeJvXhGSFS0R6QDR8M4Dk2Iv8+jJdJGH32rJKoiumtM794i9RBnbN6KzhFHPqwp6iAvFAtpFaobqCxmWVcRYvg+s6z2go+ncueOOpZIZXvUBcI7Z0UuVN37kxfwRxeh0HiP8Lg/id9BBZ3/urej7paddXG0Jmd0jucE/mNtX3Df8TagqdCaKUlqXutf0G/AmNjvXjEy/Xi1vfcM2fqzs7O3A5r6xQl3imUhOEKx0nkL9bwgVxnNjuBfUjzJvbeTgcMuv0TnF30aJx8vBp6+dpxn6GrzwlAr34l8FN5EB9lMNvHFYKJLPYv4OfwwoZq2ko0MqO2aHTd6PE7w5RUN5KbXyDZXm0Ms63BimrL7vcJAAx6L6Eklt3qgaOxfXa6GUAlG2RdgNaJ6IEh1N8dq3af/U5JpF9t+tRN0f/C63kNDL8UPqyGdYNhH1Dbenn6zwaNPjzNsTpUqSgVLpnSoNo6HaiN+2TSr39K7R+UjeDc',\
+        \ 'probe_parse.py': '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',\
+        \ 'run_probe.py': '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'}\n\
+        identities={'helper_probe.c': {'bytes': 781, 'sha256': '8c5dd9e7a1d51cab86366c4d87fb2b1d7d33c4b142b8824202565f536e324b2b'}, 'probe_policy.py': {'bytes': 1475, 'sha256': 'd65f2b9385a780d9ff334e497da88f1cb2dba063281a5d72080f519170ae0552'}, 'probe_parse.py': {'bytes': 14502, 'sha256': 'de9cbc3518840e12779b4fdc19974ad6cf4e46ca04fb684e102558e91933272d'}, 'run_probe.py': {'bytes': 13302, 'sha256': 'b9c52b4abf5a65c4cdd59da9d0c2f4de2ccabd7d2a38810d3a7b182717cba7e7'}}\nassert set(payload)==set(identities)==set(('helper_probe.c', 'probe_policy.py', 'probe_parse.py', 'run_probe.py'))\nfor name,text in payload.items():\n path=PurePosixPath(name);assert path.name==name and not path.is_absolute() and name not in ('','.','..') and ':' not in name and chr(92) not in name\n decoder=zlib.decompressobj();body=decoder.decompress(base64.b64decode(text,validate=True),65537);assert decoder.eof and not decoder.unused_data and not decoder.unconsumed_tail and len(body)<=65536\n assert len(body)==identities[name]['bytes']\
+        \ and hashlib.sha256(body).hexdigest()==identities[name]['sha256']\n if name.endswith('.py'):ast.parse(body)\n target=source/name;assert not target.exists();target.write_bytes(body)\nassert {x.name for x in source.iterdir()}==set(identities)\nfor name,wanted in identities.items():\n target=source/name;st=target.lstat();assert stat.S_ISREG(st.st_mode) and not target.is_symlink() and not getattr(st,'st_file_attributes',0)&1024 and st.st_nlink==1\n body=target.read_bytes();assert len(body)==wanted['bytes'] and hashlib.sha256(body).hexdigest()==wanted['sha256']\nprint('Four exact public-safe own-source files staged; no recovered or vendor payload.')\nPY\n"
+    - id: build
+      name: Compile and link own diagnostic; never execute probe
+      shell: bash
+      run: "set -euo pipefail\npython3 -B - <<'PY'\nimport hashlib,json,os,subprocess,sys\nfrom pathlib import Path\nbase=Path(os.environ['RUNNER_TEMP']).resolve()/'native-runtime-helper-sdk-probe-v1b';source=base/'source';identities={'helper_probe.c': {'bytes': 781, 'sha256': '8c5dd9e7a1d51cab86366c4d87fb2b1d7d33c4b142b8824202565f536e324b2b'}, 'probe_policy.py': {'bytes': 1475, 'sha256': 'd65f2b9385a780d9ff334e497da88f1cb2dba063281a5d72080f519170ae0552'}, 'probe_parse.py': {'bytes': 14502, 'sha256': 'de9cbc3518840e12779b4fdc19974ad6cf4e46ca04fb684e102558e91933272d'}, 'run_probe.py': {'bytes': 13302, 'sha256': 'b9c52b4abf5a65c4cdd59da9d0c2f4de2ccabd7d2a38810d3a7b182717cba7e7'}}\nassert {x.name for x in source.iterdir()}==set(identities)\nfor name,wanted in identities.items():\n body=(source/name).read_bytes();assert len(body)==wanted['bytes'] and hashlib.sha256(body).hexdigest()==wanted['sha256']\nenv=dict(os.environ,NGP_PROBE_SOURCE_IDS=json.dumps(identities,sort_keys=True),PYTHONDONTWRITEBYTECODE='1')\n\
+        result=subprocess.run([sys.executable,'-B',str(source/'run_probe.py'),'--output',str(base/'out')],env=env,timeout=540)\nraise SystemExit(result.returncode)\nPY\n"
+    - id: upload
+      name: Retain only bounded own diagnostic artifacts and metadata
+      if: always() && steps.guard.outcome == 'success' && steps.stage.outcome == 'success' && steps.build.outcome != 'skipped'
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: own-runtime-helper-probe-v1b-${{ github.run_id }}-${{ github.run_attempt }}
+        path: '${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/probe.o
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/probe-repeat.o
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/probe.su
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/probe-repeat.su
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/libNgpRuntimeHelperProbeV1.dylib
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/summary.json
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/commands.json
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/tools.json
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/native-metadata.json
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/sdk-export-metadata.json
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/retention.json
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/host-arm64.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/host-arm64.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/host-translated.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/host-translated.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/developer.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/developer.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/sdk-path.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/sdk-path.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/sdk-version.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/sdk-version.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/find-clang.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/find-clang.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/find-nm.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/find-nm.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/compiler-version.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/compiler-version.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/driver.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/driver.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/compile.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/compile.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/repeat.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/repeat.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/link.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/link.stderr
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/nm-imports.stdout
+
+          ${{ runner.temp }}/native-runtime-helper-sdk-probe-v1b/out/artifact/logs/nm-imports.stderr'
+        if-no-files-found: error
+        retention-days: 1
+        compression-level: 6
+        include-hidden-files: false
+        archive: true
+    - id: final
+      name: Require build and selected artifact retention
+      if: always()
+      shell: bash
+      run: 'set -euo pipefail
+
+        test ''${{ steps.build.outcome }}'' = ''success''
+
+        test ''${{ steps.upload.outcome }}'' = ''success''
+
+        '
