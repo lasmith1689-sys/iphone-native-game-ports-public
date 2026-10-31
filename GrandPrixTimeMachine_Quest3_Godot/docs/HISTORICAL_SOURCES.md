@@ -14,6 +14,9 @@ screenplay positions. They are **not race timestamps or lap assignments**.
 | Heavy rain, delayed start and Hunt led early | [Grandprix.com](https://www.grandprix.com/races/japanese-gp-1976.html), [Motor Sport](https://www.motorsportmagazine.com/articles/single-seaters/f1/9-1976-japanese-gp/) | Accounts agree on essentials; exact dialogue not reused |
 | Lauda withdrew after completing two laps | [F1 race results](https://www.formula1.com/en/results/1976/races/373/japan/race-result), [Niki Lauda archive](https://nikilauda.org/seasons/1976/) | F1 lists two completed laps; autobiographical recollections sometimes vary on whether he says one or two |
 | Hunt suffered tire trouble late and fell down the order | [Grandprix.com](https://www.grandprix.com/races/japanese-gp-1976.html), [Motor Sport](https://www.motorsportmagazine.com/articles/single-seaters/f1/9-1976-japanese-gp/) | Exact timing deliberately omitted from diorama animation |
+| 73 laps on the 4.359 km Fuji circuit, 24 October 1976 | [Official Formula 1 race result](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Andretti completed 73 laps; the diorama animation is not lap-accurate |
+| Entrant numbers Andretti #5, Depailler #4, Hunt #11, Lauda #1 | [Official Formula 1 race result](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Numbers added to original stylized cars |
+| Depailler drove a six-wheel Tyrrell P34 | [Formula 1 history of the Tyrrell P34](https://www.formula1.com/en/latest/article/six-fascinating-facts-tyrrell-p34.5Eqy5lE9SsSLmF9an1Ak5g) | Six-wheel stylization, not a licensed model |
 | Andretti won, Depailler second, Hunt third | [Formula 1 result](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Official Formula 1 race classification for Fuji, 24 October 1976 |
 | Hunt champion by one point, 69 to 68 | [Niki Lauda archive](https://nikilauda.org/seasons/1976/), [Formula 1 drivers standings](https://www.formula1.com/en/results/1976/drivers) | Corroborated |
 
@@ -32,5 +35,5 @@ screenplay positions. They are **not race timestamps or lap assignments**.
 
 Before labeling a reconstructed circuit accurate, require a period-source map
 of the 1976 Fuji configuration, a reproducible method for mapping geometry into
-3D, and separate track-level validation. Current v0.6 fails that acceptance
+3D, and separate track-level validation. Current v0.7 fails that acceptance
 criterion by design, so its labels must continue to say `ILLUSTRATIVE`.

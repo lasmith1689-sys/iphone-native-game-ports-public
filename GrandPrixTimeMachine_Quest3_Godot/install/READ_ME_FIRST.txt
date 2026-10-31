@@ -1,4 +1,4 @@
-GRAND PRIX TIME MACHINE | QUEST 3 v0.6 EASY INSTALL
+GRAND PRIX TIME MACHINE | QUEST 3 v0.7 EASY INSTALL
 =========================================
 
 THIS FOLDER IS A SOURCE/INSTALLER PREPARATION KIT UNTIL IT ALSO CONTAINS:
@@ -43,9 +43,9 @@ TROUBLESHOOTING
     approve the USB debugging prompt inside the headset and verify Developer Mode.
   * Windows USB driver issue: install Meta Quest Developer Hub / Quest Link
     and reconnect the headset.
-  * INSTALL_FAILED_UPDATE_INCOMPATIBLE: a previous build has a different
-    signature. Uninstall the earlier app in the headset before installing;
-    doing so removes that app's saved data.
+  * INSTALL_FAILED_UPDATE_INCOMPATIBLE: an older CI build has a different
+    signature. This installer offers a typed REPLACE confirmation. Only if
+    you approve will it remove the older app and its local data.
   * No Unknown Sources filter: check the Apps Library filter/dropdown; Meta
     may move the option in newer Horizon OS versions.
   * Blank or crashing game: installation alone does not prove the game's

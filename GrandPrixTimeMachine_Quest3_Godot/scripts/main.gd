@@ -1,15 +1,15 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.6: two-controller aim/trigger actions, hover feedback and recenter.
+## v0.7: historical six-wheel car, entrant numbers, and safer controller activation.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 123.0
 const BEATS := [
-    {"at": 0.0, "title": "FUJI 1976", "subtitle": "24 OCTOBER  |  CHAMPIONSHIP DECIDER", "detail": "Lauda arrives three points ahead of Hunt. Heavy rain threatens the race."},
+    {"at": 0.0, "title": "FUJI 1976", "subtitle": "24 OCTOBER  |  73 LAPS  |  CHAMPIONSHIP DECIDER", "detail": "Lauda arrives three points ahead of Hunt. Heavy rain threatens the race."},
     {"at": 14.0, "title": "THE START", "subtitle": "HUNT TAKES THE EARLY LEAD", "detail": "Andretti starts on pole. Hunt moves ahead in treacherous conditions."},
     {"at": 30.0, "title": "LAUDA WITHDRAWS", "subtitle": "AFTER TWO LAPS  |  SAFETY FIRST", "detail": "Lauda stops in the pits: the torrential conditions are too dangerous."},
-    {"at": 58.0, "title": "LATE-RACE DRAMA", "subtitle": "HUNT PITS  |  TYRE TROUBLE", "detail": "The track dries, Hunt has tyre problems and drops down the order."},
+    {"at": 58.0, "title": "LATE-RACE DRAMA", "subtitle": "HUNT PITS  |  TYRE TROUBLE", "detail": "The track dries. Late tyre trouble sends Hunt to the pits and down the order."},
     {"at": 83.0, "title": "THE FINISH", "subtitle": "ANDRETTI 1ST  |  DEPAILLER 2ND  |  HUNT 3RD", "detail": "Andretti wins. Hunt recovers to third place, enough for the title."},
     {"at": 104.0, "title": "WORLD CHAMPION", "subtitle": "HUNT 69 POINTS  |  LAUDA 68", "detail": "James Hunt wins the 1976 World Drivers' Championship by one point."}
 ]
@@ -205,20 +205,44 @@ func _make_car(key: String, body_color: Color, accent_color: Color) -> void:
     _box(car, "rear wing", Vector3(0, 0.029, 0.046), Vector3(0.064, 0.005, 0.014), accent_color)
     _box(car, "rear wing mounts", Vector3(0, 0.018, 0.047), Vector3(0.005, 0.021, 0.006), body_color)
     _sphere(car, "driver helmet", Vector3(0, 0.025, 0.007), 0.010, Color(0.92, 0.88, 0.77))
-    for x in [-0.029, 0.029]:
-        for z in [-0.029, 0.028]:
-            var tire := MeshInstance3D.new()
-            tire.name = "tire"
-            var cylinder := CylinderMesh.new()
-            cylinder.top_radius = 0.011 if z > 0.0 else 0.009
-            cylinder.bottom_radius = cylinder.top_radius
-            cylinder.height = 0.013 if z > 0.0 else 0.009
-            cylinder.radial_segments = 12
-            tire.mesh = cylinder
-            tire.material_override = _material(Color(0.025, 0.025, 0.03), 1.0)
-            tire.position = Vector3(x, 0.010, z)
-            tire.rotation.z = PI / 2.0
-            car.add_child(tire)
+    # Tyrrell P34: two small front axles, not a standard four-wheel car.
+    var wheel_sites: Array[Vector2] = [
+        Vector2(-0.029, -0.029), Vector2(0.029, -0.029),
+        Vector2(-0.029, 0.028), Vector2(0.029, 0.028)
+    ]
+    if key == "DEPAILLER":
+        wheel_sites = [
+            Vector2(-0.028, -0.041), Vector2(0.028, -0.041),
+            Vector2(-0.028, -0.018), Vector2(0.028, -0.018),
+            Vector2(-0.030, 0.030), Vector2(0.030, 0.030)
+        ]
+    for site in wheel_sites:
+        var z: float = site.y
+        var tire := MeshInstance3D.new()
+        tire.name = "front tire" if z < 0.0 else "rear tire"
+        var cylinder := CylinderMesh.new()
+        var front_radius := 0.007 if key == "DEPAILLER" else 0.009
+        cylinder.top_radius = 0.011 if z > 0.0 else front_radius
+        cylinder.bottom_radius = cylinder.top_radius
+        cylinder.height = 0.013 if z > 0.0 else 0.009
+        cylinder.radial_segments = 12
+        tire.mesh = cylinder
+        tire.material_override = _material(Color(0.025, 0.025, 0.03), 1.0)
+        tire.position = Vector3(site.x, 0.010, z)
+        tire.rotation.z = PI / 2.0
+        car.add_child(tire)
+    # Actual 1976 Fuji entrant numbers; original geometry, no copied decals.
+    var race_numbers := {"ANDRETTI": "5", "HUNT": "11", "LAUDA": "1", "DEPAILLER": "4"}
+    var number_label := Label3D.new()
+    number_label.name = "historical car number"
+    number_label.text = str(race_numbers.get(key, "?"))
+    number_label.font_size = 36
+    number_label.pixel_size = 0.00032
+    number_label.outline_size = 0
+    number_label.modulate = Color(0.05, 0.06, 0.09) if key == "HUNT" else Color.WHITE
+    number_label.rotation.x = -PI / 2.0
+    number_label.position = Vector3(0.0, 0.021, -0.027)
+    car.add_child(number_label)
     car_nodes[key] = car
 
 func _build_diorama() -> void:
@@ -265,6 +289,7 @@ func _build_diorama() -> void:
     _label("disclaimer", "ILLUSTRATIVE MODEL | NOT LAP ACCURATE", Vector3(0.56, 0.031, 0.39), 0.011, COLORS.cream, true)
     _label("state", "PLAY 1X", Vector3(0.55, 0.070, -0.36), 0.018, COLORS.gold, true)
     _label("chapter", "01 / 06", Vector3(0.55, 0.046, -0.385), 0.014, COLORS.gold, true)
+    _label("race_facts", "73 LAPS  |  4.359 KM  |  FUJI", Vector3(0.55, 0.034, -0.412), 0.009, COLORS.cream, true)
     _add_button("PLAY", -0.50, Color(0.29, 0.63, 0.57), "pause")
     _add_button("BACK", -0.30, Color(0.76, 0.75, 0.73), "previous")
     _add_button("NEXT", -0.10, Color(0.94, 0.70, 0.24), "next")
@@ -330,6 +355,8 @@ func _show_hover(action: String) -> void:
     for b in controls:
         var orb := b.orb as MeshInstance3D
         orb.scale = Vector3.ONE * (1.19 if b.action == action else 1.0)
+    if labels.has("control_hint"):
+        labels["control_hint"].text = ("TRIGGER: " + action.to_upper() + "  |  B/Y: CENTER") if action != "" else "AIM + TRIGGER TO SELECT   |   B/Y TO RECENTER"
 
 func _update_story() -> void:
     chapter = 0
@@ -379,7 +406,8 @@ func _read_controller() -> void:
     if not xr_active:
         return
     var current_hover := ""
-    # Each hand has independent rising-edge trigger and recenter latches.
+    var action_taken := false
+    # Independent rising-edge latches, at most one action each frame.
     for side in ["left", "right"]:
         var controller: XRController3D = left_controller if side == "left" else right_controller
         var tracked := controller.get_is_active() and controller.get_has_tracking_data()
@@ -393,11 +421,15 @@ func _read_controller() -> void:
             current_hover = hit
         var pressed := controller.get_float("trigger") > 0.65 or controller.is_button_pressed("trigger_click")
         if pressed and not bool(trigger_down[side]) and hit != "":
-            _action(hit)
+            if not action_taken:
+                _action(hit)
+                action_taken = true
         trigger_down[side] = pressed
         var center_pressed := controller.is_button_pressed("by_button")
         if center_pressed and not bool(center_down[side]):
-            _action("center")
+            if not action_taken:
+                _action("center")
+                action_taken = true
         center_down[side] = center_pressed
     _show_hover(current_hover)
 

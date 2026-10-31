@@ -87,9 +87,24 @@ if (-not $deviceSerial) { Fail 'Quest not ready. See READ_ME_FIRST.txt for quick
 Write-Host "`nQuest connected: $deviceSerial" -ForegroundColor Green
 Write-Host 'Installing Grand Prix Time Machine ...'
 $installOutput = @(& $adb -s $deviceSerial install -r $apk 2>&1 | ForEach-Object { "$_" })
-if ($LASTEXITCODE -ne 0 -or -not ($installOutput -contains 'Success')) {
+$installSucceeded = ($LASTEXITCODE -eq 0 -and ($installOutput -contains 'Success'))
+if (-not $installSucceeded -and (($installOutput -join "`n") -match 'INSTALL_FAILED_UPDATE_INCOMPATIBLE')) {
+    Write-Host 'The earlier copy was signed with a different GitHub debug key.' -ForegroundColor Yellow
+    Write-Host 'Removing it will delete ONLY this app and its local data.'
+    Write-Host 'No other Quest apps or files will be touched.'
+    $confirmation = Read-Host 'Type REPLACE to remove the older copy and install this version; Enter cancels'
+    if ($confirmation -cne 'REPLACE') { Fail 'Nothing was removed. Update cancelled by user.' }
+    $removeOutput = @(& $adb -s $deviceSerial uninstall com.gptimemachine.quest3 2>&1 | ForEach-Object { "$_" })
+    if ($LASTEXITCODE -ne 0 -or -not ($removeOutput -contains 'Success')) {
+        Fail ('Could not remove the older copy: ' + ($removeOutput -join '; '))
+    }
+    Write-Host 'Old app removed with permission. Installing this version ...'
+    $installOutput = @(& $adb -s $deviceSerial install -r $apk 2>&1 | ForEach-Object { "$_" })
+    $installSucceeded = ($LASTEXITCODE -eq 0 -and ($installOutput -contains 'Success'))
+}
+if (-not $installSucceeded) {
     Write-Host ($installOutput -join "`n") -ForegroundColor Yellow
-    Fail 'Android did not complete installation. See READ_ME_FIRST.txt. If an earlier version was signed with another key, uninstall that version first (its saved data will be deleted).'
+    Fail 'Android did not complete installation. See READ_ME_FIRST.txt.'
 }
 $verify = @(& $adb -s $deviceSerial shell pm path com.gptimemachine.quest3 2>&1 | ForEach-Object { "$_" })
 if ($LASTEXITCODE -ne 0 -or -not (($verify -join "`n") -match 'package:')) {
@@ -98,6 +113,6 @@ if ($LASTEXITCODE -ne 0 -or -not (($verify -join "`n") -match 'package:')) {
 Write-Host ''
 Write-Host 'SUCCESS: Grand Prix Time Machine is installed on your Quest 3!' -ForegroundColor Green
 Write-Host 'In the headset: Apps -> filter/menu -> Unknown Sources -> Grand Prix Time Machine.'
-Write-Host 'Use your RIGHT controller trigger to select the floating buttons.'
+Write-Host 'Use EITHER controller trigger to select floating buttons; B/Y recenters.'
 Write-Host 'This app is independent of your gaming PC after installation.'
 exit 0

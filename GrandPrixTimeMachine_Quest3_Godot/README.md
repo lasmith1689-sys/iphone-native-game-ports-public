@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.6 Quest 3 standalone build
+# Grand Prix Time Machine — v0.7 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -12,7 +12,7 @@ otherwise it uses a dark immersive VR environment. **Meta Quest passthrough also
 requires the Godot OpenXR Vendors plugin, which is not yet bundled in this
 prototype. Therefore current builds must be regarded as VR-first, with MR unverified.**
 The target is a native, on-headset Android ARM64 app with no PCVR streaming or
-network requirement. The v0.5 APK was built October 29, 2026. Only an independently successful v0.6 GitHub Actions run proves the updated APK was built.
+network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 2026. A separate passing v0.7 GitHub Actions run is required for this upgrade.
 
 **The circuit, car positions, model details and playback time are illustrative, not
 reconstructed historical telemetry.** Narrative beats are sourced; see
@@ -20,7 +20,7 @@ reconstructed historical telemetry.** Narrative beats are sourced; see
 
 ## Controls
 
-- Aim EITHER controller at the six colored buttons and press trigger. Each press selects one action. Hovered buttons enlarge for visual feedback.
+- Aim EITHER controller at the six colored buttons and press trigger. Each press selects one action. Hovered buttons enlarge and the hint names the hovered action. Simultaneous presses invoke at most one action per frame.
 - Press B or Y to recenter. CENTER is also a visible button.
 - The pointer hides when tracking is lost. Keep a safe Quest boundary.
 - The fixed-scale floating control rail remains accessible when the diorama expands.
@@ -32,7 +32,7 @@ reconstructed historical telemetry.** Narrative beats are sourced; see
   your physical space to be clear.
 
 Hand tracking and room surface anchoring are **not implemented** in this port.
-The procedural Fuji track layout and race-car positions remain illustrative.
+The race display now shows 73 laps, official 1976 entrant numbers (Andretti 5, Depailler 4, Hunt 11, Lauda 1), and a stylized six-wheeled Tyrrell for Depailler. The procedural Fuji track layout and race-car positions remain illustrative.
 
 ## Build
 
@@ -41,7 +41,7 @@ project, exports a debug-signed ARM64 Quest APK with OpenXR, then verifies its
 signature and packs the verified APK with the Windows one-click USB installer.
 The successful CI artifact is `GrandPrixTimeMachine_Quest3_Easy_Install.zip`,
 which contains `GrandPrixTimeMachine_Quest3.apk`, checksums and a Windows installer.
-**An APK has NOT yet been produced.** Public CI is configured to build on
+**Earlier APKs were produced; each new release still requires a green CI build.** Public CI is configured to build on
 source changes without consuming the exhausted private-repo minute allowance.
 Review `docs/QUEST_ACCEPTANCE.md` before describing it as headset-ready.
 
@@ -66,7 +66,7 @@ one Easy Install ZIP. Developer Mode must be enabled once, then the user
 can unzip it, connect their Quest with a USB-C data cable, double-click the
 launcher and accept USB debugging on the headset. The script checks the SHA-256,
 downloads official Google Android platform-tools if needed, installs and
-verifies `com.gptimemachine.quest3` automatically. For macOS, use Meta Quest
+verifies `com.gptimemachine.quest3` automatically. For a debug-signature mismatch, it offers an optional typed REPLACE confirmation before removing the old app and its local data. For macOS, use Meta Quest
 Developer Hub or SideQuest Advanced Installer. No Unity, Godot or tethering is
 required to run the installed application. **Do not install source ZIPs.**
 
