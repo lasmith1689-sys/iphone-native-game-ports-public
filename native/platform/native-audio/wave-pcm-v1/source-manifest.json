@@ -1,0 +1,33 @@
+{
+  "files": {
+    "inspect_macho.py": {
+      "bytes": 3828,
+      "sha256": "954730d910fcfdf552c5de06e4eebbade340e0fd504e10143ee71caae2e1e60a"
+    },
+    "ngp_wave_pcm_v1.c": {
+      "bytes": 2380,
+      "sha256": "8cf23893a883b8708859bb433fac17e1995e1a007ee522a0a1ef3fda0edefcc9"
+    },
+    "ngp_wave_pcm_v1.h": {
+      "bytes": 740,
+      "sha256": "2487b4b14b72cc99bad51dee2748c216babd06fa4979d84a37545a582da92c07"
+    },
+    "run_apple.py": {
+      "bytes": 4945,
+      "sha256": "8333e826a0841863341914a56626e460384b562846afcf361290420710e3f364"
+    },
+    "test_apple.c": {
+      "bytes": 432,
+      "sha256": "2d1ff01d897539cdc19104f9f11d98e4c7b1289063c287e84dec38fff34260db"
+    },
+    "test_macho.py": {
+      "bytes": 3486,
+      "sha256": "183aa618031ea32b066262246d545c4ca54e297ef0d5eb0372b6df68030d9f91"
+    },
+    "test_native.c": {
+      "bytes": 4046,
+      "sha256": "58723a89fa2407d7e5c763dc54b34d08f3c7185543d7ec8ff2762cd72b5ea418"
+    }
+  },
+  "format": "NGP-own-bounded-WAVE-SDK-source-v1"
+}

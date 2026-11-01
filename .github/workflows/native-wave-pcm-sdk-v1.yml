@@ -1,0 +1,59 @@
+name: Own bounded PCM WAVE actual SDK and native Mac tests
+'on':
+  push:
+    branches: [codex/native-wave-pcm-sdk-v1-20261031]
+    paths: [.github/workflows/native-wave-pcm-sdk-v1.yml]
+permissions:
+  contents: read
+concurrency:
+  group: own-bounded-wave-sdk-v1
+  cancel-in-progress: false
+jobs:
+  pcm:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/native-wave-pcm-sdk-v1-20261031' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 15
+    steps:
+    - name: Checkout exact reviewed own source
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+        submodules: false
+        lfs: false
+        sparse-checkout: native/platform/native-audio/wave-pcm-v1
+    - name: Verify fixed source manifest and all source bytes before execution
+      shell: bash
+      run: |
+        set -euo pipefail
+        python3 - <<'PY'
+        from pathlib import Path
+        import hashlib,json,os
+        h=Path('native/platform/native-audio/wave-pcm-v1')
+        assert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public'
+        assert os.environ['GITHUB_REF']=='refs/heads/codex/native-wave-pcm-sdk-v1-20261031'
+        assert os.environ['GITHUB_EVENT_NAME']=='push'
+        e=json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_bytes())
+        assert e['repository']['private'] is False and e['after']==os.environ['GITHUB_SHA'] and e.get('deleted',False) is False
+        b=(h/'source-manifest.json').read_bytes()
+        assert hashlib.sha256(b).hexdigest()=='a2bef3ce9b6c49d33544553e32876d9954313656bc4f3cd0ccba7b5a9769c76b'
+        m=json.loads(b)
+        assert not h.is_symlink()
+        for n,w in m['files'].items():
+            p=h/n;assert '/'not in n and '\\'not in n and not p.is_symlink()
+            b=p.read_bytes();assert len(b)==w['bytes'] and hashlib.sha256(b).hexdigest()==w['sha256']
+        PY
+    - name: Actual iPhone SDK compile strict link and own Mac tests
+      shell: bash
+      run: python3 -B native/platform/native-audio/wave-pcm-v1/run_apple.py .work/pcm-sdk
+    - name: Retain own sources object bytes raw metadata and actual tests
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: own-bounded-wave-sdk-v1
+        path: .work/pcm-sdk
+        if-no-files-found: error
+        retention-days: 7
+        compression-level: 6
+        include-hidden-files: false
