@@ -1,0 +1,98 @@
+{
+  "dependencyCommit": "f40cf03f80cdb7e741d43e53b7e706e8c1394bcf",
+  "files": {
+    "FIXTURE.md": {
+      "bytes": 2873,
+      "sha256": "ce8721cc5d565edbff42a15e2ccd971564b38bca5dd7dfb0102de784973afe1e"
+    },
+    "LICENSE": {
+      "bytes": 2597,
+      "sha256": "457f1b500e0adf6bc059edddfa78a2f62012e7c3bb43476c20e0bd23b25ba0eb"
+    },
+    "README.md": {
+      "bytes": 2688,
+      "sha256": "430a518c6b8e22307343c2d74d849d4503bea3efea7ec02d8d140d239840ea76"
+    },
+    "bounded_process.py": {
+      "bytes": 3293,
+      "sha256": "ce89924f280c180fe0ca9e6d68c45c4174bd5fe37d0aa93d94b0222d9b5c366a"
+    },
+    "cases.json": {
+      "bytes": 1754,
+      "sha256": "4fe0a4838acbadc14881c7c95e378a79988e46e9aa6e3b28b4cee26d11b38a85"
+    },
+    "fixture_cases.h": {
+      "bytes": 295,
+      "sha256": "aba189f79856c35274ba29ff0647ac01936e7ea6dbb681d0e0b0ec1d86dd1214"
+    },
+    "fixture_main.c": {
+      "bytes": 7893,
+      "sha256": "d8ddb46cbc6fed5db38f8ebc679d29c11806d20e59bd47123d62f5e79fb2b65a"
+    },
+    "fixtures/mono44100.mp3": {
+      "bytes": 10031,
+      "sha256": "7f5d0343bd7011a1d73d790ad42ee2db7e34a3e01978b82c1269d608b2442542"
+    },
+    "fixtures/stereo22050.mp3": {
+      "bytes": 5224,
+      "sha256": "942070d4068191a50c72d692139b2478b48178fd944ee797daac965fff1ada00"
+    },
+    "fixtures/stereo44100.mp3": {
+      "bytes": 15046,
+      "sha256": "9a85978ed4c71b6f48d7311367e71f9f58717c008991a84ef21dc4b2e0545e97"
+    },
+    "ngp_audio_shared_implementation_v1.c": {
+      "bytes": 315,
+      "sha256": "696d991be6cf39957f4503d970dd1b87b3ed3d16c7bcc2e89ee08756d39f0d7b"
+    },
+    "ngp_audio_shared_profile_v1.h": {
+      "bytes": 577,
+      "sha256": "8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397"
+    },
+    "ngp_device_mixer_render_v1.c": {
+      "bytes": 3163,
+      "sha256": "dee442897e3eebd8faccba7fcef9f075e5f19a8fa473c2f0282c79810ba8818e"
+    },
+    "ngp_device_mixer_render_v1.h": {
+      "bytes": 1266,
+      "sha256": "aab3377efd6d3a4b016134d8e8f14b256f9d77ec1cc02d1b0b571f5a22d77baf"
+    },
+    "ngp_memory_mp3_internal_v1.h": {
+      "bytes": 406,
+      "sha256": "2a2529ac0d50dab2285810807ba5a5ea1d6419390efedae3d85f87e1fdf4fa47"
+    },
+    "ngp_memory_mp3_v1.c": {
+      "bytes": 5089,
+      "sha256": "4b3a0f9bced50d0e02e284f0f741209c8b12fee4393c18d869c187b8fd706e57"
+    },
+    "ngp_memory_mp3_v1.h": {
+      "bytes": 1926,
+      "sha256": "389c491b43319213db2b66674c942bd82cc44002ce7bd04663b5b8d54d3db71c"
+    },
+    "ngp_mp3_envelope_v1.c": {
+      "bytes": 3833,
+      "sha256": "306baefc87464329445af7d61775f4ea2c9cbb2c905d1921017dafe7e6a7956e"
+    },
+    "ngp_voice_gain_balance_v2.h": {
+      "bytes": 1507,
+      "sha256": "3ff607a8db4cf14646bf6e4c91a6474d3a7f6508cc14318b85c6a6628b6590c9"
+    },
+    "ngp_voice_service_v1.c": {
+      "bytes": 25572,
+      "sha256": "0b84cb7b64cd0e7a47090e420b9fe0e6915584ad20b21bf2efac6af2b243def9"
+    },
+    "ngp_voice_service_v1.h": {
+      "bytes": 5102,
+      "sha256": "e849cc4a659286c53dc9b93741979d97544317a262a391318a5c11377ce5fae3"
+    },
+    "run_probe.py": {
+      "bytes": 9246,
+      "sha256": "51c8b6cb3195c88c3f53ac8c85d1ff6c18d7818845e7e401b413724922486e42"
+    },
+    "validate_native.py": {
+      "bytes": 2028,
+      "sha256": "28be3af45f1b74160a41288135dcdd6552571c5eb7afe277236ec9559309a6bb"
+    }
+  },
+  "format": "own-direct-MP3-STREAM-Mac-input-v1"
+}

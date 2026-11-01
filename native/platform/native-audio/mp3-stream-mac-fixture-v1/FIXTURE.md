@@ -1,0 +1,14 @@
+Finite observations and limits
+==============================
+
+Three source profiles are44100mono128k (27648 raw frames),44100stereo192k (27648) and22050stereo64k (14400). Input compressed bytes are≤32768, decoded PCM≤120000, native output4096×2Float32. Every fresh process reserves48000stereo synthetically; it does not open the device broker. Source rate and output rate are separate. Unsupported48000 MP3 remains outside this fixture.
+
+The worker binds through actual ngp_voice_service_v1_bind_pcm, whose frozen code COPIES the entire source span. Only after success does it overwrite/free its exclusive compressed buffer and call actual MP3 release once, checking NULL. It then enables/loops/plays. The later render plus pinned source contract supports this selected lifetime composition; a successful read alone is not a universal alias theorem. Borrowed const decoded PCM is never modified or touched after release.
+
+Callbacks use real ngp_device_mixer_render_v1 with exclusive planes/scratch; every copied sample equals real interleaved scratch. Only block3 enters the phase-independent spectral oracle, avoiding raw MP3 padding at a loop discontinuity. The mono source duplicates440Hz, not880Hz on the right. Stereo per-channel opposite-tone rejection tests separation. Loop position after6 blocks must exceed position after10; both are actual source-domain values within raw frames, with playback/looping still true and nonzero finite block10 energy. Converter buffering is not treated as an exact presentation clock.
+
+Stop uses the prior real V2 criterion: after two4096-frame blocks, last512 per-channel energy<1e-12. A successful zero PCM mix need not set the helper silence flag; the fixture checks actual values. It releases the voice and verifies the old handle is rejected. Graph/context remain retained; no destroy, reset or whole-callback-drain ACK. Both threads explicitly park before main reports, and the creating worker never exits/reuses identity before process end.
+
+Each success reports one MP3 release, one voice release, NULL MP3 result, encoded retirement before play, kind3, actual bound raw frames,12 callback requests, before/after loop cursors, render sequence,0 configured allocator violations and actual spectral/stop metrics. Native JSON has a fresh argv nonce, exact keys and finite ranges. Source-specific assertion failures terminate91 and preserve diagnostics; zero-oracle is separately expected91. Neither mode substitutes for the other.
+
+Not established: production encoded-bind helper/errors, filesystem/guest asset integration, incremental streaming, original Miles semantics, sample-accurate cursor/time, all clipping/headroom behavior, realtime/lock-free stack bounds, AppleAudio/iPhone/game, gapless or payload integrity. A later fresh helper derivative may use this actual baseline after root review and genuine success.
