@@ -1,0 +1,94 @@
+{
+  "dependencyCommit": "f40cf03f80cdb7e741d43e53b7e706e8c1394bcf",
+  "files": {
+    "FIXTURE.md": {
+      "bytes": 3443,
+      "sha256": "1e7f36d2246a2d334267b128610ccb945255530be4c4463d9fe221217e391b8c"
+    },
+    "LICENSE": {
+      "bytes": 2597,
+      "sha256": "457f1b500e0adf6bc059edddfa78a2f62012e7c3bb43476c20e0bd23b25ba0eb"
+    },
+    "README.md": {
+      "bytes": 1642,
+      "sha256": "785e0fb9d72e730c56685d07d5e2e3bd9e6d368ff9857a4a95082eb16f4fbac9"
+    },
+    "bounded_process.py": {
+      "bytes": 3293,
+      "sha256": "ce89924f280c180fe0ca9e6d68c45c4174bd5fe37d0aa93d94b0222d9b5c366a"
+    },
+    "cases.json": {
+      "bytes": 2350,
+      "sha256": "b7406372b3e54f48b3547ea5e4548f44c60899a2050d10e27647a3a9abf6dc2e"
+    },
+    "fixture_cases.h": {
+      "bytes": 489,
+      "sha256": "1bb75c81024ef5e36580459fcf1fbece26d89b52c6b1c80afe1e8a9b93305413"
+    },
+    "fixture_main.c": {
+      "bytes": 4911,
+      "sha256": "21fabfb275ea241209c6333cc037dd074a3696dd327768c49cf3e9dbeefc978e"
+    },
+    "fixtures/mono44100.mp3": {
+      "bytes": 10031,
+      "sha256": "7f5d0343bd7011a1d73d790ad42ee2db7e34a3e01978b82c1269d608b2442542"
+    },
+    "fixtures/stereo22050.mp3": {
+      "bytes": 5224,
+      "sha256": "942070d4068191a50c72d692139b2478b48178fd944ee797daac965fff1ada00"
+    },
+    "fixtures/stereo44100.mp3": {
+      "bytes": 15046,
+      "sha256": "9a85978ed4c71b6f48d7311367e71f9f58717c008991a84ef21dc4b2e0545e97"
+    },
+    "fixtures/unsupported48000.mp3": {
+      "bytes": 14976,
+      "sha256": "46fb00a21f9ba6f52ac8a86290bf8fc82d30e417616d99e607d1c1e2d02b42cd"
+    },
+    "inspect_image.py": {
+      "bytes": 3901,
+      "sha256": "408e13fcb27838d5eea161491eb538e2a91cdd5ccecf84416191390d712efa52"
+    },
+    "ngp_audio_shared_implementation_v1.c": {
+      "bytes": 315,
+      "sha256": "696d991be6cf39957f4503d970dd1b87b3ed3d16c7bcc2e89ee08756d39f0d7b"
+    },
+    "ngp_audio_shared_profile_v1.h": {
+      "bytes": 577,
+      "sha256": "8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397"
+    },
+    "ngp_memory_mp3_internal_v1.h": {
+      "bytes": 406,
+      "sha256": "2a2529ac0d50dab2285810807ba5a5ea1d6419390efedae3d85f87e1fdf4fa47"
+    },
+    "ngp_memory_mp3_v1.c": {
+      "bytes": 5089,
+      "sha256": "4b3a0f9bced50d0e02e284f0f741209c8b12fee4393c18d869c187b8fd706e57"
+    },
+    "ngp_memory_mp3_v1.h": {
+      "bytes": 1926,
+      "sha256": "389c491b43319213db2b66674c942bd82cc44002ce7bd04663b5b8d54d3db71c"
+    },
+    "ngp_mp3_envelope_v1.c": {
+      "bytes": 3833,
+      "sha256": "306baefc87464329445af7d61775f4ea2c9cbb2c905d1921017dafe7e6a7956e"
+    },
+    "run_probe.py": {
+      "bytes": 11812,
+      "sha256": "ab9e480b7d0870381d22f94d17775bd13f8ee241b58d67eccb2db1e3833574de"
+    },
+    "tolerances.json": {
+      "bytes": 379,
+      "sha256": "91685ffb2821b52552b04933ae68a2d6714b66df724078caffdcadd4a9b88207"
+    },
+    "tone_contract.h": {
+      "bytes": 317,
+      "sha256": "b1c63aced90bd159480034702b7e5937a943ffff93d545fea458edeb00b53e58"
+    },
+    "validate_native.py": {
+      "bytes": 1995,
+      "sha256": "af1a5a3664a2492976c418fc45245bdca40ae604251d8caa17d98a001d8cdd7a"
+    }
+  },
+  "format": "NGP-own-memory-mp3-nonzero-input-v1"
+}

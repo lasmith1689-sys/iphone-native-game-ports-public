@@ -1,0 +1,15 @@
+{
+  "skipFirstDecodedFrames": 4096,
+  "skipLastDecodedFrames": 4096,
+  "amplitudeMinimum": 0.30,
+  "amplitudeMaximum": 0.60,
+  "rmsMinimum": 0.20,
+  "rmsMaximum": 0.46,
+  "absoluteMeanMaximum": 0.025,
+  "wrongToneAmplitudeMaximum": 0.08,
+  "offToneHz": 1320,
+  "offToneAmplitudeMaximum": 0.06,
+  "leftHz": 440,
+  "rightHz": 880,
+  "gaplessOrMusicCohortOrIntegrityProof": false
+}

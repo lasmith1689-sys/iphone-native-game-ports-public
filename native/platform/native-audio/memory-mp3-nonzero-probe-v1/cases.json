@@ -1,0 +1,90 @@
+[
+  {
+    "encoded": {
+      "bytes": 10031,
+      "sha256": "7f5d0343bd7011a1d73d790ad42ee2db7e34a3e01978b82c1269d608b2442542"
+    },
+    "envelope": {
+      "bitstreamIntegrityVerified": false,
+      "channels": 1,
+      "encodedFrames": 24,
+      "mpegVersion": 1,
+      "pcmFrames": 27648,
+      "rate": 44100,
+      "sourceBytes": 10031,
+      "tagPrefixBytes": 0,
+      "tagSuffixBytes": 0,
+      "wholeFrameHeaderCoverage": true
+    },
+    "expectedDecodeCode": 0,
+    "name": "mono44100",
+    "path": "fixtures/mono44100.mp3",
+    "positive": true
+  },
+  {
+    "encoded": {
+      "bytes": 15046,
+      "sha256": "9a85978ed4c71b6f48d7311367e71f9f58717c008991a84ef21dc4b2e0545e97"
+    },
+    "envelope": {
+      "bitstreamIntegrityVerified": false,
+      "channels": 2,
+      "encodedFrames": 24,
+      "mpegVersion": 1,
+      "pcmFrames": 27648,
+      "rate": 44100,
+      "sourceBytes": 15046,
+      "tagPrefixBytes": 0,
+      "tagSuffixBytes": 0,
+      "wholeFrameHeaderCoverage": true
+    },
+    "expectedDecodeCode": 0,
+    "name": "stereo44100",
+    "path": "fixtures/stereo44100.mp3",
+    "positive": true
+  },
+  {
+    "encoded": {
+      "bytes": 5224,
+      "sha256": "942070d4068191a50c72d692139b2478b48178fd944ee797daac965fff1ada00"
+    },
+    "envelope": {
+      "bitstreamIntegrityVerified": false,
+      "channels": 2,
+      "encodedFrames": 25,
+      "mpegVersion": 2,
+      "pcmFrames": 14400,
+      "rate": 22050,
+      "sourceBytes": 5224,
+      "tagPrefixBytes": 0,
+      "tagSuffixBytes": 0,
+      "wholeFrameHeaderCoverage": true
+    },
+    "expectedDecodeCode": 0,
+    "name": "stereo22050",
+    "path": "fixtures/stereo22050.mp3",
+    "positive": true
+  },
+  {
+    "encoded": {
+      "bytes": 14976,
+      "sha256": "46fb00a21f9ba6f52ac8a86290bf8fc82d30e417616d99e607d1c1e2d02b42cd"
+    },
+    "envelope": {
+      "bitstreamIntegrityVerified": false,
+      "channels": 2,
+      "encodedFrames": 26,
+      "mpegVersion": 1,
+      "pcmFrames": 29952,
+      "rate": 48000,
+      "sourceBytes": 14976,
+      "tagPrefixBytes": 0,
+      "tagSuffixBytes": 0,
+      "wholeFrameHeaderCoverage": true
+    },
+    "expectedDecodeCode": 2,
+    "name": "unsupported48000",
+    "path": "fixtures/unsupported48000.mp3",
+    "positive": false
+  }
+]
