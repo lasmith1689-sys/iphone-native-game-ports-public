@@ -54,54 +54,6 @@ jobs:
           apt-get update -qq
           apt-get install -y --no-install-recommends python3
           python3 --version
-      - name: Install official pinned OpenXR Vendors 5.0.1 addon (build-only)
-        run: |
-          python3 - <<'PY2'
-          from hashlib import sha256
-          from io import BytesIO
-          from pathlib import Path
-          from urllib.request import Request, urlopen
-          from zipfile import ZipFile
-          url = 'https://github.com/GodotVR/godot_openxr_vendors/releases/download/5.0.1-stable/godotopenxrvendorsaddon.zip'
-          digest = 'acc80afad3fb30563700474a3a2688700f5aa3833b03a185497c3e52fdb48f68'
-          with urlopen(Request(url, headers={'User-Agent':'GrandPrix-TimeMachine-build'}),timeout=120) as resp:
-              archive = resp.read()
-          assert sha256(archive).hexdigest() == digest, 'Unexpected OpenXR plugin bytes: aborting'
-          count = 0
-          with ZipFile(BytesIO(archive)) as z:
-              for member in z.infolist():
-                  name = member.filename.replace('\\', '/')
-                  marker = 'addons/godotopenxrvendors/'
-                  index = name.find(marker)
-                  if index < 0 or member.is_dir():
-                      continue
-                  suffix = name[index + len(marker):]
-                  target = Path('addons/godotopenxrvendors') / suffix
-                  assert '..' not in target.parts
-                  target.parent.mkdir(parents=True, exist_ok=True)
-                  target.write_bytes(z.read(member))
-                  count += 1
-          assert count > 4, 'OpenXR addon did not contain expected files'
-          assert list(Path('addons/godotopenxrvendors').rglob('*.gdextension')), 'Missing vendor GDExtension'
-          print('Verified official OpenXR Vendors 5.0.1 addon:', count, 'files')
-          PY2
-      - name: Prepare Godot Android Gradle template for Meta manifest
-        run: |
-          python3 - <<'PY2'
-          from pathlib import Path
-          from zipfile import ZipFile
-          template = Path.home()/'.local/share/godot/export_templates/4.6.3.stable/android_source.zip'
-          assert template.is_file(), 'Missing 4.6.3 Gradle source template'
-          target = Path('android/build')
-          target.mkdir(parents=True, exist_ok=True)
-          with ZipFile(template) as z:
-              z.extractall(target)
-          (target/'.gdignore').touch()
-          (target.parent/'.build_version').write_text('4.6.3.stable\n')
-          assert (target/'gradlew').is_file(), 'Gradle template missing gradlew'
-          (target/'gradlew').chmod(0o755)
-          print('Android Gradle build template prepared')
-          PY2
       - name: Show build environment
         run: |
           mkdir -p build
@@ -142,14 +94,6 @@ jobs:
             exit 1
           fi
           "$SIGNER" verify --verbose build/GrandPrixTimeMachine_Quest3.apk 2>&1 | tee build/apksigner.log
-          # Export is not considered MR-capable unless native Vendors code was packaged.
-          python3 - <<'PY2'
-          from zipfile import ZipFile
-          with ZipFile('build/GrandPrixTimeMachine_Quest3.apk') as z:
-              vendors = [n for n in z.namelist() if n.endswith('.so') and 'vendor' in n.lower()]
-              print('Native Vendors GDExtension libraries:', vendors)
-              assert vendors, 'No native OpenXR Vendors library embedded; reject MR candidate APK'
-          PY2
           sha256sum build/GrandPrixTimeMachine_Quest3.apk > build/SHA256SUMS.txt
       - name: Package Windows one-click Quest installer
         run: |

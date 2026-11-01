@@ -7,10 +7,12 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a six-chapter documentary playback and a floating action-button interface.
-v0.8 CI installs the checksum-verified official Godot OpenXR Vendors 5.0.1 plugin
-during Android export and requests **optional Meta Quest passthrough**. At runtime
-the app checks for supported alpha blending and otherwise uses immersive VR.
-**MR unverified: a physical Quest 3 must confirm that passthrough actually displays.** The scene does not use scene-meshing or furniture anchoring.
+**v0.8 remains a VR-first release.** Its default CI builds a standalone
+Quest 3 OpenXR APK without the OpenXR Vendors plugin, which is **not yet bundled**
+because native versions 5.1.0 and 5.0.1 crashed the Linux Godot 4.6.3 headless
+editor while importing. **MR unverified:** actual Meta passthrough has not been
+integrated or physically tested. See `docs/MR_CI_BLOCKER.md` for the exact
+reproduction and safe recovery plan. The scene has no furniture anchoring.
 The target is a native, on-headset Android ARM64 app with no PCVR streaming or
 network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 2026. A separate passing v0.8 GitHub Actions run is required for this upgrade.
 
