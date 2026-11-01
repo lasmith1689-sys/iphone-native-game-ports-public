@@ -18,6 +18,8 @@ viewport/transparent_background=true
 openxr/enabled=true
 shaders/enabled=true
 openxr/default_blend_mode=2
+openxr/environment_blend_mode=2
+openxr/extensions/meta/passthrough=true
 
 [physics]
 3d/default_gravity=9.8

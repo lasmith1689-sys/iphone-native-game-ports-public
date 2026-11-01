@@ -19,6 +19,9 @@ for the newer `GrandPrixTimeMachine_Quest3_v0.6_Easy_Install` artifact
 [Physical Quest acceptance](GrandPrixTimeMachine_Quest3_Godot/docs/QUEST_ACCEPTANCE.md) |
 [Historical research](GrandPrixTimeMachine_Quest3_Godot/docs/HISTORICAL_SOURCES.md)
 
-VR-first. Headset startup, controller behavior and true passthrough are not
-physically tested, and the OpenXR Vendors plugin for Meta passthrough is not
-yet bundled. All geometry and on-track animations are illustrative.
+**v0.8** adds controller timeline scrubbing and start/finish visuals. Its public
+build pins and verifies the official OpenXR Vendors 5.1 plugin, enabling an
+optional Quest 3 passthrough path with immersive VR fallback. This is a
+**CI-verified MR candidate, not physically tested MR**. Headset startup,
+controller behavior and real passthrough are not yet device-tested.
+All geometry and on-track animations are illustrative.

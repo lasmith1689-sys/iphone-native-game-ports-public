@@ -1,7 +1,7 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.7: historical six-wheel car, entrant numbers, and safer controller activation.
+## v0.8: scrubable timeline, one-draw-call-ready track details, and Meta MR feature gate.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 123.0
@@ -44,6 +44,7 @@ var expanded := false
 var tabletop_scale := 0.94
 var trigger_down := {"left": false, "right": false}
 var center_down := {"left": false, "right": false}
+var seeking_side := ""
 var beams: Dictionary = {}
 var hovered_action := ""
 var intro_time := 0.0
@@ -179,6 +180,22 @@ func _track_surface(name: String, width: float, height: float, color: Color) -> 
     inst.material_override = _material(color, 0.27 if name == "asphalt" else 0.82)
     board.add_child(inst)
 
+func _make_finish_line() -> void:
+    # Real checkerboard pieces, no texture fetch or costly screen-space effect.
+    var t := 0.018
+    var tangent: Vector3 = track.tangent(t)
+    var heading := atan2(tangent.x, tangent.z)
+    for row in range(2):
+        for column in range(8):
+            var offset := -0.030 + float(column) * 0.0085
+            var mark: Vector3 = track.at(t) + track.right(t) * offset
+            mark.y = 0.037
+            mark += tangent * ((float(row) - 0.5) * 0.008)
+            var square := _box(board, "finish line tile", mark,
+                Vector3(0.008, 0.0015, 0.008),
+                COLORS.cream if (row + column) % 2 == 0 else COLORS.charcoal)
+            square.rotation.y = heading
+
 func _pine_tree(center: Vector3, height: float) -> void:
     _box(board, "tree trunk", center + Vector3.UP * height * 0.17,
         Vector3(0.006, height * 0.34, 0.006), Color(0.20, 0.14, 0.08))
@@ -257,6 +274,7 @@ func _build_diorama() -> void:
     _box(board, "lawn", Vector3(0, 0.000, 0.045), Vector3(1.24, 0.018, 0.78), COLORS.grass)
     _track_surface("red racing kerbs", GPTrack.ROAD_WIDTH + 0.016, 0.030, COLORS.kerb)
     _track_surface("asphalt", GPTrack.ROAD_WIDTH, 0.034, COLORS.road)
+    _make_finish_line()
     _box(board, "pit lane", Vector3(-0.06, 0.027, -0.31), Vector3(0.64, 0.006, 0.052), COLORS.charcoal)
     _box(board, "pit building", Vector3(-0.065, 0.066, -0.348), Vector3(0.58, 0.06, 0.024), COLORS.cream)
     for i in range(8):
@@ -283,6 +301,8 @@ func _build_diorama() -> void:
         var x: float = -0.44 + 0.88 * float(beat.at) / LENGTH
         _box(board, "chapter tick", Vector3(x, 0.018, 0.43), Vector3(0.004, 0.004, 0.018), COLORS.cream)
     cursor = _sphere(board, "playback cursor", Vector3(-0.44, 0.025, 0.43), 0.009, COLORS.gold)
+    _label("timeline_hint", "POINT AND HOLD TRIGGER ON TIMELINE TO SEEK",
+        Vector3(-0.43, 0.035, 0.472), 0.009, COLORS.cream)
     _label("title", "FUJI 1976", Vector3(-0.51, 0.069, -0.36), 0.031, Color(1.0, 0.86, 0.60))
     _label("subtitle", "24 OCTOBER | CHAMPIONSHIP DECIDER", Vector3(-0.51, 0.047, -0.379), 0.014, Color.WHITE)
     _label("detail", "Lauda arrives three points ahead of Hunt.", Vector3(-0.51, 0.027, -0.402), 0.011, Color(0.84, 0.90, 0.92))
@@ -348,6 +368,21 @@ func _hit_control(controller: XRController3D) -> String:
             selected = b.action
     return selected
 
+func _timeline_fraction(controller: XRController3D) -> float:
+    # Compute the ray in BOARD-LOCAL units, so the scrub zone scales safely
+    # with the model and rotates with recentering. Never use an XR room mesh.
+    var ray_start: Vector3 = board.to_local(controller.global_position)
+    var ray_direction: Vector3 = board.global_transform.basis.inverse() * -controller.global_transform.basis.z.normalized()
+    if absf(ray_direction.y) < 0.00001:
+        return -1.0
+    var along: float = (0.041 - ray_start.y) / ray_direction.y
+    if along < 0.025 or along > 2.5:
+        return -1.0
+    var impact: Vector3 = ray_start + ray_direction * along
+    if absf(impact.z - 0.43) > 0.042 or absf(impact.x) > 0.47:
+        return -1.0
+    return clampf((impact.x + 0.44) / 0.88, 0.0, 1.0)
+
 func _show_hover(action: String) -> void:
     if action == hovered_action:
         return
@@ -356,7 +391,10 @@ func _show_hover(action: String) -> void:
         var orb := b.orb as MeshInstance3D
         orb.scale = Vector3.ONE * (1.19 if b.action == action else 1.0)
     if labels.has("control_hint"):
-        labels["control_hint"].text = ("TRIGGER: " + action.to_upper() + "  |  B/Y: CENTER") if action != "" else "AIM + TRIGGER TO SELECT   |   B/Y TO RECENTER"
+        if action == "seek":
+            labels["control_hint"].text = "HOLD TRIGGER TO SEEK  |  RELEASE TO PAUSE"
+        else:
+            labels["control_hint"].text = ("TRIGGER: " + action.to_upper() + "  |  B/Y: CENTER") if action != "" else "AIM + TRIGGER TO SELECT   |   B/Y TO RECENTER"
 
 func _update_story() -> void:
     chapter = 0
@@ -399,7 +437,7 @@ func _process(delta: float) -> void:
                 new_chapter = i
         if previous != new_chapter:
             _update_story()
-    _update_cars()
+        _update_cars()
     _read_controller()
 
 func _read_controller() -> void:
@@ -415,15 +453,35 @@ func _read_controller() -> void:
         if not tracked:
             trigger_down[side] = false
             center_down[side] = false
+            if seeking_side == side:
+                seeking_side = ""
             continue
         var hit := _hit_control(controller)
+        var timeline := _timeline_fraction(controller) if hit == "" else -1.0
         if current_hover == "" and hit != "":
             current_hover = hit
+        elif current_hover == "" and timeline >= 0.0:
+            current_hover = "seek"
         var pressed := controller.get_float("trigger") > 0.65 or controller.is_button_pressed("trigger_click")
-        if pressed and not bool(trigger_down[side]) and hit != "":
-            if not action_taken:
+        if pressed and seeking_side == side and timeline >= 0.0:
+            playback = minf(LENGTH - 0.001, timeline * LENGTH)
+            playing = false
+            _update_story()
+            _update_cars()
+        elif pressed and not bool(trigger_down[side]) and hit == "" and timeline >= 0.0:
+            if not action_taken and seeking_side == "":
+                seeking_side = side
+                playback = minf(LENGTH - 0.001, timeline * LENGTH)
+                playing = false
+                _update_story()
+                _update_cars()
+                action_taken = true
+        elif pressed and not bool(trigger_down[side]) and hit != "":
+            if not action_taken and seeking_side == "":
                 _action(hit)
                 action_taken = true
+        if not pressed and seeking_side == side:
+            seeking_side = ""
         trigger_down[side] = pressed
         var center_pressed := controller.is_button_pressed("by_button")
         if center_pressed and not bool(center_down[side]):

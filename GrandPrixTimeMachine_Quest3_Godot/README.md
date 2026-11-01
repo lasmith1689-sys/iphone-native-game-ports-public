@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.7 Quest 3 standalone build
+# Grand Prix Time Machine — v0.8 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -7,12 +7,13 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a six-chapter documentary playback and a floating action-button interface.
-In Quest, it attempts passthrough if the OpenXR runtime exposes alpha blending,
-otherwise it uses a dark immersive VR environment. **Meta Quest passthrough also
-requires the Godot OpenXR Vendors plugin, which is not yet bundled in this
-prototype. Therefore current builds must be regarded as VR-first, with MR unverified.**
+v0.8 CI installs the checksum-verified official Godot OpenXR Vendors 5.1 plugin
+during Android export and requests **optional Meta Quest passthrough**. At runtime
+the app checks for supported alpha blending and otherwise uses immersive VR.
+**MR remains unverified until a physical Quest 3 confirms the environment
+actually displays.** The scene does not use scene-meshing or furniture anchoring.
 The target is a native, on-headset Android ARM64 app with no PCVR streaming or
-network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 2026. A separate passing v0.7 GitHub Actions run is required for this upgrade.
+network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 2026. A separate passing v0.8 GitHub Actions run is required for this upgrade.
 
 **The circuit, car positions, model details and playback time are illustrative, not
 reconstructed historical telemetry.** Narrative beats are sourced; see
@@ -23,6 +24,7 @@ reconstructed historical telemetry.** Narrative beats are sourced; see
 - Aim EITHER controller at the six colored buttons and press trigger. Each press selects one action. Hovered buttons enlarge and the hint names the hovered action. Simultaneous presses invoke at most one action per frame.
 - Press B or Y to recenter. CENTER is also a visible button.
 - The pointer hides when tracking is lost. Keep a safe Quest boundary.
+- Aim at the diorama’s gold timeline, hold trigger to scrub, and release to pause.
 - The fixed-scale floating control rail remains accessible when the diorama expands.
 - Green = play/pause; grey = previous chapter; gold = next chapter;
   blue = expand/shrink; red = 1x/2x/4x speed.
@@ -31,6 +33,9 @@ reconstructed historical telemetry.** Narrative beats are sourced; see
   standing still, use Guardian, and never walk around the enlarged circuit expecting
   your physical space to be clear.
 
+Hold a controller trigger while aiming at the gold timeline to seek directly
+to any part of the story. Releasing the trigger leaves playback paused.
+The v0.8 miniature adds a low-cost checkerboard start/finish marker.
 Hand tracking and room surface anchoring are **not implemented** in this port.
 The race display now shows 73 laps, official 1976 entrant numbers (Andretti 5, Depailler 4, Hunt 11, Lauda 1), and a stylized six-wheeled Tyrrell for Depailler. The procedural Fuji track layout and race-car positions remain illustrative.
 
