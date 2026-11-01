@@ -1,0 +1,41 @@
+{
+  "files": {
+    "inspect_macho.py": {
+      "bytes": 3840,
+      "sha256": "616c60c705e5a62f627e03ff03f41ec1c9baee71948ea26fd39f2ce42a435ff3"
+    },
+    "make_vectors.py": {
+      "bytes": 1881,
+      "sha256": "2e33aee56334ee445d8e1a280cf0317f29aca7b1d9cb30b363f30ddcfcf73e19"
+    },
+    "ngp_pcm_resampler_v1.c": {
+      "bytes": 3314,
+      "sha256": "e57ec3987476301be841e506b2993b224138bffa95312c41812b14de2ddcd4b1"
+    },
+    "ngp_pcm_resampler_v1.h": {
+      "bytes": 928,
+      "sha256": "e0c0a9a752699eca30dbc6fc38cd0e58113c3ec67f8975643fb7426f05e6c61b"
+    },
+    "run_apple.py": {
+      "bytes": 4809,
+      "sha256": "0e50aa04efc84c274aa869019ba112fad3df543f600c9e2e77983ff6d6d6793b"
+    },
+    "test_apple.c": {
+      "bytes": 511,
+      "sha256": "d4dd4d547bef1114a07e48b2b72bc154161a201ee6b80f9dd1f8bddbf558bbfe"
+    },
+    "test_macho.py": {
+      "bytes": 3199,
+      "sha256": "12028b5dd89759cc2bf57f383a5f1e2cc8c68be05bd23099fb36466e359939a7"
+    },
+    "test_native.c": {
+      "bytes": 3997,
+      "sha256": "b0c9ea88860b9e3b273332bd55bc6ad6c7185ffa152de98464b0a4c189fb824c"
+    }
+  },
+  "format": "NGP-own-finite-PCM-SDK-source-v1",
+  "generatedOracle": {
+    "bytes": 157829,
+    "sha256": "af046d44188df9f4efd9b053010c760a41cab9213be192988497a60fd068b96a"
+  }
+}
