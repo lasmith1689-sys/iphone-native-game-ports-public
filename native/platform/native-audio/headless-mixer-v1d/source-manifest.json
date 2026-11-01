@@ -1,0 +1,34 @@
+{
+  "dependencyCommit": "f40cf03f80cdb7e741d43e53b7e706e8c1394bcf",
+  "files": {
+    "LICENSE": {
+      "bytes": 2597,
+      "sha256": "457f1b500e0adf6bc059edddfa78a2f62012e7c3bb43476c20e0bd23b25ba0eb"
+    },
+    "bounded_process.py": {
+      "bytes": 3293,
+      "sha256": "ce89924f280c180fe0ca9e6d68c45c4174bd5fe37d0aa93d94b0222d9b5c366a"
+    },
+    "fixture_main.c": {
+      "bytes": 4704,
+      "sha256": "c5e3a1d187d7e2611e9f2c69a54768b322e4545c3f105b8ddc8b65cf98f9341b"
+    },
+    "inspect_image.py": {
+      "bytes": 3311,
+      "sha256": "692114e48999f198ffe79326c6b999b4632ff27a9b27b394ebac2d328e04182b"
+    },
+    "mixer_implementation.c": {
+      "bytes": 138,
+      "sha256": "d09d61ea4859de8cd94cc50ebee63c7e3ed3a932173f91dd4d6920456a425126"
+    },
+    "mixer_profile.h": {
+      "bytes": 574,
+      "sha256": "bb604dfdc7cf1e767b04ec83500062e1966423f0f1d56ccbad8e5585e6b5a321"
+    },
+    "run_probe.py": {
+      "bytes": 6701,
+      "sha256": "3f58c9499ede42652755f5c6ddf595ea825ed312f02abef5670a79c1374783bd"
+    }
+  },
+  "format": "NGP-own-headless-mixer-input-v1"
+}
