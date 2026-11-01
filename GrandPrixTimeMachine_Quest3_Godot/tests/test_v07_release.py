@@ -40,6 +40,6 @@ class Version07Tests(unittest.TestCase):
     def test_unverified_mr_remains_disclosed(self):
         readme=(ROOT/'README.md').read_text()
         self.assertIn('MR unverified',readme)
-        self.assertIn('OpenXR Vendors 5.1 plugin',readme)
+        self.assertIn('OpenXR Vendors 5.0.1 plugin',readme)
 
 if __name__=='__main__': unittest.main()

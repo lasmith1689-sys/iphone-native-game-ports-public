@@ -90,7 +90,7 @@ class SourceBehaviorContracts(unittest.TestCase):
         self.assertIn('if not passthrough_active:', SOURCE)
         self.assertIn('XRInterface.XR_ENV_BLEND_MODE_OPAQUE', SOURCE)
         self.assertIn('get_viewport().transparent_bg = false', SOURCE)
-        self.assertIn('OpenXR Vendors 5.1 plugin', README)
+        self.assertIn('OpenXR Vendors 5.0.1 plugin', README)
         self.assertIn('MR unverified', README)
 
     def test_no_hand_tracking_claim(self):
