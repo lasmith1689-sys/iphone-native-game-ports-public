@@ -10,8 +10,7 @@ car models, a six-chapter documentary playback and a floating action-button inte
 v0.8 CI installs the checksum-verified official Godot OpenXR Vendors 5.1 plugin
 during Android export and requests **optional Meta Quest passthrough**. At runtime
 the app checks for supported alpha blending and otherwise uses immersive VR.
-**MR remains unverified until a physical Quest 3 confirms the environment
-actually displays.** The scene does not use scene-meshing or furniture anchoring.
+**MR unverified: a physical Quest 3 must confirm that passthrough actually displays.** The scene does not use scene-meshing or furniture anchoring.
 The target is a native, on-headset Android ARM64 app with no PCVR streaming or
 network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 2026. A separate passing v0.8 GitHub Actions run is required for this upgrade.
 
