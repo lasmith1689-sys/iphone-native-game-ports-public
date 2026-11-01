@@ -1,0 +1,47 @@
+name: Own77-voice service Mac fixture and device-broker iPhone SDK diagnostic
+'on':
+  push:
+    branches:
+    - codex/native-voice-service-probe-v2-20261101
+    paths:
+    - .github/workflows/native-voice-service-probe-v2.yml
+permissions:
+  contents: read
+concurrency:
+  group: native-voice-service-probe-v2
+  cancel-in-progress: false
+jobs:
+  probe:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/native-voice-service-probe-v2-20261101' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 25
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+        submodules: false
+        lfs: false
+        sparse-checkout: native/platform/native-audio/voice-service-probe-v2
+    - name: Verify exact own support source closure
+      shell: bash
+      run: "set -euo pipefail\ntest \"$GITHUB_REPOSITORY\" = 'lasmith1689-sys/iphone-native-game-ports-public'\ntest \"$GITHUB_REF\" = 'refs/heads/codex/native-voice-service-probe-v2-20261101'\ntest \"$GITHUB_EVENT_NAME\" = 'push'\ntest \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"\npython3 - <<'PY'\nimport pathlib,hashlib,json\nroot=pathlib.Path('native/platform/native-audio/voice-service-probe-v2')\nraw=(root/'source-manifest.json').read_bytes()\nassert hashlib.sha256(raw).hexdigest()=='f4ff7980b1cce8750252a636e91cc8ce029794e07d4f2637f884ac34102a902f'\nfor n,w in json.loads(raw)['files'].items():\n data=(root/n).read_bytes();assert len(data)==w['bytes'] and hashlib.sha256(data).hexdigest()==w['sha256']\nprint('Exact own support source closure accepted; no execution result inferred.')\nPY\n"
+    - name: Compile all eligible phases then independent actual own fixture
+      shell: bash
+      run: 'set -euo pipefail
+
+        python3 -B native/platform/native-audio/voice-service-probe-v2/run_probe.py
+
+        '
+    - name: Retain own synthetic diagnostic and raw component metadata
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: voice-service-probe-${{ github.run_id }}
+        path: native/platform/native-audio/voice-service-probe-v2/probe-output/
+        if-no-files-found: error
+        retention-days: 7
+        compression-level: 6
+        include-hidden-files: false
+        archive: true
