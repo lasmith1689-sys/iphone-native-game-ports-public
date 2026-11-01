@@ -7,7 +7,7 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a six-chapter documentary playback and a floating action-button interface.
-v0.8 CI installs the checksum-verified official Godot OpenXR Vendors 5.1 plugin
+v0.8 CI installs the checksum-verified official Godot OpenXR Vendors 5.0.1 plugin
 during Android export and requests **optional Meta Quest passthrough**. At runtime
 the app checks for supported alpha blending and otherwise uses immersive VR.
 **MR unverified: a physical Quest 3 must confirm that passthrough actually displays.** The scene does not use scene-meshing or furniture anchoring.

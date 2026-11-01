@@ -18,8 +18,8 @@ class MRAndSeekUpgrade(unittest.TestCase):
         self.assertIn('meta_xr_features/passthrough=1',PRESET)
         self.assertIn('gradle_build/use_gradle_build=true',PRESET)
     def test_release_plugin_fixed_and_digest_checked(self):
-        self.assertIn('5.1.0-stable/godotopenxrvendorsaddon.zip',WORKFLOW)
-        self.assertIn('6a838dbdf4115549e4511ebee0da9a5dcc8f9f6258d4cc2f2ee57a907a3e2911',WORKFLOW)
+        self.assertIn('5.0.1-stable/godotopenxrvendorsaddon.zip',WORKFLOW)
+        self.assertIn('acc80afad3fb30563700474a3a2688700f5aa3833b03a185497c3e52fdb48f68',WORKFLOW)
         self.assertIn("sha256(archive).hexdigest() == digest",WORKFLOW)
         self.assertIn("assert vendors",WORKFLOW)
     def test_gradle_template_makes_clean_reproducible_build(self):

@@ -54,7 +54,7 @@ jobs:
           apt-get update -qq
           apt-get install -y --no-install-recommends python3
           python3 --version
-      - name: Install official pinned OpenXR Vendors 5.1 addon (build-only)
+      - name: Install official pinned OpenXR Vendors 5.0.1 addon (build-only)
         run: |
           python3 - <<'PY2'
           from hashlib import sha256
@@ -62,8 +62,8 @@ jobs:
           from pathlib import Path
           from urllib.request import Request, urlopen
           from zipfile import ZipFile
-          url = 'https://github.com/GodotVR/godot_openxr_vendors/releases/download/5.1.0-stable/godotopenxrvendorsaddon.zip'
-          digest = '6a838dbdf4115549e4511ebee0da9a5dcc8f9f6258d4cc2f2ee57a907a3e2911'
+          url = 'https://github.com/GodotVR/godot_openxr_vendors/releases/download/5.0.1-stable/godotopenxrvendorsaddon.zip'
+          digest = 'acc80afad3fb30563700474a3a2688700f5aa3833b03a185497c3e52fdb48f68'
           with urlopen(Request(url, headers={'User-Agent':'GrandPrix-TimeMachine-build'}),timeout=120) as resp:
               archive = resp.read()
           assert sha256(archive).hexdigest() == digest, 'Unexpected OpenXR plugin bytes: aborting'
@@ -83,7 +83,7 @@ jobs:
                   count += 1
           assert count > 4, 'OpenXR addon did not contain expected files'
           assert list(Path('addons/godotopenxrvendors').rglob('*.gdextension')), 'Missing vendor GDExtension'
-          print('Verified official OpenXR Vendors 5.1 addon:', count, 'files')
+          print('Verified official OpenXR Vendors 5.0.1 addon:', count, 'files')
           PY2
       - name: Prepare Godot Android Gradle template for Meta manifest
         run: |
