@@ -31,7 +31,7 @@ class MRAndSeekUpgrade(unittest.TestCase):
         self.assertIn('if not passthrough_active:',SRC)
         self.assertIn('XR_ENV_BLEND_MODE_OPAQUE',SRC)
         self.assertIn('meta_xr_features/boundary_mode=0',PRESET)
-        self.assertIn('MR remains unverified',README)
+        self.assertIn('MR unverified',README)
         self.assertIn('furniture anchoring',README)
     def test_timeline_controller_ray_and_latches(self):
         for fragment in ('func _timeline_fraction(controller:', 'board.to_local(', 'basis.inverse()', 'seeking_side == side', 'seeking_side = ""', 'timeline >= 0.0', 'playing = false', 'minf(LENGTH - 0.001', 'trigger_down[side] = pressed'):
