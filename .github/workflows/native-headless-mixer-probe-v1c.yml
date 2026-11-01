@@ -1,0 +1,47 @@
+name: Headless77-voice own synthetic mixer and iPhone SDK diagnostic
+'on':
+  push:
+    branches:
+    - codex/native-headless-mixer-probe-v1c-20261101
+    paths:
+    - .github/workflows/native-headless-mixer-probe-v1c.yml
+permissions:
+  contents: read
+concurrency:
+  group: native-headless-mixer-probe-v1c
+  cancel-in-progress: false
+jobs:
+  probe:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/native-headless-mixer-probe-v1c-20261101' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+        submodules: false
+        lfs: false
+        sparse-checkout: native/platform/native-audio/headless-mixer-v1c
+    - name: Verify fixed public support sources
+      shell: bash
+      run: "set -euo pipefail\ntest \"$GITHUB_REPOSITORY\" = 'lasmith1689-sys/iphone-native-game-ports-public'\ntest \"$GITHUB_REF\" = 'refs/heads/codex/native-headless-mixer-probe-v1c-20261101'\ntest \"$GITHUB_EVENT_NAME\" = 'push'\ntest \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"\npython3 - <<'PY'\nimport pathlib,hashlib,json\nroot=pathlib.Path('native/platform/native-audio/headless-mixer-v1c')\nraw=(root/'source-manifest.json').read_bytes()\nassert hashlib.sha256(raw).hexdigest()=='967b9d3549951010c98a6ee29df77d34f5ae736b61ba0398fcec11dc2cc169e0'\nfor n,w in json.loads(raw)['files'].items():\n data=(root/n).read_bytes();assert len(data)==w['bytes'] and hashlib.sha256(data).hexdigest()==w['sha256']\nprint('Exact own fixture and pinned dependency configuration accepted.')\nPY\n"
+    - name: Run actual serialized own mixer and SDK compile only
+      shell: bash
+      run: 'set -euo pipefail
+
+        python3 -B native/platform/native-audio/headless-mixer-v1c/run_probe.py
+
+        '
+    - name: Retain public synthetic diagnostic artifacts
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: headless-mixer-probe-${{ github.run_id }}
+        path: native/platform/native-audio/headless-mixer-v1c/probe-output/
+        if-no-files-found: error
+        retention-days: 7
+        compression-level: 6
+        include-hidden-files: false
+        archive: true
