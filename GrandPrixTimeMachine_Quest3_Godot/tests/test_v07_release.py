@@ -23,7 +23,7 @@ class Version07Tests(unittest.TestCase):
     def test_simultaneous_press_single_action(self):
         self.assertIn('var action_taken := false', SRC)
         self.assertEqual(SRC.count('if not action_taken and seeking_side == "":'),3)  # timeline, car, and control; all use same single-action latch
-        self.assertEqual(SRC.count('action_taken = true'),3)
+        self.assertEqual(SRC.count('action_taken = true'),4)  # timeline, car, button, and recenter
         self.assertIn('trigger_down[side] = pressed',SRC)
     def test_hover_visual_label(self):
         self.assertIn('action.to_upper()',SRC)
