@@ -17,6 +17,7 @@ screenplay positions. They are **not race timestamps or lap assignments**.
 | 73 laps on the 4.359 km Fuji circuit, 24 October 1976 | [Official Formula 1 race result](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Andretti completed 73 laps; the diorama animation is not lap-accurate |
 | Entrant numbers Andretti #5, Depailler #4, Hunt #11, Lauda #1 | [Official Formula 1 race result](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Numbers added to original stylized cars |
 | Depailler drove a six-wheel Tyrrell P34 | [Formula 1 history of the Tyrrell P34](https://www.formula1.com/en/latest/article/six-fascinating-facts-tyrrell-p34.5Eqy5lE9SsSLmF9an1Ak5g) | Six-wheel stylization, not a licensed model |
+| Driver spotlight: Andretti #5 Lotus Ford 1st/73 laps; Depailler #4 Tyrrell Ford 2nd/72 laps; Hunt #11 McLaren Ford 3rd/72 laps; Lauda #1 Ferrari withdrew after 2 laps | [Official F1 1976 Japanese GP results](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Selectable driver cards; model movements are not lap data |
 | Andretti won, Depailler second, Hunt third | [Formula 1 result](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Official Formula 1 race classification for Fuji, 24 October 1976 |
 | Hunt champion by one point, 69 to 68 | [Niki Lauda archive](https://nikilauda.org/seasons/1976/), [Formula 1 drivers standings](https://www.formula1.com/en/results/1976/drivers) | Corroborated |
 

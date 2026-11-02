@@ -1,7 +1,7 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.8: scrubable timeline, one-draw-call-ready track details, and Meta MR feature gate.
+## v0.9: sourced driver spotlights and comfort-safe controller selection.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 123.0
@@ -13,6 +13,14 @@ const BEATS := [
     {"at": 83.0, "title": "THE FINISH", "subtitle": "ANDRETTI 1ST  |  DEPAILLER 2ND  |  HUNT 3RD", "detail": "Andretti wins. Hunt recovers to third place, enough for the title."},
     {"at": 104.0, "title": "WORLD CHAMPION", "subtitle": "HUNT 69 POINTS  |  LAUDA 68", "detail": "James Hunt wins the 1976 World Drivers' Championship by one point."}
 ]
+# Entrant data verified against the official Formula 1 1976 Japanese GP result.
+const DRIVER_ORDER := ["ANDRETTI", "HUNT", "LAUDA", "DEPAILLER"]
+const DRIVER_CARDS := {
+    "ANDRETTI": {"heading": "MARIO ANDRETTI  #5", "facts": "LOTUS-FORD  |  WINNER  |  73 LAPS", "note": "Started on pole; won the rain-soaked Fuji finale."},
+    "HUNT": {"heading": "JAMES HUNT  #11", "facts": "MCLAREN-FORD  |  3RD  |  72 LAPS", "note": "Third place secured the Drivers' title by one point."},
+    "LAUDA": {"heading": "NIKI LAUDA  #1", "facts": "FERRARI  |  WITHDREW AFTER 2 LAPS", "note": "Withdrew in dangerous rain; championship runner-up."},
+    "DEPAILLER": {"heading": "PATRICK DEPAILLER  #4", "facts": "TYRRELL P34  |  2ND  |  72 LAPS", "note": "Finished second in the distinctive six-wheeled Tyrrell."}
+}
 const COLORS := {
     "charcoal": Color(0.065, 0.083, 0.10),
     "grass": Color(0.10, 0.21, 0.17),
@@ -33,6 +41,8 @@ var board: Node3D
 var ui_panel: Node3D
 var track: GPTrack
 var car_nodes: Dictionary = {}
+var driver_beacons: Dictionary = {}
+var spotlight_driver := ""
 var controls: Array[Dictionary] = []
 var labels: Dictionary = {}
 var cursor: Node3D
@@ -261,6 +271,15 @@ func _make_car(key: String, body_color: Color, accent_color: Color) -> void:
     number_label.position = Vector3(0.0, 0.021, -0.027)
     car.add_child(number_label)
     car_nodes[key] = car
+    # Highlight selected car without moving the viewer or the XR camera.
+    var beacon := Node3D.new()
+    beacon.name = "Selected driver beacon"
+    beacon.visible = false
+    car.add_child(beacon)
+    _box(beacon, "beacon stem", Vector3(0.0, 0.067, 0.0),
+        Vector3(0.003, 0.057, 0.003), COLORS.gold)
+    _sphere(beacon, "beacon dot", Vector3(0.0, 0.101, 0.0), 0.012, COLORS.gold)
+    driver_beacons[key] = beacon
 
 func _build_diorama() -> void:
     board = Node3D.new()
@@ -316,12 +335,24 @@ func _build_diorama() -> void:
     _add_button("SCALE", 0.10, Color(0.34, 0.53, 0.89), "scale")
     _add_button("SPEED", 0.30, Color(0.78, 0.36, 0.37), "speed")
     _add_button("CENTER", 0.50, Color(0.43, 0.70, 0.79), "center")
+    _box(ui_panel, "driver card backing", Vector3(0.0, 0.246, -0.025),
+        Vector3(1.16, 0.161, 0.014), COLORS.charcoal)
+    var card_title := _label("focus_title", "DRIVER SPOTLIGHT",
+        Vector3(-0.53, 0.286, 0.0), 0.020, COLORS.gold, false, ui_panel)
+    card_title.rotation.x = 0.0
+    var card_facts := _label("focus_facts", "POINT AT ANY CAR + TRIGGER",
+        Vector3(-0.53, 0.239, 0.0), 0.013, Color.WHITE, false, ui_panel)
+    card_facts.rotation.x = 0.0
+    var card_note := _label("focus_note", "D ON DESKTOP CYCLES DRIVERS",
+        Vector3(-0.53, 0.199, 0.0), 0.011, COLORS.cream, false, ui_panel)
+    card_note.rotation.x = 0.0
     var hint := _label("control_hint", "AIM + TRIGGER TO SELECT   |   B/Y TO RECENTER",
         Vector3(0.0, 0.130, 0.0), 0.014, COLORS.cream, false, ui_panel)
     hint.rotation.x = 0.0
     hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     _update_story()
     _update_cars()
+    _update_spotlight()
 
 func _add_button(label_text: String, x: float, color: Color, action: String) -> void:
     _box(ui_panel, "Button backing " + label_text,
@@ -368,6 +399,26 @@ func _hit_control(controller: XRController3D) -> String:
             selected = b.action
     return selected
 
+func _hit_driver(controller: XRController3D) -> String:
+    # Generous radius makes small moving cars selectable from a seated posture.
+    var origin: Vector3 = controller.global_position
+    var direction: Vector3 = -controller.global_transform.basis.z.normalized()
+    var nearest := 2.75
+    var chosen := ""
+    for key in DRIVER_ORDER:
+        var car: Node3D = car_nodes[key]
+        if not car.visible:
+            continue
+        var center: Vector3 = car.to_global(Vector3(0.0, 0.022, 0.0))
+        var along: float = (center - origin).dot(direction)
+        if along < 0.10 or along > 2.75:
+            continue
+        var radius: float = 0.10 if expanded else 0.065
+        if (center - (origin + direction * along)).length() < radius and along < nearest:
+            chosen = key
+            nearest = along
+    return chosen
+
 func _timeline_fraction(controller: XRController3D) -> float:
     # Compute the ray in BOARD-LOCAL units, so the scrub zone scales safely
     # with the model and rotates with recentering. Never use an XR room mesh.
@@ -393,8 +444,26 @@ func _show_hover(action: String) -> void:
     if labels.has("control_hint"):
         if action == "seek":
             labels["control_hint"].text = "HOLD TRIGGER TO SEEK  |  RELEASE TO PAUSE"
+        elif action.begins_with("driver:"):
+            labels["control_hint"].text = "TRIGGER: SHOW " + action.substr(7) + " RACE FACTS"
         else:
             labels["control_hint"].text = ("TRIGGER: " + action.to_upper() + "  |  B/Y: CENTER") if action != "" else "AIM + TRIGGER TO SELECT   |   B/Y TO RECENTER"
+
+func _select_driver(key: String) -> void:
+    if not DRIVER_CARDS.has(key):
+        return
+    spotlight_driver = key
+    _update_spotlight()
+
+func _update_spotlight() -> void:
+    for key in DRIVER_ORDER:
+        (driver_beacons[key] as Node3D).visible = key == spotlight_driver and (car_nodes[key] as Node3D).visible
+    if spotlight_driver == "":
+        return
+    var card: Dictionary = DRIVER_CARDS[spotlight_driver]
+    labels["focus_title"].text = str(card["heading"])
+    labels["focus_facts"].text = str(card["facts"])
+    labels["focus_note"].text = str(card["note"])
 
 func _update_story() -> void:
     chapter = 0
@@ -425,6 +494,8 @@ func _update_cars() -> void:
     _position_car("DEPAILLER", 0.72, 0.012, 1.01, true)
     labels["state"].text = ("PLAY " if playing else "PAUSE ") + "%dX" % int(speed)
     cursor.position.x = -0.44 + 0.88 * playback / LENGTH
+    if spotlight_driver != "":
+        (driver_beacons[spotlight_driver] as Node3D).visible = (car_nodes[spotlight_driver] as Node3D).visible
 
 func _process(delta: float) -> void:
     intro_time += delta
@@ -458,10 +529,13 @@ func _read_controller() -> void:
             continue
         var hit := _hit_control(controller)
         var timeline := _timeline_fraction(controller) if hit == "" else -1.0
+        var driver := _hit_driver(controller) if hit == "" and timeline < 0.0 else ""
         if current_hover == "" and hit != "":
             current_hover = hit
         elif current_hover == "" and timeline >= 0.0:
             current_hover = "seek"
+        elif current_hover == "" and driver != "":
+            current_hover = "driver:" + driver
         var pressed := controller.get_float("trigger") > 0.65 or controller.is_button_pressed("trigger_click")
         if pressed and seeking_side == side and timeline >= 0.0:
             playback = minf(LENGTH - 0.001, timeline * LENGTH)
@@ -475,6 +549,10 @@ func _read_controller() -> void:
                 playing = false
                 _update_story()
                 _update_cars()
+                action_taken = true
+        elif pressed and not bool(trigger_down[side]) and driver != "":
+            if not action_taken and seeking_side == "":
+                _select_driver(driver)
                 action_taken = true
         elif pressed and not bool(trigger_down[side]) and hit != "":
             if not action_taken and seeking_side == "":
@@ -538,6 +616,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
         KEY_M: _action("scale")
         KEY_F: _action("speed")
         KEY_R: _action("center")
+        KEY_D:
+            var next_driver: int = (DRIVER_ORDER.find(spotlight_driver) + 1) % DRIVER_ORDER.size()
+            _select_driver(DRIVER_ORDER[next_driver])
 
 func _exit_tree() -> void:
     if xr_interface != null and xr_interface.is_initialized():

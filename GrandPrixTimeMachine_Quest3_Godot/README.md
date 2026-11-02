@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.8 Quest 3 standalone build
+# Grand Prix Time Machine — v0.9 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -7,7 +7,7 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a six-chapter documentary playback and a floating action-button interface.
-**v0.8 remains a VR-first release.** Its default CI builds a standalone
+**v0.9 remains a VR-first release.** Its default CI builds a standalone
 Quest 3 OpenXR APK without the OpenXR Vendors plugin, which is **not yet bundled**
 because native versions 5.1.0 and 5.0.1 crashed the Linux Godot 4.6.3 headless
 editor while importing. **MR unverified:** actual Meta passthrough has not been
@@ -20,16 +20,24 @@ network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 202
 reconstructed historical telemetry.** Narrative beats are sourced; see
 `docs/HISTORICAL_SOURCES.md`.
 
+## New in v0.9: interactive driver spotlight
+
+Point either tracked controller at a moving miniature car and press trigger to
+view official Fuji 1976 driver, team, race number, result and lap count. The
+selected car gets a gold marker. The viewer never moves or chases a car,
+avoiding artificial locomotion. Press **D** on desktop to cycle driver cards.
+Official results are factual, but car motions and track shape are illustrative.
+
 ## Controls
 
-- Aim EITHER controller at the six colored buttons and press trigger. Each press selects one action. Hovered buttons enlarge and the hint names the hovered action. Simultaneous presses invoke at most one action per frame.
+- Aim EITHER controller at a moving car for its driver card, or at the six colored buttons, and press trigger. Each press selects one action. Hovered buttons enlarge and the hint names the hovered action. Simultaneous presses invoke at most one action per frame.
 - Press B or Y to recenter. CENTER is also a visible button.
 - The pointer hides when tracking is lost. Keep a safe Quest boundary.
 - Aim at the diorama’s gold timeline, hold trigger to scrub, and release to pause.
 - The fixed-scale floating control rail remains accessible when the diorama expands.
 - Green = play/pause; grey = previous chapter; gold = next chapter;
   blue = expand/shrink; red = 1x/2x/4x speed.
-- In desktop preview: Space/N/P/M/F/R = pause/next/previous/scale/speed/recenter.
+- In desktop preview: Space/N/P/M/F/R/D = pause/next/previous/scale/speed/recenter/next driver.
 - The virtual model DOES NOT COLLIDE with real furniture or people. Remain seated or
   standing still, use Guardian, and never walk around the enlarged circuit expecting
   your physical space to be clear.
