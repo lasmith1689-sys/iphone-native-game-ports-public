@@ -33,7 +33,7 @@ def segment_crosses(a, b, c, d):
 class SourceBehaviorContracts(unittest.TestCase):
     def test_historical_event_times_are_ordered_and_within_playback(self):
         times = [float(x) for x in re.findall(r'\{"at": ([0-9.]+), "title":', SOURCE)]
-        self.assertEqual(len(times), 6)
+        self.assertEqual(len(times), 9)
         self.assertEqual(times[0], 0.0)
         self.assertEqual(times, sorted(times))
         playback_length = float(re.search(r'const LENGTH := ([0-9.]+)', SOURCE).group(1))
