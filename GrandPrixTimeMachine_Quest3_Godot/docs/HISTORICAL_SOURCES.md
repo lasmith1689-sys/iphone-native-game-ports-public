@@ -1,8 +1,9 @@
 # Fuji 1976 editorial verification ledger
 
 This is an **interactive illustration**, not a faithful historic race timing feed.
-The six *presentation seconds* (0, 14, 30, 58, 83, 104) are the author's
-screenplay positions. They are **not race timestamps or lap assignments**.
+The nine *presentation seconds* (0, 14, 28, 44, 60, 76, 90, 105, 120) are authored
+screenplay positions, NOT historical timestamps. Hunt's lap-68 pit stop is
+factually sourced, but the pit-stop vignette is illustrative.
 
 ## Evidence
 
@@ -19,6 +20,8 @@ screenplay positions. They are **not race timestamps or lap assignments**.
 | Depailler drove a six-wheel Tyrrell P34 | [Formula 1 history of the Tyrrell P34](https://www.formula1.com/en/latest/article/six-fascinating-facts-tyrrell-p34.5Eqy5lE9SsSLmF9an1Ak5g) | Six-wheel stylization, not a licensed model |
 | Driver spotlight: Andretti #5 Lotus Ford 1st/73 laps; Depailler #4 Tyrrell Ford 2nd/72 laps; Hunt #11 McLaren Ford 3rd/72 laps; Lauda #1 Ferrari withdrew after 2 laps | [Official F1 1976 Japanese GP results](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Selectable driver cards; model movements are not lap data |
 | Andretti won, Depailler second, Hunt third | [Formula 1 result](https://www.formula1.com/en/results/1976/races/373/japan/race-result) | Official Formula 1 race classification for Fuji, 24 October 1976 |
+| Drying track wore wet tyres, Andretti took the lead, Hunt's front tyre deflated on lap 68; Hunt rejoined fifth and recovered to third | [Motor Sport December 1976 report](https://www.motorsportmagazine.com/archive/article/december-1976/34/japanese-grand-prix-4/) | Contemporary account, not lap-accurate animation |
+| Hunt needed fourth to tie on points and win on countback; third secured the title outright | [Motor Sport December 1976 report](https://www.motorsportmagazine.com/archive/article/december-1976/34/japanese-grand-prix-4/) | Based on 65–68 pre-race points |
 | Hunt champion by one point, 69 to 68 | [Niki Lauda archive](https://nikilauda.org/seasons/1976/), [Formula 1 drivers standings](https://www.formula1.com/en/results/1976/drivers) | Corroborated |
 
 ## Illustrative content that must not be treated as fact

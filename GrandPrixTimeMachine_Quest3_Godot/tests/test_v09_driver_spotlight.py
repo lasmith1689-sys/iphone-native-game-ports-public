@@ -30,8 +30,8 @@ class DriverSpotlights(unittest.TestCase):
         for label in ('focus_title','focus_facts','focus_note'): self.assertIn('_label("'+label+'"',SRC)
         self.assertLess(SRC.index('_label("focus_title"'),SRC.index('    _update_spotlight()\n\nfunc _add_button'))
     def test_release(self):
-        self.assertIn('version/code=9',PRESET); self.assertIn('version/name="0.9.0"',PRESET)
-        self.assertIn('GrandPrixTimeMachine_Quest3_v0.9_Easy_Install',WORKFLOW)
+        self.assertIn('version/code=10',PRESET); self.assertIn('version/name="0.10.0"',PRESET)
+        self.assertIn('GrandPrixTimeMachine_Quest3_v0.10_Easy_Install',WORKFLOW)
     def test_sources(self):
         ledger=(ROOT/"docs/HISTORICAL_SOURCES.md").read_text()
         self.assertIn('Driver spotlight: Andretti #5',ledger)

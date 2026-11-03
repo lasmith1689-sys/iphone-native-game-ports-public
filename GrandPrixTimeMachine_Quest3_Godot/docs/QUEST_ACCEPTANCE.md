@@ -1,4 +1,4 @@
-# Quest 3 delivery acceptance | Grand Prix Time Machine v0.7
+# Quest 3 delivery acceptance | Grand Prix Time Machine v0.10
 
 **Source-only packages are not installable.** The actual deliverable is
 a signed Android ARM64 APK in a Windows Easy Install ZIP.
@@ -6,7 +6,7 @@ a signed Android ARM64 APK in a Windows Easy Install ZIP.
 The Oct 29 2026 [v0.5 build](https://github.com/lasmith1689-sys/iphone-native-game-ports-public/actions/runs/40946624259)
 passed 69/69 automated checks, Godot parser, headless startup, Android export,
 apksigner and ZIP integrity. v0.6 also passed public CI on October 30, 2026.
-v0.7 requires its own green source/test and Android build before release.
+v0.10 requires its own green source/test and Android build before release.
 
 ## Automated release gates
 

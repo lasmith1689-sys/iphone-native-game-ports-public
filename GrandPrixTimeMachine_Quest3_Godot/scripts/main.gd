@@ -1,17 +1,20 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.9: sourced driver spotlights and comfort-safe controller selection.
+## v0.10: nine research-backed beats and illustrative pit-stop/weather changes.
 
 const Track = preload("res://scripts/track.gd")
-const LENGTH := 123.0
+const LENGTH := 138.0
 const BEATS := [
-    {"at": 0.0, "title": "FUJI 1976", "subtitle": "24 OCTOBER  |  73 LAPS  |  CHAMPIONSHIP DECIDER", "detail": "Lauda arrives three points ahead of Hunt. Heavy rain threatens the race."},
-    {"at": 14.0, "title": "THE START", "subtitle": "HUNT TAKES THE EARLY LEAD", "detail": "Andretti starts on pole. Hunt moves ahead in treacherous conditions."},
-    {"at": 30.0, "title": "LAUDA WITHDRAWS", "subtitle": "AFTER TWO LAPS  |  SAFETY FIRST", "detail": "Lauda stops in the pits: the torrential conditions are too dangerous."},
-    {"at": 58.0, "title": "LATE-RACE DRAMA", "subtitle": "HUNT PITS  |  TYRE TROUBLE", "detail": "The track dries. Late tyre trouble sends Hunt to the pits and down the order."},
-    {"at": 83.0, "title": "THE FINISH", "subtitle": "ANDRETTI 1ST  |  DEPAILLER 2ND  |  HUNT 3RD", "detail": "Andretti wins. Hunt recovers to third place, enough for the title."},
-    {"at": 104.0, "title": "WORLD CHAMPION", "subtitle": "HUNT 69 POINTS  |  LAUDA 68", "detail": "James Hunt wins the 1976 World Drivers' Championship by one point."}
+    {"at": 0.0, "title": "FUJI 1976", "subtitle": "24 OCT | 73 LAPS | THE TITLE DECIDER", "detail": "Lauda begins with 68 points, Hunt with 65. Heavy rain threatens the start.", "weather": "HEAVY RAIN", "stakes": "LAUDA 68 | HUNT 65"},
+    {"at": 14.0, "title": "THE START", "subtitle": "RAIN DELAY | HUNT LEADS", "detail": "The delayed race begins in dangerous spray, with Hunt taking the early lead.", "weather": "HEAVY RAIN", "stakes": "HUNT NEEDS 4TH ON COUNTBACK | 3RD OUTRIGHT"},
+    {"at": 28.0, "title": "LAUDA WITHDRAWS", "subtitle": "AFTER TWO LAPS | SAFETY FIRST", "detail": "Lauda withdraws, judging the heavy rain too dangerous.", "weather": "HEAVY RAIN", "stakes": "LAUDA OUT | TITLE WITHIN HUNT'S REACH"},
+    {"at": 44.0, "title": "THE TRACK DRIES", "subtitle": "WET TYRES WEAR", "detail": "Wet-weather tyres overheat as conditions slowly improve.", "weather": "DRYING", "stakes": "HUNT LEADS | TYRE LIFE CRITICAL"},
+    {"at": 60.0, "title": "THE LONG GAMBLE", "subtitle": "TYRE TROUBLE | HUNT STAYS OUT", "detail": "Hunt nurses worn tyres as Andretti and Depailler close in.", "weather": "DRYING", "stakes": "A FINISH MATTERS MORE THAN A WIN"},
+    {"at": 76.0, "title": "ANDRETTI TAKES OVER", "subtitle": "LOTUS LEADS LATE", "detail": "Andretti moves into the lead after careful tyre management.", "weather": "DAMP", "stakes": "HUNT STILL IN THE TITLE FIGHT"},
+    {"at": 90.0, "title": "LAP 68: HUNT PITS", "subtitle": "TYRE DEFLATES | REJOINS FIFTH", "detail": "Hunt stops for tyres and rejoins fifth, short of the points he needs.", "weather": "DAMP", "stakes": "HUNT FIFTH | TITLE SLIPPING AWAY"},
+    {"at": 105.0, "title": "HUNT'S FIGHTBACK", "subtitle": "PASSES REGAZZONI AND JONES | THIRD", "detail": "Hunt fights back to third in the closing laps.", "weather": "DAMP", "stakes": "HUNT THIRD | FOUR POINTS SECURE THE TITLE"},
+    {"at": 120.0, "title": "WORLD CHAMPION", "subtitle": "ANDRETTI 1ST | DEPAILLER 2ND | HUNT 3RD", "detail": "Hunt wins the championship by a point after Andretti takes the Fuji victory.", "weather": "DAMP", "stakes": "HUNT 69 POINTS | LAUDA 68"}
 ]
 # Entrant data verified against the official Formula 1 1976 Japanese GP result.
 const DRIVER_ORDER := ["ANDRETTI", "HUNT", "LAUDA", "DEPAILLER"]
@@ -40,6 +43,8 @@ var passthrough_active := false
 var board: Node3D
 var ui_panel: Node3D
 var track: GPTrack
+var asphalt_material: StandardMaterial3D
+var pit_marker: MeshInstance3D
 var car_nodes: Dictionary = {}
 var driver_beacons: Dictionary = {}
 var spotlight_driver := ""
@@ -188,6 +193,8 @@ func _track_surface(name: String, width: float, height: float, color: Color) -> 
     inst.mesh = mesh.commit()
     # Damp pavement sheen without expensive full-screen reflections.
     inst.material_override = _material(color, 0.27 if name == "asphalt" else 0.82)
+    if name == "asphalt":
+        asphalt_material = inst.material_override as StandardMaterial3D
     board.add_child(inst)
 
 func _make_finish_line() -> void:
@@ -296,6 +303,8 @@ func _build_diorama() -> void:
     _make_finish_line()
     _box(board, "pit lane", Vector3(-0.06, 0.027, -0.31), Vector3(0.64, 0.006, 0.052), COLORS.charcoal)
     _box(board, "pit building", Vector3(-0.065, 0.066, -0.348), Vector3(0.58, 0.06, 0.024), COLORS.cream)
+    pit_marker = _box(board, "Pit highlight", Vector3(-0.18, 0.040, -0.316), Vector3(0.09, 0.004, 0.015), COLORS.gold)
+    pit_marker.visible = false
     for i in range(8):
         var t := 0.008 + 0.007 * float(i)
         var p: Vector3 = track.at(t)
@@ -329,6 +338,7 @@ func _build_diorama() -> void:
     _label("state", "PLAY 1X", Vector3(0.55, 0.070, -0.36), 0.018, COLORS.gold, true)
     _label("chapter", "01 / 06", Vector3(0.55, 0.046, -0.385), 0.014, COLORS.gold, true)
     _label("race_facts", "73 LAPS  |  4.359 KM  |  FUJI", Vector3(0.55, 0.034, -0.412), 0.009, COLORS.cream, true)
+    _label("conditions", "HEAVY RAIN", Vector3(-0.51, 0.011, -0.431), 0.011, COLORS.gold)
     _add_button("PLAY", -0.50, Color(0.29, 0.63, 0.57), "pause")
     _add_button("BACK", -0.30, Color(0.76, 0.75, 0.73), "previous")
     _add_button("NEXT", -0.10, Color(0.94, 0.70, 0.24), "next")
@@ -346,6 +356,9 @@ func _build_diorama() -> void:
     var card_note := _label("focus_note", "D ON DESKTOP CYCLES DRIVERS",
         Vector3(-0.53, 0.199, 0.0), 0.011, COLORS.cream, false, ui_panel)
     card_note.rotation.x = 0.0
+    var stakes := _label("stakes", "LAUDA 68 | HUNT 65", Vector3(0.0, 0.153, 0.0), 0.013, COLORS.gold, false, ui_panel)
+    stakes.rotation.x = 0.0
+    stakes.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     var hint := _label("control_hint", "AIM + TRIGGER TO SELECT   |   B/Y TO RECENTER",
         Vector3(0.0, 0.130, 0.0), 0.014, COLORS.cream, false, ui_panel)
     hint.rotation.x = 0.0
@@ -474,6 +487,12 @@ func _update_story() -> void:
     labels["subtitle"].text = BEATS[chapter].subtitle
     labels["detail"].text = BEATS[chapter].detail
     labels["chapter"].text = "%02d / %02d" % [chapter + 1, BEATS.size()]
+    labels["conditions"].text = "CONDITIONS: " + str(BEATS[chapter]["weather"])
+    labels["stakes"].text = str(BEATS[chapter]["stakes"])
+    # Editorial weather staging, not historic sensor data.
+    if asphalt_material != null:
+        asphalt_material.roughness = 0.27 if chapter < 3 else (0.47 if chapter < 5 else 0.75)
+        asphalt_material.albedo_color = COLORS.road if chapter < 3 else (Color(0.16, 0.17, 0.18) if chapter < 5 else Color(0.22, 0.21, 0.20))
 
 func _position_car(key: String, offset: float, lane: float, rate: float, active: bool) -> void:
     var car: Node3D = car_nodes[key]
@@ -490,8 +509,15 @@ func _position_car(key: String, offset: float, lane: float, rate: float, active:
 func _update_cars() -> void:
     _position_car("ANDRETTI", 0.00, 0.000, 1.10, true)
     _position_car("HUNT", 0.25, -0.012, 1.03, true)
-    _position_car("LAUDA", 0.48, 0.010, 1.04, playback < 30.0)
+    _position_car("LAUDA", 0.48, 0.010, 1.04, playback < 28.0)
     _position_car("DEPAILLER", 0.72, 0.012, 1.01, true)
+    # Illustrative pit-stop tableau, NOT lap-accurate car telemetry.
+    var hunt_in_pits := playback >= 90.0 and playback < 103.0
+    pit_marker.visible = hunt_in_pits
+    if hunt_in_pits:
+        var hunt_car: Node3D = car_nodes["HUNT"]
+        hunt_car.position = Vector3(-0.18, 0.052, -0.310)
+        hunt_car.rotation.y = 0.0
     labels["state"].text = ("PLAY " if playing else "PAUSE ") + "%dX" % int(speed)
     cursor.position.x = -0.44 + 0.88 * playback / LENGTH
     if spotlight_driver != "":

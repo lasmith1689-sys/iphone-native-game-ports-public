@@ -32,9 +32,9 @@ class VerifyQuest(unittest.TestCase):
     def test_track_kerbs(self): self.assertIn('red racing kerbs',SRC)
     def test_car_styles(self):
         for name in ('ANDRETTI','HUNT','LAUDA','DEPAILLER'): self.assertIn(name,SRC)
-    def test_historical_six_beats(self): self.assertEqual(len(re.findall(r'"at":', SRC)),6)
+    def test_historical_nine_beats(self): self.assertEqual(len(re.findall(r'"at":', SRC)),9)
     def test_late_race(self): self.assertIn('TYRE TROUBLE',SRC)
-    def test_lauda_withdraws(self): self.assertIn('playback < 30.0',SRC)
+    def test_lauda_withdraws(self): self.assertIn('playback < 28.0',SRC)
     def test_title_points(self): self.assertIn('69 POINTS',SRC)
     def test_editorial_disclaimer(self): self.assertIn('NOT LAP ACCURATE',SRC)
     def test_playback_jump(self): self.assertIn('"next"',SRC)

@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.9 Quest 3 standalone build
+# Grand Prix Time Machine — v0.10 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -6,8 +6,8 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 ## App
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
-car models, a six-chapter documentary playback and a floating action-button interface.
-**v0.9 remains a VR-first release.** Its default CI builds a standalone
+car models, a nine-chapter documentary playback and a floating action-button interface.
+**v0.10 remains a VR-first release.** Its default CI builds a standalone
 Quest 3 OpenXR APK without the OpenXR Vendors plugin, which is **not yet bundled**
 because native versions 5.1.0 and 5.0.1 crashed the Linux Godot 4.6.3 headless
 editor while importing. **MR unverified:** actual Meta passthrough has not been
@@ -20,7 +20,15 @@ network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 202
 reconstructed historical telemetry.** Narrative beats are sourced; see
 `docs/HISTORICAL_SOURCES.md`.
 
-## New in v0.9: interactive driver spotlight
+## New in v0.10: race director
+
+Nine researched beats now cover the rain-delayed start, Lauda's withdrawal,
+drying asphalt, tyre trouble, Andretti's lead, Hunt's lap-68 stop and the
+title fightback. Track shading and an on-screen title-stakes ticker follow
+the editorial story. Hunt briefly stops in a stylized pit-lane vignette; this
+is NOT historical vehicle telemetry or lap-by-lap racing.
+
+## Previously in v0.9: interactive driver spotlight
 
 Point either tracked controller at a moving miniature car and press trigger to
 view official Fuji 1976 driver, team, race number, result and lap count. The
