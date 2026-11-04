@@ -1,16 +1,16 @@
-name: Own retained native bootstrap iPhone SDK compile v1
+name: Own retained native bootstrap iPhone SDK compile v1a
 on:
   push:
-    branches: [codex/retained-native-bootstrap-sdk-v1-20261104]
-    paths: [.github/workflows/native-retained-bootstrap-sdk-v1.yml]
+    branches: [codex/retained-native-bootstrap-sdk-v1a-20261104]
+    paths: [.github/workflows/native-retained-bootstrap-sdk-v1a.yml]
 permissions:
   contents: read
 concurrency:
-  group: retained-native-bootstrap-sdk-v1
+  group: retained-native-bootstrap-sdk-v1a
   cancel-in-progress: false
 jobs:
   compile:
-    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/retained-native-bootstrap-sdk-v1-20261104'
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/retained-native-bootstrap-sdk-v1a-20261104'
     runs-on: xcode-27
     timeout-minutes: 12
     steps:
@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 1
           submodules: false
           lfs: false
-          sparse-checkout: native/support/retained-bootstrap-v1
+          sparse-checkout: native/support/retained-bootstrap-v1a
       - name: Verify self-authored finite payload
         shell: bash
         run: |
@@ -30,11 +30,11 @@ jobs:
           python3 - <<'PY'
           import hashlib,json,os,pathlib,subprocess
           assert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public'
-          assert os.environ['GITHUB_REF']=='refs/heads/codex/retained-native-bootstrap-sdk-v1-20261104'
+          assert os.environ['GITHUB_REF']=='refs/heads/codex/retained-native-bootstrap-sdk-v1a-20261104'
           assert os.environ['GITHUB_EVENT_NAME']=='push'
           assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==os.environ['GITHUB_SHA']
-          root=pathlib.Path('native/support/retained-bootstrap-v1');manifest=root/'payload-manifest.json'
-          raw=manifest.read_bytes();assert hashlib.sha256(raw).hexdigest()=='53b5961472b50ea5e07c0f9d1ae7a1ded1a330c144588ef1da470ac6a08ea2b5'
+          root=pathlib.Path('native/support/retained-bootstrap-v1a');manifest=root/'payload-manifest.json'
+          raw=manifest.read_bytes();assert hashlib.sha256(raw).hexdigest()=='2ea6c7a0c7dd0b3898daa59e70c58f300414ee039eac261031af224b14d4d4be'
           d=json.loads(raw);assert d['recoveredCodeIncluded'] is False and d['retailAssetsIncluded'] is False
           assert {p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()}==set(d['files'])|{'payload-manifest.json'}
           for name,pin in d['files'].items():
@@ -45,13 +45,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B native/support/retained-bootstrap-v1/run_sdk.py --output "$RUNNER_TEMP/retained-bootstrap-sdk-v1"
+          python3 -B native/support/retained-bootstrap-v1a/run_sdk.py --output "$RUNNER_TEMP/retained-bootstrap-sdk-v1a"
       - name: Retain own compile diagnostics and objects
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: own-retained-bootstrap-sdk-${{ github.run_id }}
-          path: ${{ runner.temp }}/retained-bootstrap-sdk-v1
+          path: ${{ runner.temp }}/retained-bootstrap-sdk-v1a
           if-no-files-found: error
           retention-days: 2
           compression-level: 6

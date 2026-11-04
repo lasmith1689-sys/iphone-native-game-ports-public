@@ -46,8 +46,8 @@
       "sha256": "7be26841cff99ea6b55d8809e2f8a3f869b3baeb11ccd448d12e6e9974425fd7"
     },
     "source/NGPRetainedGameControllerV1.m": {
-      "bytes": 13888,
-      "sha256": "b0d026096e1a9736ae3090c7ed2a73e09ec3e9ec8d889e0112bc32b74a7d9a8a"
+      "bytes": 14168,
+      "sha256": "a1917bf6a39c845bfb3c05c8cf841acb626bedb54f7aab1302b6e7cbf049a1de"
     },
     "source/ngp_app_gl_bind_v1.h": {
       "bytes": 246,

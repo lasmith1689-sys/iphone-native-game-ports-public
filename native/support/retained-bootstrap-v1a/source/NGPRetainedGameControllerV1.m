@@ -2,7 +2,12 @@
 #import "NGPAppSourceBindingV1.h"
 #import "cod_gl_ios.h"
 #include "ngp_app_gl_bind_v1.h"
+/* Captured power API mixes unannotated C declarations and annotated ObjC.
+ * Preserve its exact ABI/header; scope only this existing completeness warning. */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnullability-completeness"
 #include "ngp_power_lease_v1.h"
+#pragma clang diagnostic pop
 #include "ngp_boot_wait_v1.h"
 #include <stdatomic.h>
 #include <stdlib.h>
