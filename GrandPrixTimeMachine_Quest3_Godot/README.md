@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.10 Quest 3 standalone build
+# Grand Prix Time Machine — v0.11 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -7,20 +7,35 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a nine-chapter documentary playback and a floating action-button interface.
-**v0.10 remains a VR-first release.** Its default CI builds a standalone
+**v0.11 remains a VR-first release.** Its default CI builds a standalone
 Quest 3 OpenXR APK without the OpenXR Vendors plugin, which is **not yet bundled**
 because native versions 5.1.0 and 5.0.1 crashed the Linux Godot 4.6.3 headless
 editor while importing. **MR unverified:** actual Meta passthrough has not been
 integrated or physically tested. See `docs/MR_CI_BLOCKER.md` for the exact
 reproduction and safe recovery plan. The scene has no furniture anchoring.
 The target is a native, on-headset Android ARM64 app with no PCVR streaming or
-network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 2026. A separate passing v0.8 GitHub Actions run is required for this upgrade.
+network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 2026. Each new version requires its own passing public GitHub Actions run before delivery.
 
 **The circuit, car positions, model details and playback time are illustrative, not
 reconstructed historical telemetry.** Narrative beats are sourced; see
 `docs/HISTORICAL_SOURCES.md`.
 
-## New in v0.10: race director
+## New in v0.11: accessible controller navigation and light rain
+
+Press **A or X** to toggle playback without needing to aim at a tiny target.
+Flick either controller thumbstick left or right to skip one historical chapter.
+Release it back near the center before another chapter step. Each hand has a
+separate edge latch, and only one action can occur per rendered frame. Trigger
+selection and B/Y recenter still work, and the visible help now mentions the
+shortcuts.
+
+Rain now moves across the early Fuji story chapters through one **48-instance
+MultiMesh** (no imported textures, particle plugin or third-party assets).
+Rain transforms update at most 25 times per second while playback runs, freeze
+when paused, and turn off in later drying-track chapters. This procedural rain
+is an aesthetic illustration, not a weather reconstruction.
+
+## Previously in v0.10: race director
 
 Nine researched beats now cover the rain-delayed start, Lauda's withdrawal,
 drying asphalt, tyre trouble, Andretti's lead, Hunt's lap-68 stop and the
@@ -40,6 +55,7 @@ Official results are factual, but car motions and track shape are illustrative.
 
 - Aim EITHER controller at a moving car for its driver card, or at the six colored buttons, and press trigger. Each press selects one action. Hovered buttons enlarge and the hint names the hovered action. Simultaneous presses invoke at most one action per frame.
 - Press B or Y to recenter. CENTER is also a visible button.
+- Press A or X to pause/play, or flick either thumbstick left/right for one previous/next chapter step.
 - The pointer hides when tracking is lost. Keep a safe Quest boundary.
 - Aim at the diorama’s gold timeline, hold trigger to scrub, and release to pause.
 - The fixed-scale floating control rail remains accessible when the diorama expands.

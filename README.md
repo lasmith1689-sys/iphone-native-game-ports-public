@@ -26,3 +26,7 @@ experiments, so release CI keeps its previous verified direct-APK export.
 See [the MR integration blocker](GrandPrixTimeMachine_Quest3_Godot/docs/MR_CI_BLOCKER.md).
 Physical headset startup, controllers and passthrough remain untested.
 All geometry and on-track animations are illustrative.
+
+**v0.11 source changes:** A/X playback shortcut, per-hand thumbstick chapter
+navigation, and a small instanced rain effect for the early Fuji 1976 chapters.
+A passing public CI job verifies compilation, not physical Quest 3 operation.
