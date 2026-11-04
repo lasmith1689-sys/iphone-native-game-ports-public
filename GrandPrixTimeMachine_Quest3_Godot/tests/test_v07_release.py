@@ -22,7 +22,7 @@ class Version07Tests(unittest.TestCase):
         self.assertIn('Tyrrell P34', LEDGER)
     def test_simultaneous_press_single_action(self):
         self.assertIn('var action_taken := false', SRC)
-        self.assertEqual(SRC.count('if not action_taken and seeking_side == "":'),3)  # timeline, car, and control; all use same single-action latch
+        self.assertEqual(SRC.count('if not action_taken and seeking_side == "":'),4)  # timeline, car, and control; all use same single-action latch
         self.assertEqual(SRC.count('action_taken = true'),6)  # timeline, car, button, and recenter
         self.assertIn('trigger_down[side] = pressed',SRC)
     def test_hover_visual_label(self):
