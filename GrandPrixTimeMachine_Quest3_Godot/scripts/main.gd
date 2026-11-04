@@ -1,7 +1,7 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.10: nine research-backed beats and illustrative pit-stop/weather changes.
+## v0.11: A/X playback, thumbstick chapter steps, and instanced rainfall.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 138.0
@@ -59,6 +59,11 @@ var expanded := false
 var tabletop_scale := 0.94
 var trigger_down := {"left": false, "right": false}
 var center_down := {"left": false, "right": false}
+var quick_pause_down := {"left": false, "right": false}
+var stick_direction := {"left": 0, "right": 0}
+var rain_mesh: MultiMeshInstance3D
+var rain_clock := 0.0
+var rain_accum := 0.0
 var seeking_side := ""
 var beams: Dictionary = {}
 var hovered_action := ""
@@ -229,6 +234,39 @@ func _pine_tree(center: Vector3, height: float) -> void:
         crown.position = center + Vector3.UP * height * (0.48 + 0.19 * layer)
         board.add_child(crown)
 
+
+func _make_rain() -> void:
+    # Single instanced draw call; no per-drop nodes or proprietary assets.
+    var drop := BoxMesh.new()
+    drop.size = Vector3(0.0015, 0.032, 0.0015)
+    var multi := MultiMesh.new()
+    multi.transform_format = MultiMesh.TRANSFORM_3D
+    multi.mesh = drop
+    multi.instance_count = 48
+    rain_mesh = MultiMeshInstance3D.new()
+    rain_mesh.name = "Low-cost instanced rain"
+    rain_mesh.multimesh = multi
+    var water := _material(Color(0.62, 0.79, 0.91, 0.46), 1.0)
+    water.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+    water.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+    rain_mesh.material_override = water
+    board.add_child(rain_mesh)
+    _update_rain()
+
+func _update_rain() -> void:
+    if rain_mesh == null:
+        return
+    rain_mesh.visible = chapter < 5
+    if not rain_mesh.visible:
+        return
+    var multi: MultiMesh = rain_mesh.multimesh
+    for i in range(multi.instance_count):
+        var x := -0.58 + 1.16 * fposmod(float(i) * 0.75487766, 1.0)
+        var z := -0.32 + 0.66 * fposmod(float(i) * 0.56984029, 1.0)
+        # Falling streaks update at most 25 Hz, not each XR refresh.
+        var y := 0.085 + 0.20 * fposmod(float(i) * 0.438 - rain_clock * 1.45, 1.0)
+        multi.set_instance_transform(i, Transform3D(Basis.IDENTITY, Vector3(x, y, z)))
+
 func _make_car(key: String, body_color: Color, accent_color: Color) -> void:
     var car := Node3D.new()
     car.name = key + " | illustrative 1976-style car"
@@ -316,6 +354,7 @@ func _build_diorama() -> void:
         for i in range(7):
             _pine_tree(Vector3(side * (0.594 + 0.004 * float(i % 2)), 0.011,
                 -0.24 + 0.084 * float(i)), 0.068 + 0.013 * float(i % 3))
+    _make_rain()
     for i in range(3):
         _box(board, "grandstand", Vector3(-0.22 + 0.2 * i, 0.047, 0.345), Vector3(0.17, 0.042, 0.034), COLORS.charcoal)
         for row in range(3):
@@ -363,6 +402,10 @@ func _build_diorama() -> void:
         Vector3(0.0, 0.130, 0.0), 0.014, COLORS.cream, false, ui_panel)
     hint.rotation.x = 0.0
     hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    var shortcuts := _label("shortcut_hint", "A/X: PAUSE | STICK L/R: CHAPTER",
+        Vector3(0.0, 0.095, 0.0), 0.011, COLORS.cream, false, ui_panel)
+    shortcuts.rotation.x = 0.0
+    shortcuts.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     _update_story()
     _update_cars()
     _update_spotlight()
@@ -489,6 +532,7 @@ func _update_story() -> void:
     labels["chapter"].text = "%02d / %02d" % [chapter + 1, BEATS.size()]
     labels["conditions"].text = "CONDITIONS: " + str(BEATS[chapter]["weather"])
     labels["stakes"].text = str(BEATS[chapter]["stakes"])
+    _update_rain()
     # Editorial weather staging, not historic sensor data.
     if asphalt_material != null:
         asphalt_material.roughness = 0.27 if chapter < 3 else (0.47 if chapter < 5 else 0.75)
@@ -535,6 +579,12 @@ func _process(delta: float) -> void:
         if previous != new_chapter:
             _update_story()
         _update_cars()
+        if chapter < 5:
+            rain_clock += maxf(delta, 0.0)
+            rain_accum += maxf(delta, 0.0)
+            if rain_accum >= 0.04:
+                rain_accum = 0.0
+                _update_rain()
     _read_controller()
 
 func _read_controller() -> void:
@@ -550,6 +600,8 @@ func _read_controller() -> void:
         if not tracked:
             trigger_down[side] = false
             center_down[side] = false
+            quick_pause_down[side] = false
+            stick_direction[side] = 0
             if seeking_side == side:
                 seeking_side = ""
             continue
@@ -593,6 +645,26 @@ func _read_controller() -> void:
                 _action("center")
                 action_taken = true
         center_down[side] = center_pressed
+        # Optional shortcuts, usable without precise laser targeting.
+        var quick_pressed := controller.is_button_pressed("ax_button")
+        if quick_pressed and not bool(quick_pause_down[side]) and not action_taken and seeking_side == "":
+            _action("pause")
+            action_taken = true
+        quick_pause_down[side] = quick_pressed
+        var axis: float = controller.get_vector2("primary").x
+        var step := 0
+        if axis > 0.75:
+            step = 1
+        elif axis < -0.75:
+            step = -1
+        if absf(axis) < 0.35:
+            stick_direction[side] = 0
+        elif step != 0 and int(stick_direction[side]) == 0:
+            # Latch even if another action happened first this frame.
+            stick_direction[side] = step
+            if not action_taken and seeking_side == "":
+                _action("next" if step > 0 else "previous")
+                action_taken = true
     _show_hover(current_hover)
 
 func _action(action: String) -> void:
