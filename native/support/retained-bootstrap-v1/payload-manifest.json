@@ -1,0 +1,102 @@
+{
+  "engineLinked": false,
+  "files": {
+    "adapter/NGPAppSourceBindingV1.h": {
+      "bytes": 764,
+      "sha256": "5e4946a719e2185c501225be0b7a4d8c8b38865f7de423b1bcaa392a527c44a4"
+    },
+    "adapter/ngp_app_engine_adapter_v1.h": {
+      "bytes": 2912,
+      "sha256": "a452f4af4e2e48d157c8cd01ac25520ee99602945784661b83e5b7cfc59d2619"
+    },
+    "adapter/ngp_app_engine_frame_v1.h": {
+      "bytes": 2460,
+      "sha256": "96096cebc819ff2d049ce668058d0f8c3efc36f5d3ddab69ba6cfda0c1de53af"
+    },
+    "bounded_process.py": {
+      "bytes": 3293,
+      "sha256": "ce89924f280c180fe0ca9e6d68c45c4174bd5fe37d0aa93d94b0222d9b5c366a"
+    },
+    "composition/cod_gl_host_v1.h": {
+      "bytes": 2464,
+      "sha256": "a2a9641cf782fbc0e450a6390e907bbb3493adc204f6f583096bd8067c188a57"
+    },
+    "composition/worker/cod_gl_ios.h": {
+      "bytes": 2732,
+      "sha256": "34c223639d98072d469bd4c0ecce3d311ff1248fde6299c13ceb4df23ba88f98"
+    },
+    "engine/cod_native_host_v4.h": {
+      "bytes": 1825,
+      "sha256": "467644bf2a0021eb523eb3c67c16ab7bf2418ae2a80d36d5bcf590bbf72e1bf8"
+    },
+    "engine/platform_init_v1.h": {
+      "bytes": 3438,
+      "sha256": "f8cd0b0386afe74254594259855381ce537a8e18a1f9b9ab0017029b518b60ae"
+    },
+    "power/ngp_power_lease_v1.h": {
+      "bytes": 2141,
+      "sha256": "c2af3409c22ef1c425fc259f80f303266e154bb66225f592b84f0768d2363dbd"
+    },
+    "run_sdk.py": {
+      "bytes": 6848,
+      "sha256": "73c4c9dcbb3fd7d153319dfd1b0dbbeec81df09fef378670ffd0612614d5ec4e"
+    },
+    "source/NGPRetainedGameControllerV1.h": {
+      "bytes": 2577,
+      "sha256": "7be26841cff99ea6b55d8809e2f8a3f869b3baeb11ccd448d12e6e9974425fd7"
+    },
+    "source/NGPRetainedGameControllerV1.m": {
+      "bytes": 13888,
+      "sha256": "b0d026096e1a9736ae3090c7ed2a73e09ec3e9ec8d889e0112bc32b74a7d9a8a"
+    },
+    "source/ngp_app_gl_bind_v1.h": {
+      "bytes": 246,
+      "sha256": "2788c57282b97ae164857c77474190a9ad9cf1ad0d373877c82cd5105bcbbff9"
+    },
+    "source/ngp_boot_wait_v1.c": {
+      "bytes": 726,
+      "sha256": "d2b1d1ec3b1124102811de98457024b54804db7c0478b7f49701e183e2240930"
+    },
+    "source/ngp_boot_wait_v1.h": {
+      "bytes": 1062,
+      "sha256": "aeaa3010085d8eaffb7d2bb1447635f004818b2d91d9e450ae6df7d9d53bb5f1"
+    },
+    "support/native/aot/platform_init/v1/platform_init_v1.h": {
+      "bytes": 3438,
+      "sha256": "f8cd0b0386afe74254594259855381ce537a8e18a1f9b9ab0017029b518b60ae"
+    },
+    "support/native/platform/cod-gl-ios/input-v1/cod_input_queue_v1.h": {
+      "bytes": 1938,
+      "sha256": "29547c1f4172dd105ab211192a86a0845c97328a9cc9c162434175749580c5fd"
+    },
+    "support/native/platform/cod-gl-ios/input-v3-bind-v3/cod_input_queue_v2.h": {
+      "bytes": 898,
+      "sha256": "5db009917ace7802c60294a418d4e39c36bcbbf594cbf637986125d7df61b88b"
+    },
+    "support/native/platform/cod-gl-ios/input-v3-bind-v3/cod_uikit_input_v3.h": {
+      "bytes": 1831,
+      "sha256": "7cbb097906666c249eada88817fd7a55da55d4d19b7675c26f7fcac4f2f504d0"
+    },
+    "tests/test_source_contract.py": {
+      "bytes": 2894,
+      "sha256": "5428caf4dda3635857c6d41b5f0b0c40d85a061911b93345a66c165050ef224a"
+    },
+    "tests/test_wait_policy.c": {
+      "bytes": 1783,
+      "sha256": "cd5e0e8480a72979e06a0a02be3a179c16a160b02cac48e0ec3206c91093cd89"
+    },
+    "v12b/cod_gl_dispatch.h": {
+      "bytes": 7579,
+      "sha256": "7905377b0e1e0632577ac2e21748cad94ae8214ec51e668a554c35de54ef8fa9"
+    },
+    "v12b/cod_gl_owned_profile.h": {
+      "bytes": 2910,
+      "sha256": "dc5fd0d67d9a6cea2fc4cc81e6b2e2f7d90bd3095f4397cdca82b4158142d648"
+    }
+  },
+  "installable": false,
+  "phoneOrSigningActions": false,
+  "recoveredCodeIncluded": false,
+  "retailAssetsIncluded": false,
+  "schema": "own-retained-controller-compile-v1"
+}
