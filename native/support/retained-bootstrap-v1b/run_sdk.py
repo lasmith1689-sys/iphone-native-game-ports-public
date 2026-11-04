@@ -77,7 +77,11 @@ def run(output):
             objects[role]={'object':identity(o),'stackUsage':identity(su),'repeatExact':True}
         result['objects']=objects;result['controllerObjectCompile']=True
         # Only this newly authored finite arithmetic test executes on the Mac.
-        command('host-policy-compile',[clang,'-std=c17','-O2','-Wall','-Wextra','-Werror',
+        mac_sdk=command('macos-sdk-path',['/usr/bin/xcrun','--sdk','macosx','--show-sdk-path'])
+        need(Path(mac_sdk).is_dir(),'actual separate macOS SDK for own host test')
+        result['hostTestMacOSSDK']=mac_sdk
+        command('host-policy-compile',[clang,'-target','arm64-apple-macos14.0','-isysroot',mac_sdk,
+                                     '-std=c17','-O2','-Wall','-Wextra','-Werror',
                                      '-I',str(HOME/'source'),str(HOME/'tests/test_wait_policy.c'),
                                      str(HOME/'source/ngp_boot_wait_v1.c'),'-o',str(work/'test-wait')])
         host_result=command('host-policy-test',[str(work/'test-wait')]);need(host_result.startswith('PASS wait policy:'),'actual own host test output')

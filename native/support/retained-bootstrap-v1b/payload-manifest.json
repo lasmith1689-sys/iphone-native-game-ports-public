@@ -38,8 +38,8 @@
       "sha256": "c2af3409c22ef1c425fc259f80f303266e154bb66225f592b84f0768d2363dbd"
     },
     "run_sdk.py": {
-      "bytes": 6848,
-      "sha256": "73c4c9dcbb3fd7d153319dfd1b0dbbeec81df09fef378670ffd0612614d5ec4e"
+      "bytes": 7162,
+      "sha256": "4bb23b76a92d93efee94b1950770fcfd3888e9f4b088248608dc596263390160"
     },
     "source/NGPRetainedGameControllerV1.h": {
       "bytes": 2577,
