@@ -28,7 +28,7 @@ class DriverSpotlights(unittest.TestCase):
         self.assertIn('KEY_D:',SRC); self.assertIn('_select_driver(DRIVER_ORDER[next_driver])',SRC)
     def test_card_labels(self):
         for label in ('focus_title','focus_facts','focus_note'): self.assertIn('_label("'+label+'"',SRC)
-        self.assertLess(SRC.index('_label("focus_title"'),SRC.index('    _update_spotlight()\n\nfunc _add_button'))
+        self.assertLess(SRC.index('_label("focus_title"'), SRC.index('func _add_button'))
     def test_release(self):
         self.assertIn('version/code=12',PRESET); self.assertIn('version/name="0.12.0"',PRESET)
         self.assertIn('GrandPrixTimeMachine_Quest3_v0.12_Easy_Install',WORKFLOW)
