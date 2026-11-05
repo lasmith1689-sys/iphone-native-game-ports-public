@@ -65,6 +65,12 @@ jobs:
         PY
 
         '
+    - name: Read bounded own archive catalogue on failure
+      if: failure()
+      shell: bash
+      run: "set -euo pipefail\npython3 - <<'PY'\nimport os,pathlib\np=pathlib.Path(os.environ['RUNNER_TEMP'])/'native-monotonic-proof/output/logs/archive-members.stdout'\n\
+        if p.is_file():\n b=p.read_bytes();assert len(b)<8192;print(repr(b.decode()))\nelse:print('Archive catalogue\
+        \ was not reached')\nPY\n"
     - name: Require actual SDK and native outcomes
       shell: bash
       run: "set -euo pipefail\numask 077\npython3 - <<'PY'\nimport hashlib,json,os,pathlib\nroot=pathlib.Path(os.environ['RUNNER_TEMP'])/'native-monotonic-proof';output=root/'output'\n\
