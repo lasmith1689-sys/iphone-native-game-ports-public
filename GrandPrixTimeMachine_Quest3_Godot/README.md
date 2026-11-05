@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.11 Quest 3 standalone build
+# Grand Prix Time Machine — v0.12 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -7,7 +7,7 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a nine-chapter documentary playback and a floating action-button interface.
-**v0.11 remains a VR-first release.** Its default CI builds a standalone
+**v0.12 remains a VR-first release.** Its default CI builds a standalone
 Quest 3 OpenXR APK without the OpenXR Vendors plugin, which is **not yet bundled**
 because native versions 5.1.0 and 5.0.1 crashed the Linux Godot 4.6.3 headless
 editor while importing. **MR unverified:** actual Meta passthrough has not been
@@ -20,10 +20,24 @@ network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 202
 reconstructed historical telemetry.** Narrative beats are sourced; see
 `docs/HISTORICAL_SOURCES.md`.
 
-## New in v0.11: accessible controller navigation and light rain
+## New in v0.12: seated-height comfort and live XR status
+
+Move either controller thumbstick **up/down** to raise or lower the miniature by
+8 cm per fresh flick, clamped to ±32 cm. Left/right still step one chapter.
+The stronger axis wins on diagonal motion to reduce accidental skips.
+On desktop preview use Up/Down arrows to test the same feature.
+
+An in-headset status line updates four times per second with VR mode,
+left/right controller tracking and board elevation. It can help diagnose
+tracking loss on real hardware without needing a PC screen. This is a
+**runtime diagnostic, not evidence that Quest 3 hardware has been tested**.
+The label says MR (UNVERIFIED) only if a passthrough environment reports
+active. True Meta passthrough is **not bundled or certified** in this build.
+
+## Previously in v0.11: accessible controller navigation and light rain
 
 Press **A or X** to toggle playback without needing to aim at a tiny target.
-Flick either controller thumbstick left or right to skip one historical chapter.
+Flick either controller thumbstick left or right to skip one historical chapter. Flick up or down to raise or lower the diorama.
 Release it back near the center before another chapter step. Each hand has a
 separate edge latch, and only one action can occur per rendered frame. Trigger
 selection and B/Y recenter still work, and the visible help now mentions the
@@ -55,13 +69,13 @@ Official results are factual, but car motions and track shape are illustrative.
 
 - Aim EITHER controller at a moving car for its driver card, or at the six colored buttons, and press trigger. Each press selects one action. Hovered buttons enlarge and the hint names the hovered action. Simultaneous presses invoke at most one action per frame.
 - Press B or Y to recenter. CENTER is also a visible button.
-- Press A or X to pause/play, or flick either thumbstick left/right for one previous/next chapter step.
+- Press A or X to pause/play, or flick either thumbstick left/right for one previous/next chapter step. Flick up/down to adjust diorama height; the floating controls stay at a fixed distance from your head.
 - The pointer hides when tracking is lost. Keep a safe Quest boundary.
 - Aim at the diorama’s gold timeline, hold trigger to scrub, and release to pause.
 - The fixed-scale floating control rail remains accessible when the diorama expands.
 - Green = play/pause; grey = previous chapter; gold = next chapter;
   blue = expand/shrink; red = 1x/2x/4x speed.
-- In desktop preview: Space/N/P/M/F/R/D = pause/next/previous/scale/speed/recenter/next driver.
+- In desktop preview: Space/N/P/M/F/R/D = pause/next/previous/scale/speed/recenter/next driver; Up/Down arrows adjust diorama height.
 - The virtual model DOES NOT COLLIDE with real furniture or people. Remain seated or
   standing still, use Guardian, and never walk around the enlarged circuit expecting
   your physical space to be clear.
