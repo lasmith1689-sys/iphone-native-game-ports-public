@@ -1,0 +1,88 @@
+name: 'Native elapsed clock: genuine iPhone SDK and Mac tests'
+'on':
+  workflow_dispatch: null
+  push:
+    branches:
+    - codex/native-monotonic-sdk-v1c-20261105
+    paths:
+    - .github/workflows/native-monotonic-sdk-v1c.yml
+    - native/platform/native-monotonic-v1c-20261105/**
+permissions:
+  contents: read
+concurrency:
+  group: native-monotonic-sdk-v1c
+  cancel-in-progress: false
+jobs:
+  native-clock:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private
+      == false && github.ref == 'refs/heads/codex/native-monotonic-sdk-v1c-20261105' && (github.event_name == 'push'
+      || github.event_name == 'workflow_dispatch')
+    runs-on: xcode-27
+    timeout-minutes: 12
+    steps:
+    - name: Authenticate reviewed support files at exact event commit
+      shell: bash
+      run: "set -euo pipefail\numask 077\npython3 - <<'PY'\nimport hashlib,json,os,pathlib,re,urllib.request\nassert\
+        \ os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public'\nassert os.environ['GITHUB_REF']=='refs/heads/codex/native-monotonic-sdk-v1c-20261105'\n\
+        assert os.environ['GITHUB_EVENT_NAME'] in ('push','workflow_dispatch')\nsha=os.environ['GITHUB_SHA'];assert\
+        \ re.fullmatch('[0-9a-f]{40}',sha)\nevent=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())\n\
+        assert event['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public' and event['repository']['private']\
+        \ is False\nif os.environ['GITHUB_EVENT_NAME']=='push':\n assert event['after']==sha and event.get('deleted',False)\
+        \ is False\nroot=pathlib.Path(os.environ['RUNNER_TEMP'])/'native-monotonic-proof'\nassert not root.exists()\
+        \ and not any(p.is_symlink() for p in (root,*root.parents))\nsource=root/'source';source.mkdir(parents=True)\n\
+        manifest={'div64.c': {'bytes': 1896, 'sha256': '8c55970261190564bd625b2d6ab9d643078b77a0124c6e60fb2ce7b2b3266dd0'},\
+        \ 'div64.h': {'bytes': 751, 'sha256': 'fda9705395aa9de858304f24c65919abd20fc255badfd6d44e661a3d2b1cd0bd'},\
+        \ 'monotonic.c': {'bytes': 1318, 'sha256': 'ac36c65a30eae875ea4da4c9e2622662cb21abc0fb4d256ee2944a8e95d7d41d'},\
+        \ 'monotonic.h': {'bytes': 1194, 'sha256': '1bb2bd273bacb7edd830e0720f97d425b4aec4545fe261ef2163bb8727692b40'},\
+        \ 'provider_darwin.c': {'bytes': 443, 'sha256': 'e0252920dc4667e33a1f5e14cab0f9a53155830adad0464f599d87ae131f3730'},\
+        \ 'provider_windows.c': {'bytes': 517, 'sha256': 'e8c120c606759609dac5e7cd0cfdc432960199161d5e987ea47619d435e56c94'},\
+        \ 'test_native.c': {'bytes': 4324, 'sha256': '0fd2e6d88316f959d3b452fddecac6f2279cc03d738ea7c467fab54ce4e0aa12'},\
+        \ 'run_sdk.py': {'bytes': 8301, 'sha256': 'ab1788213063815c449ccdac5a17c6c00eea6c943661cd436e4f595bd02511c5'},\
+        \ 'README.md': {'bytes': 2809, 'sha256': '460b4f1b4b9faaaf5c8a6b2f44b5b0c5ec45c768e09b83f99769c975846ce59a'}}\n\
+        for name,row in manifest.items():\n assert name==pathlib.PurePosixPath(name).name and row['bytes']<100000\n\
+        \ url='https://raw.githubusercontent.com/'+'lasmith1689-sys/iphone-native-game-ports-public'+'/'+sha+'/'+'native/platform/native-monotonic-v1c-20261105'+'/'+name\n\
+        \ with urllib.request.urlopen(url,timeout=45) as response:data=response.read(row['bytes']+1)\n assert len(data)==row['bytes']\
+        \ and hashlib.sha256(data).hexdigest()==row['sha256'],name\n (source/name).write_bytes(data)\n(root/'reviewed-source-closure.json').write_text(json.dumps(manifest,sort_keys=True,indent=2)+'\\\
+        n')\nprint('Authenticated nine self-authored support files; no game code, assets or signing identity.')\n\
+        \nPY\n"
+    - name: Compile genuine iPhone objects and run Mac-only clock tests
+      shell: bash
+      run: 'set -euo pipefail
+
+        umask 077
+
+        python3 - <<''PY''
+
+        import os,pathlib,subprocess,sys
+
+        root=pathlib.Path(os.environ[''RUNNER_TEMP''])/''native-monotonic-proof''
+
+        p=subprocess.run([sys.executable,str(root/''source/run_sdk.py''),''--output'',str(root/''output'')],timeout=540)
+
+        assert p.returncode==0,''SDK and native host tests must succeed''
+
+
+        PY
+
+        '
+    - name: Require actual SDK and native outcomes
+      shell: bash
+      run: "set -euo pipefail\numask 077\npython3 - <<'PY'\nimport hashlib,json,os,pathlib\nroot=pathlib.Path(os.environ['RUNNER_TEMP'])/'native-monotonic-proof';output=root/'output'\n\
+        manifest=json.loads((root/'reviewed-source-closure.json').read_text())\nfor name,row in manifest.items():\n\
+        \ p=root/'source'/name;assert p.stat().st_size==row['bytes'] and hashlib.sha256(p.read_bytes()).hexdigest()==row['sha256']\n\
+        r=json.loads((output/'result.json').read_text())\nassert r['status']=='native-support-sdk-and-host-tests-passed'\n\
+        assert r['AppleSDKUsed'] is True and r['repeatedObjectsIdentical'] is True and len(r['objects'])==3\nfor\
+        \ name in ('iPhoneExecuted','gameCodeIncluded','gameExecuted','signed','installable'):assert r[name] is\
+        \ False\nfiles=list(output.rglob('*'));assert len(files)<200 and all(not p.is_symlink() for p in files)\n\
+        assert sum(p.stat().st_size for p in files if p.is_file())<10*1024*1024\nprint(json.dumps({'status':r['status'],'SDKVersion':r['SDKVersion'],'archive':r['archive'],'iPhoneExecuted':False}))\n\
+        \nPY\n"
+    - name: Upload own support objects and bounded test evidence
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: native-monotonic-sdk-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/native-monotonic-proof/output
+        if-no-files-found: error
+        retention-days: 1
+        compression-level: 6
+        include-hidden-files: false
+        archive: true
