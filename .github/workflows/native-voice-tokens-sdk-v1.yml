@@ -1,0 +1,59 @@
+name: 'Native voice tokens: real Mac mixer and genuine iPhone SDK'
+'on':
+  workflow_dispatch: null
+  push:
+    branches:
+    - codex/native-voice-tokens-sdk-v1-20261105
+    paths:
+    - .github/workflows/native-voice-tokens-sdk-v1.yml
+    - native/platform/native-voice-tokens-sdk-v1-20261105/**
+permissions:
+  contents: read
+concurrency:
+  group: native-voice-tokens-sdk-v1
+  cancel-in-progress: false
+jobs:
+  native-voices:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/native-voice-tokens-sdk-v1-20261105' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: xcode-27
+    timeout-minutes: 18
+    steps:
+    - name: Authenticate eleven own support files
+      shell: bash
+      run: "set -euo pipefail\numask 077\npython3 -B - <<'PY'\nimport hashlib,json,os,pathlib,re,urllib.request\nassert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public' and os.environ['GITHUB_REF']=='refs/heads/codex/native-voice-tokens-sdk-v1-20261105'\nassert os.environ['GITHUB_EVENT_NAME'] in ('push','workflow_dispatch')\nsha=os.environ['GITHUB_SHA'];assert re.fullmatch('[0-9a-f]{40}',sha)\ne=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text());assert e['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public' and e['repository']['private'] is False\nif os.environ['GITHUB_EVENT_NAME']=='push':assert e['after']==sha and e['ref']=='refs/heads/codex/native-voice-tokens-sdk-v1-20261105' and not e.get('deleted',False)\nroot=pathlib.Path(os.environ['RUNNER_TEMP'])/'native-voice-tokens-proof';assert not root.exists() and not any(p.is_symlink() for p in (root,*root.parents))\nsource=root/'source';source.mkdir(parents=True);manifest={'ngp_voice_tokens_v1.c':\
+        \ {'bytes': 7632, 'sha256': 'e21be2c2fee27452c76b3a433490bc32831a6014cc02332d143af0d4a8051415'}, 'ngp_voice_tokens_v1.h': {'bytes': 2125, 'sha256': 'a44169deb9401e5cff1dd9b6d26fe7982fd66a0c467b17835d9b374ff5ef9fb5'}, 'fixture_real.c': {'bytes': 4901, 'sha256': '859b65d00ac7e8a58d95925921accf8af0add2f1e7b0bebd883f7a90a755b134'}, 'ngp_audio_shared_impl_tokens_v1.c': {'bytes': 149, 'sha256': 'fa5a4d118fcf01e6d0ff93ba351359f751e970b68028ee25d2d2210206c06d0b'}, 'ngp_audio_shared_profile_v1.h': {'bytes': 577, 'sha256': '8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397'}, 'ngp_voice_service_v1.c': {'bytes': 25572, 'sha256': '0b84cb7b64cd0e7a47090e420b9fe0e6915584ad20b21bf2efac6af2b243def9'}, 'ngp_voice_service_v1.h': {'bytes': 5102, 'sha256': 'e849cc4a659286c53dc9b93741979d97544317a262a391318a5c11377ce5fae3'}, 'ngp_voice_gain_balance_v2.h': {'bytes': 1507, 'sha256': '3ff607a8db4cf14646bf6e4c91a6474d3a7f6508cc14318b85c6a6628b6590c9'}, 'inspect_image.py': {'bytes': 3901, 'sha256':\
+        \ '408e13fcb27838d5eea161491eb538e2a91cdd5ccecf84416191390d712efa52'}, 'run_sdk.py': {'bytes': 8051, 'sha256': 'a4c1da04efde996bb4a9bb51e6d149aeb9f22be38421eff9563cf41933dac8e8'}, 'README.md': {'bytes': 1424, 'sha256': '3f7fb24ac245dca688a6999fccdda1cbd87bc62da4e0c6a4a85f4dfdcd770d3e'}}\nfor name,row in manifest.items():\n assert name==pathlib.PurePosixPath(name).name and row['bytes']<100000\n url='https://raw.githubusercontent.com/'+'lasmith1689-sys/iphone-native-game-ports-public'+'/'+sha+'/'+'native/platform/native-voice-tokens-sdk-v1-20261105'+'/'+name\n with urllib.request.urlopen(url,timeout=45) as response:data=response.read(row['bytes']+1)\n assert len(data)==row['bytes'] and hashlib.sha256(data).hexdigest()==row['sha256']\n (source/name).write_bytes(data)\n(root/'reviewed-source-closure.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+chr(10))\nprint('Authenticated eleven own support/test files; no recovered code, retail assets or build secret.')\nPY\n"
+    - name: Run actual Mac mixer and repeat genuine iPhone SDK objects
+      shell: bash
+      run: 'set -euo pipefail
+
+        umask 077
+
+        python3 -B - <<''PY''
+
+        import os,pathlib,subprocess,sys
+
+        root=pathlib.Path(os.environ[''RUNNER_TEMP''])/''native-voice-tokens-proof''
+
+        p=subprocess.run([sys.executable,''-B'',str(root/''source/run_sdk.py''),''--output'',str(root/''output'')],timeout=900)
+
+        assert p.returncode==0,''Real backend integration and actual SDK build must pass''
+
+        PY
+
+        '
+    - name: Require real backend and exact SDK results
+      shell: bash
+      run: "set -euo pipefail\npython3 -B - <<'PY'\nimport hashlib,json,os,pathlib\nroot=pathlib.Path(os.environ['RUNNER_TEMP'])/'native-voice-tokens-proof';out=root/'output';closure=json.loads((root/'reviewed-source-closure.json').read_text())\nassert closure==json.loads((out/'source-identities.json').read_text())\nfor name,w in closure.items():\n b=(root/'source'/name).read_bytes();assert len(b)==w['bytes'] and hashlib.sha256(b).hexdigest()==w['sha256']\nr=json.loads((out/'result.json').read_text());assert r['status']=='own-voice-token-real-Mac-and-genuine-SDK-passed' and r['SDKVersion']=='27.1'\nfor name in ('actualSDKUsed','actualMixerLinked','repeatedWholeObjectsAndStackUsageIdentical'):assert r[name] is True\nfor name in ('privateGameCodeIncluded','physicalDeviceStarted','iPhoneExecuted','gameExecuted','developerSigned','installable'):assert r[name] is False\nassert r['nativeMacOutcome']['actualVoiceLoans']==77 and r['nativeMacOutcome']['verifiedPCMFrames']==224 and len(r['objects'])==4\n\
+        files=list(out.rglob('*'));assert len(files)<200 and all(not p.is_symlink() for p in files) and sum(p.stat().st_size for p in files if p.is_file())<48*1024*1024\nprint(json.dumps({'status':r['status'],'SDKVersion':r['SDKVersion'],'nativeMacOutcome':r['nativeMacOutcome'],'iPhoneExecuted':False}))\nPY\n"
+    - name: Retain bounded own-source build evidence
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: native-voice-tokens-sdk-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/native-voice-tokens-proof/output
+        if-no-files-found: error
+        retention-days: 1
+        compression-level: 6
+        include-hidden-files: false
+        archive: true
