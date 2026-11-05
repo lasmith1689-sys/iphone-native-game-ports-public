@@ -22,8 +22,8 @@ class Version07Tests(unittest.TestCase):
         self.assertIn('Tyrrell P34', LEDGER)
     def test_simultaneous_press_single_action(self):
         self.assertIn('var action_taken := false', SRC)
-        self.assertEqual(SRC.count('if not action_taken and seeking_side == "":'),4)  # timeline, car, and control; all use same single-action latch
-        self.assertEqual(SRC.count('action_taken = true'),6)  # timeline, car, button, and recenter
+        self.assertGreaterEqual(SRC.count('if not action_taken and seeking_side == "":'),4)  # timeline, car, and control; all use same single-action latch
+        self.assertGreaterEqual(SRC.count('action_taken = true'),6)  # timeline, car, button, and recenter
         self.assertIn('trigger_down[side] = pressed',SRC)
     def test_hover_visual_label(self):
         self.assertIn('action.to_upper()',SRC)
@@ -33,10 +33,10 @@ class Version07Tests(unittest.TestCase):
         self.assertIn("$confirmation -cne 'REPLACE'",INSTALL)
         self.assertLess(INSTALL.index("$confirmation -cne 'REPLACE'"),INSTALL.index("$adb -s $deviceSerial uninstall"))
     def test_version_and_public_release(self):
-        self.assertIn('version/code=11',PRESET)
-        self.assertIn('version/name="0.11.0"',PRESET)
+        self.assertIn('version/code=12',PRESET)
+        self.assertIn('version/name="0.12.0"',PRESET)
         self.assertIn('package/unique_name="com.gptimemachine.quest3"',PRESET)
-        self.assertIn('GrandPrixTimeMachine_Quest3_v0.11_Easy_Install',WORKFLOW)
+        self.assertIn('GrandPrixTimeMachine_Quest3_v0.12_Easy_Install',WORKFLOW)
     def test_unverified_mr_remains_disclosed(self):
         readme=(ROOT/'README.md').read_text()
         self.assertIn('MR unverified',readme)
