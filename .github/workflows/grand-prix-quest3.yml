@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# Repeated edits to this isolated branch should not waste public CI minutes.
+concurrency:
+  group: grand-prix-quest3-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify-source:
     runs-on: ubuntu-24.04
