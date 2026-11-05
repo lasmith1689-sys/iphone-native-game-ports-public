@@ -1,0 +1,115 @@
+name: Encrypted native CoD unsigned iPhone app link
+'on':
+  push:
+    branches:
+    - codex/native-cod-unsigned-app-link-v1-20261104
+    paths:
+    - .github/workflows/native-encrypted-cod-unsigned-app-link-v1.yml
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: Exact reviewed encrypted bundle ID
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: native-cod-unsigned-app-link-v1
+  cancel-in-progress: false
+jobs:
+  app-sdk:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/native-cod-unsigned-app-link-v1-20261104' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: xcode-27
+    timeout-minutes: 30
+    steps:
+    - name: Require exact public repository, branch and explicit bundle request
+      id: guard
+      shell: bash
+      run: "set -euo pipefail\npython3 - <<'PY'\nimport json,os,re,pathlib\nassert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public'\nassert os.environ['GITHUB_REF']=='refs/heads/codex/native-cod-unsigned-app-link-v1-20261104'\nkind=os.environ['GITHUB_EVENT_NAME']\nassert kind in ('push','workflow_dispatch')\nassert re.fullmatch('[a-f0-9]{40}',os.environ['GITHUB_SHA'])\ne=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())\nassert e['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public' and e['repository']['private'] is False\nif kind=='workflow_dispatch':\n assert e['inputs']['bundle_id']=='7dd48451-005d-44e7-a5ab-6cc058f9d194'\nelse:\n assert e['ref']=='refs/heads/codex/native-cod-unsigned-app-link-v1-20261104' and e['after']==os.environ['GITHUB_SHA'] and e.get('deleted',False) is False\nprint('Exact public ciphertext context accepted.')\nPY\n"
+    - name: Checkout only reviewed public tooling and ciphertext
+      id: checkout
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+        submodules: false
+        lfs: false
+        sparse-checkout: native/delivery/encrypted-build
+    - name: Assemble exact reviewed ciphertext
+      id: assemble
+      shell: bash
+      run: "set -euo pipefail\npython3 - <<'PY'\nimport hashlib,pathlib\nroot=pathlib.Path('native/delivery/encrypted-build')\nrows=[{'name': 'cipher-000.part', 'bytes': 524288, 'sha256': 'ded039d64e8a39357c37eff23ec824ad3f79128520fa7afec7d035a61798e278'}, {'name': 'cipher-001.part', 'bytes': 524288, 'sha256': '6a1ae6d676cf0ee7d408b5ba47926a6e1ace1a95996f0cdf5c73ed47a8bf308c'}, {'name': 'cipher-002.part', 'bytes': 524288, 'sha256': '4c25777caa544a3a7a654253b1934e938fd3c12fb56cf94b77d198d1c5638629'}, {'name': 'cipher-003.part', 'bytes': 524288, 'sha256': '7e80358b50367d72ea510934e157367194f9838a89967c785893649b19fefd67'}, {'name': 'cipher-004.part', 'bytes': 524288, 'sha256': '96601dcaeb856690bf942a1333d0619b6ba0eccf9e77cbf8b1501945017519ea'}, {'name': 'cipher-005.part', 'bytes': 524288, 'sha256': 'd556fda6a4ce96dfcaa1e243b6b3d1f6522061434c4a79416da00a46641ae03d'}, {'name': 'cipher-006.part', 'bytes': 524288, 'sha256': '03a3f29ec8f023b3ffe973efc0281f395caabf30505844ebacf41e85e0155f3d'}, {'name':\
+        \ 'cipher-007.part', 'bytes': 524288, 'sha256': '0ee0ced0beb85f4ea5ec8bbb327a1fb3a24c68fcdb7b8a43f021d4579bba800b'}, {'name': 'cipher-008.part', 'bytes': 524288, 'sha256': 'ce682f963ec55bb87b427667077ba8b42abfbc7f051d6f7b07f77900e883f884'}, {'name': 'cipher-009.part', 'bytes': 524288, 'sha256': '8b0e4f5811c8258f5490613e6b31b4208caddd05f4ea1d31194e4ab41577baf8'}, {'name': 'cipher-010.part', 'bytes': 524288, 'sha256': '8367318e4b5ca201ee2ed36045d45c269011c3fb0dcf4fb3e801d16b19847d0a'}, {'name': 'cipher-011.part', 'bytes': 524288, 'sha256': 'be09a16e166ee6eaccda94ecfbf721da18ec8941bd7579280282a74baea655d8'}, {'name': 'cipher-012.part', 'bytes': 524288, 'sha256': 'ce7aee82300ee69a5ea11d1eb8179c1195122ae3d35e4cd1503735f1d9c72c2a'}, {'name': 'cipher-013.part', 'bytes': 524288, 'sha256': 'fada31d242609cb48c0b050f2743276fc4acf14a2d2460e49ebf07cf56a313fa'}, {'name': 'cipher-014.part', 'bytes': 524288, 'sha256': 'dcc1607d49590820d91f1eca9aba017932574ab93c2330dd885afbe151e31822'}, {'name':\
+        \ 'cipher-015.part', 'bytes': 524288, 'sha256': '0b9ae120871d73af9082f969125c5dc1ffcc479bb32dda2d4c433757d4b5de93'}, {'name': 'cipher-016.part', 'bytes': 524288, 'sha256': 'c0c075f72305c469e77cc2417a963fdfbe73ab636e3635631d67ee539f150d10'}, {'name': 'cipher-017.part', 'bytes': 524288, 'sha256': '203ed4d59d43fd0bcaf128e4f70db771a7cb26b33f336d98d9c990c8451932a6'}, {'name': 'cipher-018.part', 'bytes': 524288, 'sha256': 'f6c0052417ade8d3850670cdd988013408c0c8d98bc5d5581ad021224829ac34'}, {'name': 'cipher-019.part', 'bytes': 524288, 'sha256': 'be9a0bf935d8c29052a4d56486d7089232b45661ef65b0819d785c51a9028820'}, {'name': 'cipher-020.part', 'bytes': 524288, 'sha256': '35ff4dbe5d0c00ce0c479e1dbe043f91966efbaa0a2f94dbf6feccea2efc2f5d'}, {'name': 'cipher-021.part', 'bytes': 524288, 'sha256': 'ebb22b82df2e584e71f049a8a872012fda6537dace470a01941f0d6ac2d37e9f'}, {'name': 'cipher-022.part', 'bytes': 524288, 'sha256': '6abf1289c410b00efa69f940484ee57c5fa31b43f9c32ee11e56d435e9021ee0'}, {'name':\
+        \ 'cipher-023.part', 'bytes': 524288, 'sha256': 'a23b4283b456674d840772c6dda45bec153fff3584814980b4104fc7e715e32a'}, {'name': 'cipher-024.part', 'bytes': 524288, 'sha256': '95df3bbf05fc409d6ef9b6677808b777b6ad620a16461d9c1b8826f794c9336e'}, {'name': 'cipher-025.part', 'bytes': 524288, 'sha256': '4c2f617024b8ea1a8217e798ecc14c4384f998b63b19a8a7f856ff010b2ea17d'}, {'name': 'cipher-026.part', 'bytes': 524288, 'sha256': '6fbd6fd7d7d49f6a79837cbb8864b17f2d6d8f048112b0f26873d8e315cf4538'}, {'name': 'cipher-027.part', 'bytes': 524288, 'sha256': '3375ca4c690da9f16bed6d29e43bd931d2b27c3e90ad81bd68e4daeb8ae02a45'}, {'name': 'cipher-028.part', 'bytes': 524288, 'sha256': 'ebc975001d47a9e1f787918dd3dc0cd6ffa4aed601d4fcd8c701ead40cdd65bb'}, {'name': 'cipher-029.part', 'bytes': 524288, 'sha256': '6a82fb1ce3e54730bf23679d3c9dc2d8fbee72ba523d65527e26d178579afc1d'}, {'name': 'cipher-030.part', 'bytes': 524288, 'sha256': 'b94dc84531c2f79f5a080e1fd8b2f0e51353b5e66acd004fd2bd9bc46650a0b8'}, {'name':\
+        \ 'cipher-031.part', 'bytes': 524288, 'sha256': '82b8d3166ffee715a3929b10c34a0aa8dc38f954d2a32664d5ed4e30a2409493'}, {'name': 'cipher-032.part', 'bytes': 524288, 'sha256': '2b512df877a9e640c330abb552e049f312d9a1df6d25fdb962822e06a17a0e7c'}, {'name': 'cipher-033.part', 'bytes': 524288, 'sha256': 'daa5e9a7e4c9b5d6475ef02afcd3b49195abc9825ee9cbaed6ad016b56374ac4'}, {'name': 'cipher-034.part', 'bytes': 524288, 'sha256': '61083b1d1c003b1dc10ce1da657f37acc4a1f231b63cfb87444cba176afb1fae'}, {'name': 'cipher-035.part', 'bytes': 524288, 'sha256': '766ba7b7296ece7259cacb629624be4217a2763dc795aa454df439a1469910db'}, {'name': 'cipher-036.part', 'bytes': 524288, 'sha256': '00817179f9718d10689acd0513a5d8a28212e5f1c1264ac98f633f3038df6a3e'}, {'name': 'cipher-037.part', 'bytes': 524288, 'sha256': 'f04cdaef07f7fab3c113e774712cf403c21095b061e540820a32c10d9d0681b9'}, {'name': 'cipher-038.part', 'bytes': 524288, 'sha256': '9c1cee35354321eb73d5328d1d9b23b7ad626d0457460cffd2c4d8fa9745bbe9'}, {'name':\
+        \ 'cipher-039.part', 'bytes': 524288, 'sha256': '3cdab852f8853ff5708ca0f7eba5fbfda9a206851bf708522c0308950ce4a2fe'}, {'name': 'cipher-040.part', 'bytes': 524288, 'sha256': '8b1f01e898cc539895835526d2e8651f440aa8bfad10cd20a890f1b37e95d47a'}, {'name': 'cipher-041.part', 'bytes': 524288, 'sha256': '52fddd401413e3236aeac8dde567ef4d9c542f34bf190512d1265222dcd19925'}, {'name': 'cipher-042.part', 'bytes': 524288, 'sha256': '6ff52f7368ebc7f73a219690c50443db6747f1e06f1f2579b4be5dd22a11f113'}, {'name': 'cipher-043.part', 'bytes': 524288, 'sha256': 'bb9d4c0cb4159ddf444cb1d43fcf70afe7fb895a4501a4eb6de50f14ec3a6fcb'}, {'name': 'cipher-044.part', 'bytes': 524288, 'sha256': 'd88e2a1056c36c36ff40fcd774a63c9f224fa43bfd121e86b00c443a3a636d03'}, {'name': 'cipher-045.part', 'bytes': 524288, 'sha256': '986bfad358d7a68db4d3030ff3091a4e818bbcf38b9c6d4f5ee9c8e5a41fc680'}, {'name': 'cipher-046.part', 'bytes': 524288, 'sha256': 'f9f29c943c5ed12a53e4969db751a2db42b1f82fe1503aa2107ae0cb5ca1b3e7'}, {'name':\
+        \ 'cipher-047.part', 'bytes': 524288, 'sha256': '8fc8a6dafcf09095cf264966cd8c4938aef9503fde207d4ef2c08b6d3649c03b'}, {'name': 'cipher-048.part', 'bytes': 524288, 'sha256': '5b4da87eb4a25ef9c2dca7e676c7c4175eb0d9acfa5728dea69749cada38ac38'}, {'name': 'cipher-049.part', 'bytes': 524288, 'sha256': '09a8ba6117f01bed1a776af2af1b8eebff0b9010814a4576f9878c4664e35f63'}, {'name': 'cipher-050.part', 'bytes': 524288, 'sha256': '17974e8c5930a3d2be304fbdde2278ecdd8f80f971efa0d749eee114da5a0877'}, {'name': 'cipher-051.part', 'bytes': 524288, 'sha256': '3f0df7ee2a9e0fa887e9775d8102919c34a1d923f43d5c3db1c7dc7425561b28'}, {'name': 'cipher-052.part', 'bytes': 524288, 'sha256': '7eac4574692e542e68e68b4db0648d3f4a4d24a7852d887e09ed6ae6c0e1f703'}, {'name': 'cipher-053.part', 'bytes': 524288, 'sha256': 'fbb22bacf437c0a429567e4a1b79b0765ceb67038eb4265275e9d87e1d2f7aee'}, {'name': 'cipher-054.part', 'bytes': 524288, 'sha256': '9f0e9b56c364087066a35e40d444b836d0448a05924e7d85a39f65831c50316a'}, {'name':\
+        \ 'cipher-055.part', 'bytes': 524288, 'sha256': '9525c84ab027779a75649581a9208cecbec0fe43958ac344cad92ecef08c88d4'}, {'name': 'cipher-056.part', 'bytes': 524288, 'sha256': 'ec2511ae8671b226c77071b0ca329982fd8db1735e13a30f297c408a32cd7a99'}, {'name': 'cipher-057.part', 'bytes': 524288, 'sha256': '31c549fe336896191899632932fe24250fe0993a048db438084699674b913b3b'}, {'name': 'cipher-058.part', 'bytes': 524288, 'sha256': 'df351503fdbb93404886f952c2588d869b2ce86c0c5897ebd7f31f457d653135'}, {'name': 'cipher-059.part', 'bytes': 524288, 'sha256': '77c5b16d636c915d50bf59c55b08fa8d6884fe4e984ba80768c018b434329223'}, {'name': 'cipher-060.part', 'bytes': 524288, 'sha256': '0a71c280de92b7e643f9be62377e37e401c1f8ab7c958b6aee9e3789aff2f5e6'}, {'name': 'cipher-061.part', 'bytes': 524288, 'sha256': '0ce7a25761292cd5cb96df5c645a6c701ba5224d8519af979225e60939d66229'}, {'name': 'cipher-062.part', 'bytes': 294033, 'sha256': '13d2b49967ff30df7489df5c2622839b385a15b3477ef5468ef384ed2476c49e'}]\nparts=[]\n\
+        for row in rows:\n b=(root/row['name']).read_bytes()\n assert len(b)==row['bytes'] and hashlib.sha256(b).hexdigest()==row['sha256']\n parts.append(b)\ndata=b''.join(parts)\nassert len(data)==32799889 and hashlib.sha256(data).hexdigest()=='682653214949c4392509fc1602eed1a51bacdc144bb13be93cd9dd4cb2edab10'\nwith (root/'input.ngp').open('xb') as f:f.write(data)\nprint('Ciphertext parts verified and assembled.')\nPY\n"
+    - name: Verify exact public tools, ciphertext and checkout
+      id: verify
+      shell: bash
+      run: 'set -euo pipefail
+
+        node --input-type=module - <<''JS''
+
+        import fs from ''node:fs'';
+
+        import crypto from ''node:crypto'';
+
+        import {execFileSync} from ''node:child_process'';
+
+        if(!process.versions.node.startsWith(''24.''))throw new Error(''Node24 required'');
+
+        if(execFileSync(''git'',[''rev-parse'',''HEAD''],{encoding:''utf8''}).trim()!==process.env.GITHUB_SHA)throw new Error(''Checkout identity rejected'');
+
+        const expected={"native/delivery/encrypted-build/bundle-builder.mjs":"3479d6da0c1e3940059864c0e8b5f44e8f9492c3f0156d342417e9e9464d100f","native/delivery/encrypted-build/public-manifest.json":"c69ade0e137dbd300ebc1b35f3d08c871afa190157557c18b0a759b1a6ff2a18","native/delivery/encrypted-build/run-build.mjs":"3e7b78ea286f438582b3601e842b8b3bf25d7c2a216dc16e5093440002307b48","native/delivery/encrypted-build/transport.mjs":"023ca81702ef3e35327c5aad50971b0b3cdf5cf9107af957487cc4151f62b5f2"};
+
+        for(const [file,digest] of Object.entries(expected))if(crypto.createHash(''sha256'').update(fs.readFileSync(file)).digest(''hex'')!==digest)throw new Error(''Public tooling identity rejected'');
+
+        const m=JSON.parse(fs.readFileSync(''native/delivery/encrypted-build/public-manifest.json'',''utf8''));
+
+        const data=fs.readFileSync(''native/delivery/encrypted-build/input.ngp'');
+
+        if(data.length!==m.cipherBytes||crypto.createHash(''sha256'').update(data).digest(''hex'')!==m.cipherSha256)throw new Error(''Ciphertext identity rejected'');
+
+        if(m.context.bundleId!=="7dd48451-005d-44e7-a5ab-6cc058f9d194")throw new Error(''Bundle context rejected'');
+
+        if(m.cipherSha256!=="682653214949c4392509fc1602eed1a51bacdc144bb13be93cd9dd4cb2edab10"||m.cipherBytes!==32799889)throw new Error(''Reviewed ciphertext rejected'');
+
+        console.log(JSON.stringify({status:''public-inputs-verified'',node:process.versions.node,cipherSha256:m.cipherSha256,cipherBytes:data.length}));
+
+        JS
+
+        '
+    - name: Authenticate sources, capture private build logs and seal outputs
+      id: build
+      shell: bash
+      env:
+        NGP_INPUT_KEY_20261028: ${{ secrets.NGP_INPUT_KEY_20261028 }}
+      run: "set -euo pipefail\numask 077\nmkdir \"$RUNNER_TEMP/ngp-ciphertext\"\nnode native/delivery/encrypted-build/run-build.mjs \\\n  --input native/delivery/encrypted-build/input.ngp \\\n  --manifest native/delivery/encrypted-build/public-manifest.json \\\n  --output \"$RUNNER_TEMP/ngp-ciphertext/result.ngp\" \\\n  --workspace \"$RUNNER_TEMP/ngp-private-build\"\n"
+    - name: Upload ciphertext only for one day
+      id: upload
+      if: always() && steps.build.outputs.sealed == 'true'
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: ngp-sealed-unsigned-app-link-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/ngp-ciphertext/result.ngp
+        if-no-files-found: error
+        retention-days: 1
+        compression-level: 0
+        include-hidden-files: false
+        archive: true
+    - name: Require actual captured build success
+      id: final
+      if: always()
+      shell: bash
+      run: 'set -euo pipefail
+
+        test ''${{ steps.build.outputs.status }}'' = ''passed''
+
+        test ''${{ steps.upload.outcome }}'' = ''success''
+
+        '
