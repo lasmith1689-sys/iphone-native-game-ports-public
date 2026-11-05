@@ -46,8 +46,8 @@ class InputUpgradeContracts(unittest.TestCase):
 
     def test_android_version_changes_without_package_name(self):
         # v0.6 input-contract tests persist across subsequent APK releases.
-        self.assertIn('version/code=11', PRESET)
-        self.assertIn('version/name="0.11.0"', PRESET)
+        self.assertIn('version/code=12', PRESET)
+        self.assertIn('version/name="0.12.0"', PRESET)
         self.assertIn('package/unique_name="com.gptimemachine.quest3"', PRESET)
 
 
