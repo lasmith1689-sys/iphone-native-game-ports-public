@@ -1,7 +1,7 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.11: A/X playback, thumbstick chapter steps, and instanced rainfall.
+## v0.12: independent height-adjustment input and live in-headset XR diagnostics.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 138.0
@@ -61,6 +61,9 @@ var trigger_down := {"left": false, "right": false}
 var center_down := {"left": false, "right": false}
 var quick_pause_down := {"left": false, "right": false}
 var stick_direction := {"left": 0, "right": 0}
+var stick_vertical := {"left": 0, "right": 0}
+var height_adjustment := 0.0
+var diagnostics_clock := 0.0
 var rain_mesh: MultiMeshInstance3D
 var rain_clock := 0.0
 var rain_accum := 0.0
@@ -104,6 +107,7 @@ func _start_xr() -> void:
         print("GPTM desktop preview — headset runtime unavailable")
     await get_tree().create_timer(0.3).timeout
     _recenter()
+    _update_xr_status()
 
 func _make_environment() -> void:
     var world := WorldEnvironment.new()
@@ -402,13 +406,18 @@ func _build_diorama() -> void:
         Vector3(0.0, 0.130, 0.0), 0.014, COLORS.cream, false, ui_panel)
     hint.rotation.x = 0.0
     hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    var shortcuts := _label("shortcut_hint", "A/X: PAUSE | STICK L/R: CHAPTER",
+    var shortcuts := _label("shortcut_hint", "A/X: PAUSE | STICK L/R: CHAPTER | UP/DOWN: HEIGHT",
         Vector3(0.0, 0.095, 0.0), 0.011, COLORS.cream, false, ui_panel)
     shortcuts.rotation.x = 0.0
     shortcuts.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    var xr_status := _label("xr_status", "XR: INITIALIZING | HEIGHT: 0 CM",
+        Vector3(0.0, 0.074, 0.0), 0.009, COLORS.cream, false, ui_panel)
+    xr_status.rotation.x = 0.0
+    xr_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     _update_story()
     _update_cars()
     _update_spotlight()
+    _update_xr_status()
 
 func _add_button(label_text: String, x: float, color: Color, action: String) -> void:
     _box(ui_panel, "Button backing " + label_text,
@@ -569,6 +578,10 @@ func _update_cars() -> void:
 
 func _process(delta: float) -> void:
     intro_time += delta
+    diagnostics_clock += delta
+    if diagnostics_clock >= 0.25:
+        diagnostics_clock = 0.0
+        _update_xr_status()
     if playing:
         var previous := chapter
         playback = fposmod(playback + maxf(delta, 0.0) * speed, LENGTH)
@@ -602,6 +615,7 @@ func _read_controller() -> void:
             center_down[side] = false
             quick_pause_down[side] = false
             stick_direction[side] = 0
+            stick_vertical[side] = 0
             if seeking_side == side:
                 seeking_side = ""
             continue
@@ -651,11 +665,14 @@ func _read_controller() -> void:
             _action("pause")
             action_taken = true
         quick_pause_down[side] = quick_pressed
-        var axis: float = controller.get_vector2("primary").x
+        var thumbstick: Vector2 = controller.get_vector2("primary")
+        var axis: float = thumbstick.x
+        var vertical_axis: float = thumbstick.y
         var step := 0
-        if axis > 0.75:
+        # One axis wins on diagonal motion; avoid accidentally skipping chapters.
+        if axis > 0.75 and absf(axis) > absf(vertical_axis) + 0.10:
             step = 1
-        elif axis < -0.75:
+        elif axis < -0.75 and absf(axis) > absf(vertical_axis) + 0.10:
             step = -1
         if absf(axis) < 0.35:
             stick_direction[side] = 0
@@ -664,6 +681,21 @@ func _read_controller() -> void:
             stick_direction[side] = step
             if not action_taken and seeking_side == "":
                 _action("next" if step > 0 else "previous")
+                action_taken = true
+        var vertical_step := 0
+        if vertical_axis > 0.75 and absf(vertical_axis) > absf(axis) + 0.10:
+            vertical_step = 1
+        elif vertical_axis < -0.75 and absf(vertical_axis) > absf(axis) + 0.10:
+            vertical_step = -1
+        if absf(vertical_axis) < 0.35:
+            stick_vertical[side] = 0
+        elif vertical_step != 0 and int(stick_vertical[side]) == 0:
+            # Each fresh flick adjusts the exhibit height by 8 cm; never move XR origin.
+            stick_vertical[side] = vertical_step
+            if not action_taken and seeking_side == "":
+                height_adjustment = clampf(height_adjustment + 0.08 * vertical_step, -0.32, 0.32)
+                _recenter()
+                _update_xr_status()
                 action_taken = true
     _show_hover(current_hover)
 
@@ -694,12 +726,24 @@ func _recenter() -> void:
         forward = Vector3.FORWARD
     else:
         forward = forward.normalized()
-    board.global_position = cam.global_position + forward * (2.05 if expanded else 0.91) - Vector3.UP * (0.68 if expanded else 0.40)
+    board.global_position = cam.global_position + forward * (2.05 if expanded else 0.91) - Vector3.UP * (0.68 if expanded else 0.40) + Vector3.UP * height_adjustment
     # Board local +Z is its viewer-facing edge. Aim it back toward the headset;
     # the previous heading flipped the diorama 180 degrees at default forward.
     board.rotation.y = atan2(-forward.x, -forward.z)
     ui_panel.global_position = cam.global_position + forward * 0.68 - Vector3.UP * 0.31
     ui_panel.rotation.y = board.rotation.y
+
+func _update_xr_status() -> void:
+    if not labels.has("xr_status"):
+        return
+    var mode := "DESKTOP PREVIEW"
+    var left_state := "-"
+    var right_state := "-"
+    if xr_active:
+        mode = "MR (UNVERIFIED)" if passthrough_active else "VR"
+        left_state = "OK" if left_controller.get_is_active() and left_controller.get_has_tracking_data() else "LOST"
+        right_state = "OK" if right_controller.get_is_active() and right_controller.get_has_tracking_data() else "LOST"
+    labels["xr_status"].text = "MODE: %s | L: %s | R: %s | HEIGHT: %d CM" % [mode, left_state, right_state, roundi(height_adjustment * 100.0)]
 
 func _unhandled_key_input(event: InputEvent) -> void:
     if not event is InputEventKey:
@@ -714,6 +758,14 @@ func _unhandled_key_input(event: InputEvent) -> void:
         KEY_M: _action("scale")
         KEY_F: _action("speed")
         KEY_R: _action("center")
+        KEY_UP:
+            height_adjustment = clampf(height_adjustment + 0.08, -0.32, 0.32)
+            _recenter()
+            _update_xr_status()
+        KEY_DOWN:
+            height_adjustment = clampf(height_adjustment - 0.08, -0.32, 0.32)
+            _recenter()
+            _update_xr_status()
         KEY_D:
             var next_driver: int = (DRIVER_ORDER.find(spotlight_driver) + 1) % DRIVER_ORDER.size()
             _select_driver(DRIVER_ORDER[next_driver])
