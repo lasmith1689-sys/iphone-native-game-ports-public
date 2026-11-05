@@ -13,7 +13,7 @@ class ShortcutAndRainTests(unittest.TestCase):
         self.assertIn('quick_pause_down[side] = quick_pressed', SRC)
         self.assertIn('quick_pause_down[side] = false', SRC)
     def test_stick_hysteresis_and_single_step(self):
-        for s in ('get_vector2("primary").x','axis > 0.75','axis < -0.75','absf(axis) < 0.35','stick_direction[side] = 0','elif step != 0 and int(stick_direction[side]) == 0:','_action("next" if step > 0 else "previous")'):
+        for s in ('var thumbstick: Vector2 = controller.get_vector2("primary")','axis > 0.75','axis < -0.75','absf(axis) < 0.35','stick_direction[side] = 0','elif step != 0 and int(stick_direction[side]) == 0:','_action("next" if step > 0 else "previous")'):
             self.assertIn(s,SRC)
     def test_one_action_per_frame_remains(self):
         self.assertGreaterEqual(SRC.count('action_taken = true'),6)
