@@ -1,0 +1,83 @@
+name: 'Native scheduling yield: genuine iPhone SDK and Mac threads'
+'on':
+  workflow_dispatch: null
+  push:
+    branches:
+    - codex/native-yield-zero-sdk-v1-20261105
+    paths:
+    - .github/workflows/native-yield-zero-sdk-v1.yml
+    - native/platform/native-yield-zero-sdk-v1-20261105/**
+permissions:
+  contents: read
+concurrency:
+  group: native-yield-zero-sdk-v1
+  cancel-in-progress: false
+jobs:
+  native-yield:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private
+      == false && github.ref == 'refs/heads/codex/native-yield-zero-sdk-v1-20261105' && (github.event_name == 'push'
+      || github.event_name == 'workflow_dispatch')
+    runs-on: xcode-27
+    timeout-minutes: 8
+    steps:
+    - name: Authenticate six own support files
+      shell: bash
+      run: "set -euo pipefail\numask 077\npython3 - <<'PY'\nimport hashlib,json,os,pathlib,re,urllib.request\nassert\
+        \ os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public' and os.environ['GITHUB_REF']=='refs/heads/codex/native-yield-zero-sdk-v1-20261105'\n\
+        assert os.environ['GITHUB_EVENT_NAME'] in ('push','workflow_dispatch')\nsha=os.environ['GITHUB_SHA'];assert\
+        \ re.fullmatch('[0-9a-f]{40}',sha)\nevent=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text());assert\
+        \ event['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public' and event['repository']['private']\
+        \ is False\nif os.environ['GITHUB_EVENT_NAME']=='push':assert event['after']==sha and not event.get('deleted',False)\n\
+        root=pathlib.Path(os.environ['RUNNER_TEMP'])/'native-yield-proof';assert not root.exists() and not any(p.is_symlink()\
+        \ for p in (root,*root.parents))\nsource=root/'source';source.mkdir(parents=True);manifest={'yield_zero.h':\
+        \ {'bytes': 388, 'sha256': '44cbbb3d2a71a89daae3bfbece2ff74e8369857bf15cce395d26fd8c6df1db1a'}, 'yield_zero_darwin.c':\
+        \ {'bytes': 353, 'sha256': '6707e8f2b9ed374f088a444d168ce99a8a0c4e3bb0210c08d4ac1697b660ec9e'}, 'yield_zero_windows.c':\
+        \ {'bytes': 124, 'sha256': 'd12bdbf85950d9a853e589b69dbeaaf1413c635635e6dffafaf05379403f99ed'}, 'test_yield.c':\
+        \ {'bytes': 2019, 'sha256': '55c2656779699a956ba500caef2e7e25c5a45389cd8ed2b68f64b4295b98b366'}, 'run_sdk.py':\
+        \ {'bytes': 5511, 'sha256': '745c7dcbc7cb2776f8335c5a2a940199b416083780131509632784b28968c75f'}, 'README.md':\
+        \ {'bytes': 1238, 'sha256': '389d8ddc6be823a0452fe0faaf82106f017ec2a0ad7c619f3c67bd87bb51d761'}}\nfor name,row\
+        \ in manifest.items():\n assert name==pathlib.PurePosixPath(name).name and row['bytes']<50000\n url='https://raw.githubusercontent.com/'+'lasmith1689-sys/iphone-native-game-ports-public'+'/'+sha+'/'+'native/platform/native-yield-zero-sdk-v1-20261105'+'/'+name\n\
+        \ with urllib.request.urlopen(url,timeout=45) as response:data=response.read(row['bytes']+1)\n assert len(data)==row['bytes']\
+        \ and hashlib.sha256(data).hexdigest()==row['sha256']\n (source/name).write_bytes(data)\n(root/'reviewed-source-closure.json').write_text(json.dumps(manifest,sort_keys=True,indent=2)+'\\\
+        n')\nprint('Authenticated six own support/test files; no recovered source, retail assets or build secret.')\n\
+        \nPY\n"
+    - name: Compile actual SDK object and run genuine native Mac yield
+      shell: bash
+      run: 'set -euo pipefail
+
+        umask 077
+
+        python3 - <<''PY''
+
+        import os,pathlib,subprocess,sys
+
+        root=pathlib.Path(os.environ[''RUNNER_TEMP''])/''native-yield-proof''
+
+        p=subprocess.run([sys.executable,str(root/''source/run_sdk.py''),''--output'',str(root/''output'')],timeout=300)
+
+        assert p.returncode==0,''Actual SDK and native Mac yield test must pass''
+
+
+        PY
+
+        '
+    - name: Require actual SDK and thread results
+      shell: bash
+      run: "set -euo pipefail\numask 077\npython3 - <<'PY'\nimport hashlib,json,os,pathlib\nroot=pathlib.Path(os.environ['RUNNER_TEMP'])/'native-yield-proof';out=root/'output';closure=json.loads((root/'reviewed-source-closure.json').read_text())\n\
+        for name,row in closure.items():\n p=root/'source'/name;assert p.stat().st_size==row['bytes'] and hashlib.sha256(p.read_bytes()).hexdigest()==row['sha256']\n\
+        r=json.loads((out/'result.json').read_text());assert r['status']=='native-yield-genuine-SDK-and-Mac-pthreads-passed'\
+        \ and r['AppleSDKUsed'] is True and r['repeatedObjectAndStackUsageIdentical'] is True\nassert r['nativeMacOutcome']['nativeYieldCalls']==3072\
+        \ and r['nativeMacOutcome']['failures']==0\nfor name in ('gameCodeIncluded','gameExecuted','iPhoneExecuted','signed','installable'):assert\
+        \ r[name] is False\nfiles=list(out.rglob('*'));assert len(files)<100 and all(not p.is_symlink() for p in\
+        \ files) and sum(p.stat().st_size for p in files if p.is_file())<2*1024*1024\nprint(json.dumps({'status':r['status'],'SDKVersion':r['SDKVersion'],'archive':r['archive'],'iPhoneExecuted':False}))\n\
+        \nPY\n"
+    - name: Upload bounded own support evidence
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: native-yield-zero-sdk-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/native-yield-proof/output
+        if-no-files-found: error
+        retention-days: 1
+        compression-level: 6
+        include-hidden-files: false
+        archive: true
