@@ -37,7 +37,7 @@ jobs:
         \ 'provider_darwin.c': {'bytes': 443, 'sha256': 'e0252920dc4667e33a1f5e14cab0f9a53155830adad0464f599d87ae131f3730'},\
         \ 'provider_windows.c': {'bytes': 517, 'sha256': 'e8c120c606759609dac5e7cd0cfdc432960199161d5e987ea47619d435e56c94'},\
         \ 'test_native.c': {'bytes': 4324, 'sha256': '0fd2e6d88316f959d3b452fddecac6f2279cc03d738ea7c467fab54ce4e0aa12'},\
-        \ 'run_sdk.py': {'bytes': 8301, 'sha256': 'ab1788213063815c449ccdac5a17c6c00eea6c943661cd436e4f595bd02511c5'},\
+        \ 'run_sdk.py': {'bytes': 8433, 'sha256': 'b9521f2c5b4ee3cbbf7789e735c2cbc6642ddb2b6de6911f157c4124702c2e50'},\
         \ 'README.md': {'bytes': 2809, 'sha256': '460b4f1b4b9faaaf5c8a6b2f44b5b0c5ec45c768e09b83f99769c975846ce59a'}}\n\
         for name,row in manifest.items():\n assert name==pathlib.PurePosixPath(name).name and row['bytes']<100000\n\
         \ url='https://raw.githubusercontent.com/'+'lasmith1689-sys/iphone-native-game-ports-public'+'/'+sha+'/'+'native/platform/native-monotonic-v1c-20261105'+'/'+name\n\

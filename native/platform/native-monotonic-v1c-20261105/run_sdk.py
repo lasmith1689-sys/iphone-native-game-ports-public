@@ -71,6 +71,7 @@ def main():
     sdk=Path(run('iphone-sdk-path',['xcrun','--sdk','iphoneos','--show-sdk-path']).strip()).resolve(strict=True)
     resource=Path(run('compiler-resource-path',[clang,'-print-resource-dir']).strip()).resolve(strict=True)
     sdk_version=run('iphone-sdk-version',['xcrun','--sdk','iphoneos','--show-sdk-version']).strip()
+    mac_sdk=Path(run('mac-sdk-path',['xcrun','--sdk','macosx','--show-sdk-path']).strip()).resolve(strict=True)
     assert re.fullmatch(r'27\.\d+(?:\.\d+)?',sdk_version) and sdk.is_dir()
     run('compiler-version',[clang,'--version'])
     run('xcode-version',['xcodebuild','-version'])
@@ -119,7 +120,7 @@ def main():
         sources=[source/'test_native.c',source/'monotonic.c',source/'div64.c']
         extra=['-DPC_CLOCK_TEST_PROVIDER'] if mode=='provider-failures' else []
         if not extra:sources.append(source/'provider_darwin.c')
-        run(f'mac-compile-{mode}',[clang,'-arch','arm64',*flags,*extra,*sources,'-o',executable])
+        run(f'mac-compile-{mode}',[clang,'-arch','arm64','-isysroot',mac_sdk,*flags,*extra,*sources,'-o',executable])
         stdout=run(f'mac-run-{mode}',[executable],60)
         rows=[json.loads(x) for x in stdout.splitlines()]
         assert rows[-1]['failures']==0 and rows[-1]['scaleVectors']==65914
