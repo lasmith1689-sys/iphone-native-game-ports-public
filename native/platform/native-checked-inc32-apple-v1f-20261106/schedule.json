@@ -1,0 +1,111 @@
+{
+  "positive": {
+    "normal": {
+      "syntheticCases": 1024,
+      "faults": 0,
+      "actorRejections": 0,
+      "cohortCalls": 0,
+      "workers": 1
+    },
+    "readonly": {
+      "syntheticCases": 0,
+      "faults": 4,
+      "actorRejections": 0,
+      "cohortCalls": 0,
+      "workers": 1
+    },
+    "unaligned": {
+      "syntheticCases": 0,
+      "faults": 4,
+      "actorRejections": 0,
+      "cohortCalls": 0,
+      "workers": 1
+    },
+    "range": {
+      "syntheticCases": 0,
+      "faults": 4,
+      "actorRejections": 0,
+      "cohortCalls": 0,
+      "workers": 1
+    },
+    "alias": {
+      "syntheticCases": 0,
+      "faults": 4,
+      "actorRejections": 0,
+      "cohortCalls": 0,
+      "workers": 1
+    },
+    "marker": {
+      "syntheticCases": 0,
+      "faults": 4,
+      "actorRejections": 0,
+      "cohortCalls": 0,
+      "workers": 1
+    },
+    "opcode": {
+      "syntheticCases": 0,
+      "faults": 4,
+      "actorRejections": 0,
+      "cohortCalls": 0,
+      "workers": 1
+    },
+    "admission": {
+      "syntheticCases": 0,
+      "faults": 0,
+      "actorRejections": 6,
+      "cohortCalls": 0,
+      "workers": 1
+    },
+    "cohort": {
+      "syntheticCases": 0,
+      "faults": 0,
+      "actorRejections": 0,
+      "cohortCalls": 512,
+      "workers": 4
+    }
+  },
+  "negative": {
+    "wrong-cf": {
+      "mode": "normal",
+      "function": "synthetic_cases",
+      "line": 51,
+      "expression": "memcmp(&s->cpu,&expected,448)==0"
+    },
+    "wrong-af": {
+      "mode": "normal",
+      "function": "synthetic_cases",
+      "line": 51,
+      "expression": "memcmp(&s->cpu,&expected,448)==0"
+    },
+    "wrong-width": {
+      "mode": "normal",
+      "function": "synthetic_cases",
+      "line": 50,
+      "expression": "s->status==0"
+    },
+    "premature-flags": {
+      "mode": "readonly",
+      "function": "data_faults",
+      "line": 62,
+      "expression": "memcmp(&s->cpu,&expected,448)==0"
+    },
+    "stale-preread": {
+      "mode": "cohort",
+      "function": "main",
+      "line": 105,
+      "expression": "cohort_flags_match(r)"
+    },
+    "split-rmw": {
+      "mode": "cohort",
+      "function": "main",
+      "line": 105,
+      "expression": "finalShared==512"
+    },
+    "wrong-marker": {
+      "mode": "normal",
+      "function": "synthetic_cases",
+      "line": 50,
+      "expression": "s->status==0"
+    }
+  }
+}
