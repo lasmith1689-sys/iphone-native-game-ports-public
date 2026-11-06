@@ -27,6 +27,8 @@ See [the MR integration blocker](GrandPrixTimeMachine_Quest3_Godot/docs/MR_CI_BL
 Physical headset startup, controllers and passthrough remain untested.
 All geometry and on-track animations are illustrative.
 
-**v0.11 source changes:** A/X playback shortcut, per-hand thumbstick chapter
-navigation, and a small instanced rain effect for the early Fuji 1976 chapters.
+**v0.13 source changes:** an optional one-click Windows Quest startup verifier
+collects only app-process Android logs locally (no uploads), plus more precise
+historical pit-stop narration. Official CI source/ARM64 APK/signing checks still
+cannot prove actual Quest 3 XR rendering or MR passthrough.
 A passing public CI job verifies compilation, not physical Quest 3 operation.

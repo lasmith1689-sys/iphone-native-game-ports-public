@@ -23,8 +23,8 @@ def chosen_axis(x, y):
 
 class HeightAndDiagnostics(unittest.TestCase):
     def test_version_and_package_identity(self):
-        self.assertIn('version/code=12', PRESET)
-        self.assertIn('version/name="0.12.0"', PRESET)
+        self.assertIn('version/code=13', PRESET)
+        self.assertIn('version/name="0.13.0"', PRESET)
         self.assertIn('package/unique_name="com.gptimemachine.quest3"', PRESET)
 
     def test_independent_vertical_latches(self):

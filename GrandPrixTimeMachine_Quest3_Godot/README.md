@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.12 Quest 3 standalone build
+# Grand Prix Time Machine — v0.13 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -7,7 +7,7 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a nine-chapter documentary playback and a floating action-button interface.
-**v0.12 remains a VR-first release.** Its default CI builds a standalone
+**v0.13 remains a VR-first release.** Its default CI builds a standalone
 Quest 3 OpenXR APK without the OpenXR Vendors plugin, which is **not yet bundled**
 because native versions 5.1.0 and 5.0.1 crashed the Linux Godot 4.6.3 headless
 editor while importing. **MR unverified:** actual Meta passthrough has not been
@@ -20,7 +20,22 @@ network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 202
 reconstructed historical telemetry.** Narrative beats are sourced; see
 `docs/HISTORICAL_SOURCES.md`.
 
-## New in v0.12: seated-height comfort and live XR status
+## New in v0.13: local headset startup diagnostic and improved historical precision
+
+The Easy Install ZIP includes an optional **VERIFY_QUEST3_STARTUP.cmd** on Windows.
+After installing and authorizing USB debugging, double-click this to launch the
+app via ADB and check whether its process still exists five seconds later.
+It generates a timestamped **local-only** report from the app's PID-filtered
+Android logs, with no automatic upload. This check does **not** prove visible
+rendering, controller action mapping, safety boundary handling or passthrough.
+Review any report before sharing it.
+
+The lap-68 chapter now specifically notes Hunt's left-front tyre deflation,
+and the fightback identifies Regazzoni and Jones, following a contemporary
+December 1976 Motor Sport report in docs/HISTORICAL_SOURCES.md.
+No game positions are presented as historical telemetry.
+
+## Previously in v0.12: seated-height comfort and live XR status
 
 Move either controller thumbstick **up/down** to raise or lower the miniature by
 8 cm per fresh flick, clamped to ±32 cm. Left/right still step one chapter.
@@ -114,7 +129,7 @@ emulate the headset sensors, passthrough compositor or controller actions.
 The project includes `install/INSTALL_ON_QUEST3.cmd`, a Windows 11 launcher,
 `install/INSTALL_ON_QUEST3.ps1`, and `install/READ_ME_FIRST.txt`. When cloud
 compilation succeeds, CI will bundle these **together with the signed APK** in
-one Easy Install ZIP. Developer Mode must be enabled once, then the user
+one Easy Install ZIP, including the optional Windows headset-startup diagnostic. Developer Mode must be enabled once, then the user
 can unzip it, connect their Quest with a USB-C data cable, double-click the
 launcher and accept USB debugging on the headset. The script checks the SHA-256,
 downloads official Google Android platform-tools if needed, installs and

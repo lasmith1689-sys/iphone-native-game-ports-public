@@ -1,4 +1,4 @@
-GRAND PRIX TIME MACHINE | QUEST 3 v0.10 EASY INSTALL
+GRAND PRIX TIME MACHINE | QUEST 3 v0.13 EASY INSTALL
 =========================================
 
 THIS FOLDER IS A SOURCE/INSTALLER PREPARATION KIT UNTIL IT ALSO CONTAINS:
@@ -26,6 +26,17 @@ INSTALL (Windows 11)
      Press B or Y to recenter. These interactions require headset testing.
   7. Disconnect USB. In Quest's App Library, open Unknown Sources and
      launch Grand Prix Time Machine (the exact filter location can vary).
+
+OPTIONAL: CHECK QUEST STARTUP
+  With the installed app, USB debugging approved, and Quest still plugged
+  in, double-click VERIFY_QUEST3_STARTUP.cmd. It tries to launch the
+  game, checks whether the Android process survives five seconds, and
+  writes QUEST3_STARTUP_REPORT_*.txt beside the installer.
+  Logs are filtered to the app's running process. They stay on your PC;
+  nothing is uploaded. Read the report before sharing. A running process
+  does NOT prove the display, controls, MR passthrough or performance.
+  For an app that dies before logs can be read, use Meta Quest Developer
+  Hub to capture a startup crash report.
 
 NO WINDOWS SCRIPT WANTED?
   Install Meta Quest Developer Hub from Meta (Windows/macOS), pair the

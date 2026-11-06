@@ -1,7 +1,7 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.12: independent height-adjustment input and live in-headset XR diagnostics.
+## v0.13: safer headset diagnostics, historically precise pit-stop narration.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 138.0
@@ -12,8 +12,8 @@ const BEATS := [
     {"at": 44.0, "title": "THE TRACK DRIES", "subtitle": "WET TYRES WEAR", "detail": "Wet-weather tyres overheat as conditions slowly improve.", "weather": "DRYING", "stakes": "HUNT LEADS | TYRE LIFE CRITICAL"},
     {"at": 60.0, "title": "THE LONG GAMBLE", "subtitle": "TYRE TROUBLE | HUNT STAYS OUT", "detail": "Hunt nurses worn tyres as Andretti and Depailler close in.", "weather": "DRYING", "stakes": "A FINISH MATTERS MORE THAN A WIN"},
     {"at": 76.0, "title": "ANDRETTI TAKES OVER", "subtitle": "LOTUS LEADS LATE", "detail": "Andretti moves into the lead after careful tyre management.", "weather": "DAMP", "stakes": "HUNT STILL IN THE TITLE FIGHT"},
-    {"at": 90.0, "title": "LAP 68: HUNT PITS", "subtitle": "TYRE DEFLATES | REJOINS FIFTH", "detail": "Hunt stops for tyres and rejoins fifth, short of the points he needs.", "weather": "DAMP", "stakes": "HUNT FIFTH | TITLE SLIPPING AWAY"},
-    {"at": 105.0, "title": "HUNT'S FIGHTBACK", "subtitle": "PASSES REGAZZONI AND JONES | THIRD", "detail": "Hunt fights back to third in the closing laps.", "weather": "DAMP", "stakes": "HUNT THIRD | FOUR POINTS SECURE THE TITLE"},
+    {"at": 90.0, "title": "LAP 68: HUNT PITS", "subtitle": "TYRE DEFLATES | REJOINS FIFTH", "detail": "Hunt's left-front tyre deflates; he pits and rejoins fifth.", "weather": "DAMP", "stakes": "HUNT FIFTH | TITLE SLIPPING AWAY"},
+    {"at": 105.0, "title": "HUNT'S FIGHTBACK", "subtitle": "PASSES REGAZZONI AND JONES | THIRD", "detail": "Hunt passes Regazzoni and Jones to take third late on.", "weather": "DAMP", "stakes": "HUNT THIRD | FOUR POINTS SECURE THE TITLE"},
     {"at": 120.0, "title": "WORLD CHAMPION", "subtitle": "ANDRETTI 1ST | DEPAILLER 2ND | HUNT 3RD", "detail": "Hunt wins the championship by a point after Andretti takes the Fuji victory.", "weather": "DAMP", "stakes": "HUNT 69 POINTS | LAUDA 68"}
 ]
 # Entrant data verified against the official Formula 1 1976 Japanese GP result.

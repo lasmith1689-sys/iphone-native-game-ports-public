@@ -24,7 +24,7 @@ class TimelineAndReleaseSafety(unittest.TestCase):
         self.assertIn('apksigner',WORKFLOW)
         self.assertIn('SHA256SUMS.txt',WORKFLOW)
         self.assertNotIn('Install official pinned OpenXR Vendors',WORKFLOW)
-        self.assertIn('GrandPrixTimeMachine_Quest3_v0.12_Easy_Install',WORKFLOW)
+        self.assertIn('GrandPrixTimeMachine_Quest3_v0.13_Easy_Install',WORKFLOW)
     def test_fallback_does_not_fake_passthrough(self):
         self.assertIn('if not passthrough_active:',SRC)
         self.assertIn('XR_ENV_BLEND_MODE_OPAQUE',SRC)
@@ -42,8 +42,8 @@ class TimelineAndReleaseSafety(unittest.TestCase):
         self.assertIn('for row in range(2)',SRC)
         self.assertIn('POINT AND HOLD TRIGGER ON TIMELINE TO SEEK',SRC)
     def test_version_and_stable_package_id(self):
-        self.assertIn('version/code=12',PRESET)
-        self.assertIn('version/name="0.12.0"',PRESET)
+        self.assertIn('version/code=13',PRESET)
+        self.assertIn('version/name="0.13.0"',PRESET)
         self.assertIn('package/unique_name="com.gptimemachine.quest3"',PRESET)
 if __name__ == '__main__':
     unittest.main()
