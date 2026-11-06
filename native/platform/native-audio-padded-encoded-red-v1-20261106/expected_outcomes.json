@@ -1,0 +1,12 @@
+{
+  "control": 0,
+  "desiredSemanticAssertionFailures": [
+    1,
+    2
+  ],
+  "oldStrictContractUnchanged": true,
+  "newFeatureImplemented": false,
+  "sourceTone": "OWN stereo44100 MP3; existing reviewed synthetic 440/880Hz",
+  "toneFrames": 27648,
+  "paddingBytes": 7
+}

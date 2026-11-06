@@ -1,0 +1,121 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 725,
+      "sha256": "b7ee1b98d34682b7de8ddcfd954421f0056948c6cf2e8f664e9bf1682743ef97"
+    },
+    "bounded_process.py": {
+      "bytes": 5157,
+      "sha256": "c169f87e017f01565821f84a204e3a4f53ab88ee37833fa5aa7ff898e56434d2"
+    },
+    "expected_outcomes.json": {
+      "bytes": 271,
+      "sha256": "92de60cb2b6db1a70a4f40a9ac93a7e0905ac36a128c8a05825e361377848186"
+    },
+    "fixture_cases.h": {
+      "bytes": 292,
+      "sha256": "650057650ca62d0c097c948021d58fdd7d34403407e292972a9d0618f5dbc13e"
+    },
+    "fixture_padded_red.c": {
+      "bytes": 13218,
+      "sha256": "0165d7fd03de238c02a0b5c0b5d0c6df5cfb34d6f226afb546ce1d51e88c207e"
+    },
+    "image_checks.py": {
+      "bytes": 4871,
+      "sha256": "d7219b05fe4c7e9f4eeaf6c0ed582f2b58e7ca03d69f28cb3864adb330289a25"
+    },
+    "inspect_image.py": {
+      "bytes": 3901,
+      "sha256": "408e13fcb27838d5eea161491eb538e2a91cdd5ccecf84416191390d712efa52"
+    },
+    "naive_padded.c": {
+      "bytes": 414,
+      "sha256": "bb009af8dad3dfcedab34b98e122e8b6af91cb9aec69f1acc06dde25380bfa21"
+    },
+    "naive_padded.h": {
+      "bytes": 288,
+      "sha256": "cda2608b565e85f4bb49bea2461f92db0daf5b43990de77704fa75d9b23469b0"
+    },
+    "ngp_audio_shared_implementation_v1.c": {
+      "bytes": 315,
+      "sha256": "696d991be6cf39957f4503d970dd1b87b3ed3d16c7bcc2e89ee08756d39f0d7b"
+    },
+    "ngp_audio_shared_profile_v1.h": {
+      "bytes": 577,
+      "sha256": "8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397"
+    },
+    "ngp_device_mixer_render_v1.c": {
+      "bytes": 3163,
+      "sha256": "dee442897e3eebd8faccba7fcef9f075e5f19a8fa473c2f0282c79810ba8818e"
+    },
+    "ngp_device_mixer_render_v1.h": {
+      "bytes": 1266,
+      "sha256": "aab3377efd6d3a4b016134d8e8f14b256f9d77ec1cc02d1b0b571f5a22d77baf"
+    },
+    "ngp_encoded_voice_bind_v1.c": {
+      "bytes": 8567,
+      "sha256": "a7d6ad0607d83af79f4749d51afbd3fc4e7c51bb3c2448c0d75228853511672c"
+    },
+    "ngp_encoded_voice_bind_v1.h": {
+      "bytes": 2955,
+      "sha256": "4a25e577fd25b49e511d54bf12d27cd256c9281c1e6abbe5c65d83c8173168c4"
+    },
+    "ngp_memory_mp3_internal_v1.h": {
+      "bytes": 406,
+      "sha256": "2a2529ac0d50dab2285810807ba5a5ea1d6419390efedae3d85f87e1fdf4fa47"
+    },
+    "ngp_memory_mp3_v1.c": {
+      "bytes": 5089,
+      "sha256": "4b3a0f9bced50d0e02e284f0f741209c8b12fee4393c18d869c187b8fd706e57"
+    },
+    "ngp_memory_mp3_v1.h": {
+      "bytes": 1926,
+      "sha256": "389c491b43319213db2b66674c942bd82cc44002ce7bd04663b5b8d54d3db71c"
+    },
+    "ngp_mp3_envelope_v1.c": {
+      "bytes": 3833,
+      "sha256": "306baefc87464329445af7d61775f4ea2c9cbb2c905d1921017dafe7e6a7956e"
+    },
+    "ngp_mp3_zero_prefix_v1.h": {
+      "bytes": 1515,
+      "sha256": "7b0799855f5bb2de19490febe6212b9d8c4ac316ef39a88e661b93baf4d8b067"
+    },
+    "ngp_voice_gain_balance_v2.h": {
+      "bytes": 1507,
+      "sha256": "3ff607a8db4cf14646bf6e4c91a6474d3a7f6508cc14318b85c6a6628b6590c9"
+    },
+    "ngp_voice_service_v1.c": {
+      "bytes": 25572,
+      "sha256": "0b84cb7b64cd0e7a47090e420b9fe0e6915584ad20b21bf2efac6af2b243def9"
+    },
+    "ngp_voice_service_v1.h": {
+      "bytes": 5102,
+      "sha256": "e849cc4a659286c53dc9b93741979d97544317a262a391318a5c11377ce5fae3"
+    },
+    "ngp_wave_pcm_v1.c": {
+      "bytes": 2380,
+      "sha256": "8cf23893a883b8708859bb433fac17e1995e1a007ee522a0a1ef3fda0edefcc9"
+    },
+    "ngp_wave_pcm_v1.h": {
+      "bytes": 740,
+      "sha256": "2487b4b14b72cc99bad51dee2748c216babd06fa4979d84a37545a582da92c07"
+    },
+    "retain.py": {
+      "bytes": 2969,
+      "sha256": "38d2b0270543a6c3a9a9ccfe786542372231a18bfca96d7c6cfc3c0cc2f74e62"
+    },
+    "run_mac.py": {
+      "bytes": 11395,
+      "sha256": "6a0fe1533b8532aca5b710dcdb7eee529ec1dc2d8af0f034efcfedf59fcbd31c"
+    },
+    "stereo44100.mp3": {
+      "bytes": 15046,
+      "sha256": "9a85978ed4c71b6f48d7311367e71f9f58717c008991a84ef21dc4b2e0545e97"
+    },
+    "unsupported48000.mp3": {
+      "bytes": 14976,
+      "sha256": "46fb00a21f9ba6f52ac8a86290bf8fc82d30e417616d99e607d1c1e2d02b42cd"
+    }
+  },
+  "schema": "own-padded-encoded-new-api-red-manifest-v1"
+}
