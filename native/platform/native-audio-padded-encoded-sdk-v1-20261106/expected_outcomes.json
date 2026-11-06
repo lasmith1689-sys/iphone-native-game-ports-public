@@ -1,0 +1,59 @@
+{
+  "brokerSynthetic": true,
+  "composedCases": [
+    [
+      "stereo44100",
+      0
+    ],
+    [
+      "mono44100",
+      1
+    ],
+    [
+      "mono44100",
+      2
+    ],
+    [
+      "stereo44100",
+      1
+    ],
+    [
+      "stereo44100",
+      2
+    ],
+    [
+      "stereo22050",
+      1
+    ],
+    [
+      "stereo22050",
+      2
+    ]
+  ],
+  "expectedCommands": 126,
+  "expectedLinks": 5,
+  "expectedObjects": 53,
+  "expectedOutcomes": 21,
+  "oldCases": [
+    "mono44100",
+    "stereo44100",
+    "stereo22050",
+    "wave8",
+    "wave16"
+  ],
+  "oldReportBytes": 480,
+  "oneMAImplementation": true,
+  "paddingBytes": 16,
+  "productionTUs": 16,
+  "typedFaultModes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "zeroOracleExit": 91
+}
