@@ -1,0 +1,29 @@
+{
+  "modes": {
+    "0": {
+      "classification": "unchanged-nonwaiting-baseline-control",
+      "desiredAssertion": null,
+      "expectedExit": 0
+    },
+    "1": {
+      "classification": "missing-new-post-query-deadline-contract",
+      "desiredAssertion": "late-ack-must-not-publish-stopped",
+      "expectedExit": 101
+    },
+    "2": {
+      "classification": "missing-new-internal-sticky-timeout-contract",
+      "desiredAssertion": "external-timeout-must-stay-worker-sticky",
+      "expectedExit": 101
+    }
+  },
+  "productionWaitImplemented": false,
+  "redObserved": false,
+  "schema": "parent-contract-expectations-before-new-wait-implementation",
+  "sharedObserved": {
+    "closeAck": 1,
+    "firstWorkerStatus": 0,
+    "phase": 5,
+    "realCloseObserved": 1,
+    "requests": 1
+  }
+}
