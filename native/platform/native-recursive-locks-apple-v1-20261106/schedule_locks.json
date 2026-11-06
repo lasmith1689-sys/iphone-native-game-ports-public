@@ -1,0 +1,263 @@
+{
+  "schema": "own-recursive-lock-exact-pre-output-schedule-v1",
+  "positive": {
+    "normal": {
+      "binary": "production",
+      "fields": {
+        "phase": 5,
+        "slots": 14,
+        "mutexInit": 16383,
+        "attrDestroy": 16383,
+        "mutexDestroy": 16383,
+        "held": 0,
+        "uncertain": 0,
+        "peak": 2,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 1,
+        "primary": "0:0",
+        "secondary": "0:0"
+      }
+    },
+    "capacity": {
+      "binary": "testing",
+      "fields": {
+        "phase": 5,
+        "slots": 16,
+        "mutexInit": 65535,
+        "attrDestroy": 65535,
+        "mutexDestroy": 65535,
+        "held": 0,
+        "uncertain": 0,
+        "peak": 64,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 1,
+        "primary": "0:0",
+        "secondary": "0:0"
+      }
+    },
+    "foreign": {
+      "binary": "production",
+      "fields": {
+        "phase": 5,
+        "slots": 14,
+        "mutexInit": 16383,
+        "attrDestroy": 16383,
+        "mutexDestroy": 16383,
+        "held": 0,
+        "uncertain": 0,
+        "peak": 1,
+        "foreign": 128,
+        "faults": 0,
+        "callbacks": 1,
+        "primary": "0:0",
+        "secondary": "0:0"
+      }
+    },
+    "held-fault": {
+      "binary": "production",
+      "fields": {
+        "phase": 3,
+        "slots": 14,
+        "mutexInit": 16383,
+        "attrDestroy": 16383,
+        "mutexDestroy": 0,
+        "held": 1,
+        "uncertain": 0,
+        "peak": 1,
+        "foreign": 0,
+        "faults": 1,
+        "callbacks": 0,
+        "primary": "0:0",
+        "secondary": "0:0"
+      }
+    },
+    "lost-attrInit": {
+      "binary": "testing",
+      "fields": {
+        "phase": 6,
+        "slots": 14,
+        "mutexInit": 3,
+        "attrDestroy": 3,
+        "mutexDestroy": 0,
+        "held": 0,
+        "uncertain": 4,
+        "peak": 0,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 0,
+        "primary": "2:-9001",
+        "secondary": "0:0"
+      }
+    },
+    "lost-type": {
+      "binary": "testing",
+      "fields": {
+        "phase": 6,
+        "slots": 14,
+        "mutexInit": 3,
+        "attrDestroy": 7,
+        "mutexDestroy": 0,
+        "held": 0,
+        "uncertain": 4,
+        "peak": 0,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 0,
+        "primary": "3:-9001",
+        "secondary": "0:0"
+      }
+    },
+    "lost-mutexInit": {
+      "binary": "testing",
+      "fields": {
+        "phase": 6,
+        "slots": 14,
+        "mutexInit": 3,
+        "attrDestroy": 7,
+        "mutexDestroy": 0,
+        "held": 0,
+        "uncertain": 4,
+        "peak": 0,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 0,
+        "primary": "4:-9001",
+        "secondary": "0:0"
+      }
+    },
+    "lost-attrDestroy": {
+      "binary": "testing",
+      "fields": {
+        "phase": 6,
+        "slots": 14,
+        "mutexInit": 7,
+        "attrDestroy": 3,
+        "mutexDestroy": 0,
+        "held": 0,
+        "uncertain": 4,
+        "peak": 0,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 0,
+        "primary": "5:-9001",
+        "secondary": "0:0"
+      }
+    },
+    "lost-type-and-cleanup": {
+      "binary": "testing",
+      "fields": {
+        "phase": 6,
+        "slots": 14,
+        "mutexInit": 3,
+        "attrDestroy": 3,
+        "mutexDestroy": 0,
+        "held": 0,
+        "uncertain": 4,
+        "peak": 0,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 0,
+        "primary": "3:-9001",
+        "secondary": "9:-9002"
+      }
+    },
+    "lost-lock": {
+      "binary": "testing",
+      "fields": {
+        "phase": 6,
+        "slots": 14,
+        "mutexInit": 16383,
+        "attrDestroy": 16383,
+        "mutexDestroy": 0,
+        "held": 0,
+        "uncertain": 1,
+        "peak": 0,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 0,
+        "primary": "6:-9001",
+        "secondary": "0:0"
+      }
+    },
+    "lost-unlock": {
+      "binary": "testing",
+      "fields": {
+        "phase": 6,
+        "slots": 14,
+        "mutexInit": 16383,
+        "attrDestroy": 16383,
+        "mutexDestroy": 0,
+        "held": 1,
+        "uncertain": 1,
+        "peak": 1,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 0,
+        "primary": "7:-9001",
+        "secondary": "0:0"
+      }
+    },
+    "lost-mutexDestroy": {
+      "binary": "testing",
+      "fields": {
+        "phase": 6,
+        "slots": 14,
+        "mutexInit": 16383,
+        "attrDestroy": 16383,
+        "mutexDestroy": 0,
+        "held": 0,
+        "uncertain": 1,
+        "peak": 0,
+        "foreign": 0,
+        "faults": 0,
+        "callbacks": 1,
+        "primary": "8:-9001",
+        "secondary": "0:0"
+      }
+    }
+  },
+  "negative": {
+    "errorcheck": {
+      "mode": "normal",
+      "function": "entry",
+      "line": 69,
+      "expression": "ngp_recursive_locks_enter_v1(f.locks,cpu,f.descriptors[0].identity,&r)==0",
+      "exitCode": 4,
+      "stdoutBytes": 0,
+      "testing": false
+    },
+    "skip-init": {
+      "mode": "normal",
+      "function": "owner",
+      "line": 171,
+      "expression": "s.calls[NGP_LOCK_MUTEX_INIT_V1]==f.slots",
+      "exitCode": 4,
+      "stdoutBytes": 0,
+      "testing": true
+    },
+    "skip-depth": {
+      "mode": "normal",
+      "function": "owner",
+      "line": 150,
+      "expression": "ngp_recursive_locks_enter_v1(f.locks,&f.cpu,f.descriptors[0].identity,&r)==NGP_LOCK_FRAME_V1",
+      "exitCode": 4,
+      "stdoutBytes": 0,
+      "testing": false
+    },
+    "skip-destroy": {
+      "mode": "normal",
+      "function": "owner",
+      "line": 203,
+      "expression": "s.calls[NGP_LOCK_MUTEX_DESTROY_V1]==f.slots",
+      "exitCode": 4,
+      "stdoutBytes": 0,
+      "testing": true
+    }
+  },
+  "firstNativeRun": "errorcheck",
+  "firstProductionGreen": "production/normal",
+  "sourceReady": false,
+  "operatingSystemErrorClaim": false
+}
