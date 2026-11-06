@@ -1,0 +1,60 @@
+name: 'Own retained-stop v1b: full10-unit SDK and bounded preflight'
+'on':
+  push:
+    branches:
+    - codex/native-audio-retained-stop-sdk-v1b-20261106
+    paths:
+    - .github/workflows/native-audio-retained-stop-sdk-v1b.yml
+    - native/platform/native-audio-retained-stop-sdk-v1b-20261106/**
+permissions:
+  contents: read
+concurrency:
+  group: native-audio-retained-stop-sdk-v1b
+  cancel-in-progress: false
+jobs:
+  retained-stop:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/native-audio-retained-stop-sdk-v1b-20261106' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 25
+    steps:
+    - name: Authenticate29own source/build files
+      shell: bash
+      run: "set -euo pipefail\numask 077\npython3 -B - <<'PY'\nimport hashlib,json,os,pathlib,re,time,urllib.request\nassert os.environ['GITHUB_REPOSITORY']=='lasmith1689-sys/iphone-native-game-ports-public' and os.environ['GITHUB_REF']=='refs/heads/codex/native-audio-retained-stop-sdk-v1b-20261106' and os.environ['GITHUB_EVENT_NAME']=='push'\nsha=os.environ['GITHUB_SHA'];assert re.fullmatch('[0-9a-f]{40}',sha)\ne=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text());assert e['repository']['full_name']=='lasmith1689-sys/iphone-native-game-ports-public' and e['repository']['private'] is False and e['after']==sha and e['ref']=='refs/heads/codex/native-audio-retained-stop-sdk-v1b-20261106' and not e.get('deleted',False)\nroot=pathlib.Path(os.environ['RUNNER_TEMP']).resolve()/'native-retained-stop-proof';assert not root.exists()\nsource=root/'source';source.mkdir(parents=True);manifest={'ngp_audio_catalog_v1.c': {'bytes': 10359, 'sha256': '782dbb81631ad50949404e30569c20241cc81ad9225e51202cf708b30d5fe4f4'}, 'ngp_audio_catalog_v1.h': {'bytes': 2276, 'sha256': '31925ebb56262fef15ac3005fc8cce7803c2d34278db7e4cb90c27324531a5f8'}, 'ngp_audio_shared_impl_tokens_v1.c': {'bytes': 149, 'sha256': 'fa5a4d118fcf01e6d0ff93ba351359f751e970b68028ee25d2d2210206c06d0b'}, 'ngp_audio_shared_profile_v1.h': {'bytes': 577, 'sha256': '8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397'}, 'ngp_audio_stop_terminal_v1.c': {'bytes': 582, 'sha256': 'd95e670adcc51437fa0a5619f7aaed4a15463d81ca39111384f793ebca49ae8e'}, 'ngp_audio_stop_terminal_v1.h': {'bytes': 588, 'sha256': '50167e8c19048a8cfa214ddf727988e91f15cf6783480e420a888a9eaf5e95d5'}, 'ngp_audio_worker_broker_v1.m': {'bytes': 955, 'sha256': '3b884a889bd5005fd70baed5a543133922b0fdc3d8df25646bc144382c84f442'}, 'ngp_audio_worker_runtime_v1.c': {'bytes': 11475, 'sha256': 'bafd32017babb54b16afcad1ae925213e27376ddc7395d3063d8aaa9037392ec'}, 'ngp_audio_worker_runtime_v1.h': {'bytes': 3121, 'sha256': '981022ba3aa703b71b0cf05aa3abaed76a9507d4910bd380493eda9947b44f1e'}, 'ngp_device_mixer_render_v1.c': {'bytes': 3163, 'sha256': 'dee442897e3eebd8faccba7fcef9f075e5f19a8fa473c2f0282c79810ba8818e'}, 'ngp_device_mixer_render_v1.h': {'bytes': 1266, 'sha256': 'aab3377efd6d3a4b016134d8e8f14b256f9d77ec1cc02d1b0b571f5a22d77baf'}, 'ngp_device_mixer_v1.h': {'bytes': 2635, 'sha256': 'fb50c6a8aa36b4a0beb71aac7a2ea1a15acedf37f78561b273c5259f62c346ba'}, 'ngp_device_mixer_v1.m': {'bytes': 19778, 'sha256': 'fb29e82d276d012ab389cd7053ca08e3566459cb11f302f2f0f71c7eee41a3bc'}, 'ngp_positional_provider_v1.c': {'bytes': 8043, 'sha256': '701ef9cc3b94d64c40db678287d87feef7ffa10c7b0be8ee73a5391c5a4ed7bf'}, 'ngp_positional_provider_v1.h': {'bytes': 2336, 'sha256': '213629d542a8cf0d630cdc371041e8f94254cf0165eed7a382c39fa48119107a'}, 'ngp_voice_gain_balance_v2.h': {'bytes': 1507, 'sha256': '3ff607a8db4cf14646bf6e4c91a6474d3a7f6508cc14318b85c6a6628b6590c9'}, 'ngp_voice_service_v1.c': {'bytes': 25572, 'sha256': '0b84cb7b64cd0e7a47090e420b9fe0e6915584ad20b21bf2efac6af2b243def9'}, 'ngp_voice_service_v1.h': {'bytes': 5102, 'sha256': 'e849cc4a659286c53dc9b93741979d97544317a262a391318a5c11377ce5fae3'}, 'ngp_voice_tokens_v1.c': {'bytes': 7632, 'sha256': 'e21be2c2fee27452c76b3a433490bc32831a6014cc02332d143af0d4a8051415'}, 'ngp_voice_tokens_v1.h': {'bytes': 2125, 'sha256': 'a44169deb9401e5cff1dd9b6d26fe7982fd66a0c467b17835d9b374ff5ef9fb5'}, 'fixture_real.c': {'bytes': 12106, 'sha256': 'a23fb0939d1b22385a8225c88d8ea8ba008a419d7d3a66e0fd7ef4f22937b391'}, 'inspect_image.py': {'bytes': 3901, 'sha256': '408e13fcb27838d5eea161491eb538e2a91cdd5ccecf84416191390d712efa52'}, 'image_checks.py': {'bytes': 4871, 'sha256': 'd7219b05fe4c7e9f4eeaf6c0ed582f2b58e7ca03d69f28cb3864adb330289a25'}, 'bounded_process.py': {'bytes': 5157, 'sha256': 'c169f87e017f01565821f84a204e3a4f53ab88ee37833fa5aa7ff898e56434d2'}, 'run_sdk.py': {'bytes': 21259, 'sha256': 'fa9c3ad38be73071a87e782aeb75df0704dc44607ddc7aab635566e020a485e4'}, 'retain.py': {'bytes': 2969, 'sha256': '38d2b0270543a6c3a9a9ccfe786542372231a18bfca96d7c6cfc3c0cc2f74e62'}, 'expected_outcomes.json': {'bytes': 709, 'sha256': 'b4d9835e31de38251caf18cc406c32577839224cf8b39fc29ea2173ea9611bf0'}, 'README.md': {'bytes': 4076, 'sha256': '69c709f32cdaf68c00942f80fc74e38fd57cf8945931ab0b0ee32be535a408a7'}, 'manifest.json': {'bytes': 4461, 'sha256': '7e7ed9a55a5f9043d039c998b844d8aa28bdc158f097555ac9899fe5f0e7f307'}};started=time.monotonic()\nfor name,w in manifest.items():\n assert name==pathlib.PurePosixPath(name).name and w['bytes']<1024*1024\n remain=180-(time.monotonic()-started);assert remain>0\n with urllib.request.urlopen('https://raw.githubusercontent.com/lasmith1689-sys/iphone-native-game-ports-public/'+sha+'/native/platform/native-audio-retained-stop-sdk-v1b-20261106/'+name,timeout=min(30,remain)) as response:b=response.read(w['bytes']+1)\n assert len(b)==w['bytes'] and hashlib.sha256(b).hexdigest()==w['sha256']\n (source/name).write_bytes(b)\n(root/'reviewed-public-closure.json').write_text(json.dumps(manifest,sort_keys=True,indent=2)+'\\n')\n(root/'materialized.marker').write_text('OWN_SOURCES_ONLY\\n')\nprint('Authenticated29own support/fixture/build files; no recovered/retail/private-key data.')\nPY\n"
+    - name: Build all10device units/repeats and run real-Mac controls
+      shell: bash
+      run: 'set -euo pipefail
+
+        umask 077
+
+        python3 -B - <<''PY''
+
+        import os,pathlib,subprocess,sys
+
+        root=pathlib.Path(os.environ[''RUNNER_TEMP'']).resolve()/''native-retained-stop-proof''
+
+        p=subprocess.run([sys.executable,''-B'',str(root/''source/run_sdk.py''),''--output'',str(root/''output'')],timeout=1100)
+
+        assert p.returncode==0,''Full real10-TU SDK and actual Mac controls must pass; retain raw failure evidence''
+
+        r=__import__(''json'').loads((root/''output/result.json'').read_text());assert r[''wholeProof''] is True and (root/''output/success.marker'').is_file()
+
+        assert r[''actualCompileOutputCount'']==32 and r[''actualLinkCount'']==5 and r[''actualMacCaseCount'']==20
+
+        PY
+
+        '
+    - name: Retain all bounded raw output even on proof failure
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\numask 077\npython3 -B - <<'PY'\nimport json,os,pathlib,subprocess,sys\nroot=pathlib.Path(os.environ['RUNNER_TEMP']).resolve()/'native-retained-stop-proof';root.mkdir(exist_ok=True);retained=root/'retained'\nif not (root/'materialized.marker').is_file():\n retained.mkdir();(retained/'retention-status.json').write_text(json.dumps({'allExistingOutputsRetained':False,'materializationFailed':True,'wholeProof':False}))\nelse:\n p=subprocess.run([sys.executable,'-B',str(root/'source/retain.py'),'--source',str(root/'output'),'--output',str(retained)],timeout=120)\n assert p.returncode==0,'Bounded complete raw evidence retention failed; diagnostic status remains'\nPY\n"
+    - name: Upload own raw evidence
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: native-audio-retained-stop-sdk-v1b-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/native-retained-stop-proof/retained
+        if-no-files-found: error
+        retention-days: 1
+        compression-level: 6
+        include-hidden-files: false
+        archive: true

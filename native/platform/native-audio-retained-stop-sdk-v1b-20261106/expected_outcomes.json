@@ -1,0 +1,18 @@
+{
+  "schema": "own-retained-stop-frozen-future-native-expectations-v1",
+  "positiveModes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 20, 21, 22, 23],
+  "negativeControls": [
+    {"source": "old-pending-worker.c", "mode": 1, "exitCode": 101, "assertion": "pending-submission-no-primary"},
+    {"source": "overwrite-terminal.c", "mode": 20, "exitCode": 101, "assertion": "terminal-ack-survives-failure"}
+  ],
+  "actualProductionDeviceTUs": 10,
+  "optionalFixtureDeviceTUs": 1,
+  "futureCompileOutputs": 32,
+  "futureLinks": 5,
+  "futureCommands": 86,
+  "MacBrokerIsSynthetic": true,
+  "noFakeVoiceBackend": true,
+  "notRunByPreparation": true,
+  "physicalDeviceStarted": false,
+  "iPhoneExecuted": false
+}

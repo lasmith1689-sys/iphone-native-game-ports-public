@@ -1,0 +1,125 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 4076,
+      "sha256": "69c709f32cdaf68c00942f80fc74e38fd57cf8945931ab0b0ee32be535a408a7"
+    },
+    "bounded_process.py": {
+      "bytes": 5157,
+      "sha256": "c169f87e017f01565821f84a204e3a4f53ab88ee37833fa5aa7ff898e56434d2"
+    },
+    "expected_outcomes.json": {
+      "bytes": 709,
+      "sha256": "b4d9835e31de38251caf18cc406c32577839224cf8b39fc29ea2173ea9611bf0"
+    },
+    "fixture_real.c": {
+      "bytes": 12106,
+      "sha256": "a23fb0939d1b22385a8225c88d8ea8ba008a419d7d3a66e0fd7ef4f22937b391"
+    },
+    "image_checks.py": {
+      "bytes": 4871,
+      "sha256": "d7219b05fe4c7e9f4eeaf6c0ed582f2b58e7ca03d69f28cb3864adb330289a25"
+    },
+    "inspect_image.py": {
+      "bytes": 3901,
+      "sha256": "408e13fcb27838d5eea161491eb538e2a91cdd5ccecf84416191390d712efa52"
+    },
+    "ngp_audio_catalog_v1.c": {
+      "bytes": 10359,
+      "sha256": "782dbb81631ad50949404e30569c20241cc81ad9225e51202cf708b30d5fe4f4"
+    },
+    "ngp_audio_catalog_v1.h": {
+      "bytes": 2276,
+      "sha256": "31925ebb56262fef15ac3005fc8cce7803c2d34278db7e4cb90c27324531a5f8"
+    },
+    "ngp_audio_shared_impl_tokens_v1.c": {
+      "bytes": 149,
+      "sha256": "fa5a4d118fcf01e6d0ff93ba351359f751e970b68028ee25d2d2210206c06d0b"
+    },
+    "ngp_audio_shared_profile_v1.h": {
+      "bytes": 577,
+      "sha256": "8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397"
+    },
+    "ngp_audio_stop_terminal_v1.c": {
+      "bytes": 582,
+      "sha256": "d95e670adcc51437fa0a5619f7aaed4a15463d81ca39111384f793ebca49ae8e"
+    },
+    "ngp_audio_stop_terminal_v1.h": {
+      "bytes": 588,
+      "sha256": "50167e8c19048a8cfa214ddf727988e91f15cf6783480e420a888a9eaf5e95d5"
+    },
+    "ngp_audio_worker_broker_v1.m": {
+      "bytes": 955,
+      "sha256": "3b884a889bd5005fd70baed5a543133922b0fdc3d8df25646bc144382c84f442"
+    },
+    "ngp_audio_worker_runtime_v1.c": {
+      "bytes": 11475,
+      "sha256": "bafd32017babb54b16afcad1ae925213e27376ddc7395d3063d8aaa9037392ec"
+    },
+    "ngp_audio_worker_runtime_v1.h": {
+      "bytes": 3121,
+      "sha256": "981022ba3aa703b71b0cf05aa3abaed76a9507d4910bd380493eda9947b44f1e"
+    },
+    "ngp_device_mixer_render_v1.c": {
+      "bytes": 3163,
+      "sha256": "dee442897e3eebd8faccba7fcef9f075e5f19a8fa473c2f0282c79810ba8818e"
+    },
+    "ngp_device_mixer_render_v1.h": {
+      "bytes": 1266,
+      "sha256": "aab3377efd6d3a4b016134d8e8f14b256f9d77ec1cc02d1b0b571f5a22d77baf"
+    },
+    "ngp_device_mixer_v1.h": {
+      "bytes": 2635,
+      "sha256": "fb50c6a8aa36b4a0beb71aac7a2ea1a15acedf37f78561b273c5259f62c346ba"
+    },
+    "ngp_device_mixer_v1.m": {
+      "bytes": 19778,
+      "sha256": "fb29e82d276d012ab389cd7053ca08e3566459cb11f302f2f0f71c7eee41a3bc"
+    },
+    "ngp_positional_provider_v1.c": {
+      "bytes": 8043,
+      "sha256": "701ef9cc3b94d64c40db678287d87feef7ffa10c7b0be8ee73a5391c5a4ed7bf"
+    },
+    "ngp_positional_provider_v1.h": {
+      "bytes": 2336,
+      "sha256": "213629d542a8cf0d630cdc371041e8f94254cf0165eed7a382c39fa48119107a"
+    },
+    "ngp_voice_gain_balance_v2.h": {
+      "bytes": 1507,
+      "sha256": "3ff607a8db4cf14646bf6e4c91a6474d3a7f6508cc14318b85c6a6628b6590c9"
+    },
+    "ngp_voice_service_v1.c": {
+      "bytes": 25572,
+      "sha256": "0b84cb7b64cd0e7a47090e420b9fe0e6915584ad20b21bf2efac6af2b243def9"
+    },
+    "ngp_voice_service_v1.h": {
+      "bytes": 5102,
+      "sha256": "e849cc4a659286c53dc9b93741979d97544317a262a391318a5c11377ce5fae3"
+    },
+    "ngp_voice_tokens_v1.c": {
+      "bytes": 7632,
+      "sha256": "e21be2c2fee27452c76b3a433490bc32831a6014cc02332d143af0d4a8051415"
+    },
+    "ngp_voice_tokens_v1.h": {
+      "bytes": 2125,
+      "sha256": "a44169deb9401e5cff1dd9b6d26fe7982fd66a0c467b17835d9b374ff5ef9fb5"
+    },
+    "retain.py": {
+      "bytes": 2969,
+      "sha256": "38d2b0270543a6c3a9a9ccfe786542372231a18bfca96d7c6cfc3c0cc2f74e62"
+    },
+    "run_sdk.py": {
+      "bytes": 21259,
+      "sha256": "fa9c3ad38be73071a87e782aeb75df0704dc44607ddc7aab635566e020a485e4"
+    }
+  },
+  "fixtureSeparateFromDeviceLink": true,
+  "productionTUs": 10,
+  "recoveredOrRetailOrCredentialData": false,
+  "schema": "own-public-retained-stop-source-manifest-v1",
+  "thirdParty": {
+    "commit": "f40cf03f80cdb7e741d43e53b7e706e8c1394bcf",
+    "name": "miniaudio",
+    "version": "0.11.23"
+  }
+}
