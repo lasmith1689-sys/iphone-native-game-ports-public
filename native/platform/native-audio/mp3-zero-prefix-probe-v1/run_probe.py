@@ -3,6 +3,7 @@ from pathlib import Path
 import hashlib,json,os,platform,sys,time,urllib.request
 import bounded_process as bounded
 from inspect_image import inspect
+from sdk_exports import verify_exports
 from validate_native import parse
 H=Path(__file__).resolve().parent
 REV='f40cf03f80cdb7e741d43e53b7e706e8c1394bcf'
@@ -113,11 +114,9 @@ def main():
    for x,y in zip(*groups):repeat_ok=repeat_ok and bounded.read(x,8*1024**2)==bounded.read(y,8*1024**2)and bounded.read(x.with_suffix('.su'),8*1024**2)==bounded.read(y.with_suffix('.su'),8*1024**2)
   if links.get('primary')==links.get('repeat')==0:repeat_ok=repeat_ok and bounded.read(images['primary'],8*1024**2)==bounded.read(images['repeat'],8*1024**2)
   else:repeat_ok=False
-  export_tool=Path(required('dyld-info-path',['/usr/bin/xcrun','--find','dyld_info']));assert export_tool.is_absolute()and export_tool.is_file()
-  export_text=required('ios-strong-exports',[export_tool,'-exports',images['primary']])
-  for symbol in('_ngp_mp3_envelope_v1_scan','_ngp_memory_mp3_v1_decode','_ngp_memory_mp3_v1_view','_ngp_memory_mp3_v1_release','_ngp_mp3_zero_prefix_v1_scan','_ngp_mp3_zero_prefix_v1_decode'):
-   lines=[line for line in export_text.splitlines()if line.split()and line.split()[-1]==symbol];assert len(lines)==1 and 'weak'not in lines[0].lower()
-  for symbol in('_ngp_mp3_zero_prefix_v1_choose','_ngp_mp3_zero_prefix_v1_bounds','_ngp_mp3_frame_v1_header','_ngp_mp3_padding_abi_v1'):assert not any(line.split()and line.split()[-1]==symbol for line in export_text.splitlines())
+  for suffix in('primary','repeat'):
+   facts['final-'+suffix]['exportsProof']=verify_exports(bounded.read(images[suffix],8*1024**2))
+  assert facts['final-primary']['exportsProof']==facts['final-repeat']['exportsProof']
   report['sixOwnStrongDyldExportsAndHiddenHelpers']=True
   report['repeatWholeBytesAndSU']=repeat_ok
   exports={r['name']for r in facts.get('final-primary',{}).get('externalDefinedSymbols',[])}

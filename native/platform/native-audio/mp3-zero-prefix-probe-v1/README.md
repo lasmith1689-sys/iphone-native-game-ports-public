@@ -42,5 +42,16 @@ earlier frozen README said24), followed by actual guarded own and corpus tests.
 Those private names/hashes/content/receipts are deliberately absent here and are
 not represented as Apple results. This package must earn its own real run.
 
-Next: public own-source isolated-branch Mac/SDK execution and retained raw readback,
+The first own-source job compiled all21commands and linked all3images, but an
+Apple dyld_info diagnostic refused the intentionally absent LC_UUID before Mac
+fixtures ran. That failed attempt remains failed. This fresh diagnostic-only
+derivative changes no product/fixture source, compiler flags, repeat rules or
+capture caps. It uses a bounded self-authored raw export-trie/nlist/code-backing
+reader, rejecting weak/reexports/nonregular terminals, node sharing/cycles,
+unbacked/header/linkedit/zerofill code or wrong visibility. Six public strong
+functions and three private helpers must match real current saved bytes.
+No UUID is fabricated and the export gate is retained. Pure adverse tests cover
+the actual UUID-free prior images; they are not Mac runtime evidence.
+
+Next: fresh own-source isolated-branch Mac/SDK execution and retained raw readback,
 then root whole-candidate review before integration. Current thread; no new thread.
