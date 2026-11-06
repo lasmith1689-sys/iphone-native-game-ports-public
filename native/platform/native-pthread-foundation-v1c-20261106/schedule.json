@@ -1,0 +1,38 @@
+{
+  "normal": {
+    "checks": 136,
+    "callbacks": 1
+  },
+  "capacity": {
+    "checks": 90,
+    "callbacks": 0
+  },
+  "owner-exit": {
+    "checks": 24,
+    "callbacks": 0
+  },
+  "callback-fail": {
+    "checks": 26,
+    "callbacks": 1
+  },
+  "create-fail": {
+    "checks": 23,
+    "callbacks": 0
+  },
+  "set-fail": {
+    "checks": 28,
+    "callbacks": 0
+  },
+  "clear-fail": {
+    "checks": 27,
+    "callbacks": 0
+  },
+  "delete-fail": {
+    "checks": 27,
+    "callbacks": 1
+  },
+  "late-exit": {
+    "checks": 138,
+    "callbacks": 1
+  }
+}

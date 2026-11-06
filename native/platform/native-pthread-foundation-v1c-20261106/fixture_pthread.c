@@ -1,0 +1,48 @@
+#include "ngp_fls_v1.h"
+#include "ngp_worker_tag_v1.h"
+#include "synthetic_environment.h"
+#include <pthread.h>
+#include <stdatomic.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define CHECK(v)do{checks++;if(!(v)){fprintf(stderr,"FAIL line%d %s\n",__LINE__,#v);exit(4);}}while(0)
+static unsigned checks;static _Atomic unsigned callbacks;
+typedef struct{void*service,*host;uint32_t token,owner_tag;uint32_t values[65];void*expected;const char*mode;} Fixture;
+static Fixture fixture;
+static NgpFlsReportV1 report(void){NgpFlsReportV1 r={0};r.version=1;r.size=sizeof r;return r;}
+static int32_t own_callback(void*p,void*value){Fixture*f=p;atomic_fetch_add_explicit(&callbacks,1,memory_order_relaxed);if(value!=f->expected)return 701;NgpFlsReportV1 r=report();if(ngp_fls_retire_v1(f->service,f->token,&r)!=NGP_FLS_STATE||r.phase!=NGP_FLS_RETIRING||!r.value_clear_ack||r.callback_ack||r.key_delete_ack)return 702;return !strcmp(f->mode,"callback-fail")?77:0;}
+static void*foreign(void*p){Fixture*f=p;ngp_synthetic_bind_v1(f->host);uint32_t tag=0;CHECK(ngp_worker_tag_warm_v1(&tag)==0&&tag!=f->owner_tag);for(unsigned i=0;i<32;i++){NgpFlsReportV1 r=report();void*out=(void*)(uintptr_t)0x1358;CHECK(ngp_fls_get_v1(f->service,f->token,&out,&r)==NGP_FLS_OWNER&&out==(void*)(uintptr_t)0x1358&&!r.worker_observation&&!r.token&&!r.boxes_used&&!r.key_created);r=report();CHECK(ngp_fls_set_v1(f->service,f->token,&f->values[5],&r)==NGP_FLS_OWNER&&!r.worker_observation);r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==NGP_FLS_OWNER&&!r.worker_observation);}ngp_synthetic_bind_v1(NULL);return NULL;}
+static void synthetic_frame(void){Fixture*f=&fixture;NgpFlsReportV1 r=report();void*out=NULL;CHECK(ngp_fls_environment_depth_v1()==1&&ngp_fls_get_v1(f->service,f->token,&out,&r)==0&&out==f->expected);r=report();CHECK(ngp_fls_set_v1(f->service,f->token,f->expected,&r)==0&&r.boxes_used==4);r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==NGP_FLS_STATE);uint32_t tag=0xdeadbeef;CHECK(ngp_worker_tag_warm_v1(&tag)==NGP_FLS_ENV_FRAME&&tag==0xdeadbeef);}
+static void check_terminal(Fixture*f,unsigned expected_callbacks,uint32_t acks,int32_t native){NgpFlsReportV1 r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==NGP_FLS_STATE&&r.phase==NGP_FLS_FAILED&&r.native_error==native&&r.value_clear_ack==(acks&1)&&r.callback_ack==((acks>>1)&1)&&r.key_delete_ack==((acks>>2)&1));r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==NGP_FLS_STATE&&atomic_load(&callbacks)==expected_callbacks);void*out=(void*)(uintptr_t)0x2348;r=report();CHECK(ngp_fls_get_v1(f->service,f->token,&out,&r)==NGP_FLS_STATE&&out==(void*)(uintptr_t)0x2348);}
+static void*worker(void*p){Fixture*f=p;ngp_synthetic_bind_v1(f->host);NgpFlsCallbackV1 cb={own_callback,f};NgpFlsReportV1 r=report();CHECK(ngp_fls_init_v1(f->service,ngp_fls_size_v1(),f->host,&cb,&r)==0&&r.phase==NGP_FLS_INIT&&!r.key_created);CHECK(ngp_fls_prepare_process_v1()==NGP_FLS_OWNER);int prior_cancel=-1;CHECK(pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,&prior_cancel)==0&&prior_cancel==PTHREAD_CANCEL_DISABLE);CHECK(ngp_worker_tag_read_v1(&f->owner_tag)==0&&f->owner_tag);uint32_t repeated=0;CHECK(ngp_worker_tag_warm_v1(&repeated)==0&&repeated==f->owner_tag);
+#ifdef NGP_FLS_TESTING
+ if(!strcmp(f->mode,"create-fail")){CHECK(ngp_fls_test_fault_v1(f->service,1)==0);f->token=UINT32_MAX;r=report();CHECK(ngp_fls_allocate_v1(f->service,&f->token,&r)==NGP_FLS_RETAINED&&f->token==UINT32_MAX&&r.key_created&&r.phase==NGP_FLS_FAILED);check_terminal(f,0,0,-9001);ngp_synthetic_bind_v1(NULL);return NULL;}
+#endif
+ f->token=UINT32_MAX;r=report();CHECK(ngp_fls_allocate_v1(f->service,&f->token,&r)==0&&f->token==1&&r.key_created&&r.phase==NGP_FLS_LIVE);void*out=(void*)(uintptr_t)0x3458;r=report();CHECK(ngp_fls_get_v1(f->service,f->token,&out,&r)==0&&out==NULL);uint32_t duplicate=UINT32_MAX;r=report();CHECK(ngp_fls_allocate_v1(f->service,&duplicate,&r)==NGP_FLS_STATE&&duplicate==UINT32_MAX);
+ if(!strcmp(f->mode,"capacity")){for(unsigned i=0;i<64;i++){r=report();CHECK(ngp_fls_set_v1(f->service,f->token,&f->values[i],&r)==0&&r.boxes_used==i+1);}r=report();CHECK(ngp_fls_set_v1(f->service,f->token,&f->values[64],&r)==NGP_FLS_LIMIT&&r.phase==NGP_FLS_LIVE&&r.boxes_used==64);out=NULL;r=report();CHECK(ngp_fls_get_v1(f->service,f->token,&out,&r)==0&&out==&f->values[63]);r=report();CHECK(ngp_fls_set_v1(f->service,f->token,NULL,&r)==0&&r.boxes_used==64);r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==0&&r.phase==NGP_FLS_CLOSED&&r.value_clear_ack&&r.callback_ack&&r.key_delete_ack&&!r.callback_required&&!r.callback_attempted&&!atomic_load(&callbacks));ngp_synthetic_bind_v1(NULL);return NULL;}
+ f->expected=&f->values[0];r=report();CHECK(ngp_fls_set_v1(f->service,f->token,f->expected,&r)==0&&r.boxes_used==1);
+ if(!strcmp(f->mode,"owner-exit")){CHECK(!atomic_load(&callbacks));ngp_synthetic_bind_v1(NULL);return NULL;}
+ if(!strcmp(f->mode,"callback-fail")){r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==NGP_FLS_CALLBACK&&r.callback_required&&r.callback_attempted);check_terminal(f,1,1,77);ngp_synthetic_bind_v1(NULL);return NULL;}
+#ifdef NGP_FLS_TESTING
+ if(!strcmp(f->mode,"set-fail")){CHECK(ngp_fls_test_fault_v1(f->service,2)==0);r=report();CHECK(ngp_fls_set_v1(f->service,f->token,&f->values[1],&r)==NGP_FLS_RETAINED&&r.boxes_used==2);check_terminal(f,0,0,-9001);ngp_synthetic_bind_v1(NULL);return NULL;}
+ if(!strcmp(f->mode,"clear-fail")||!strcmp(f->mode,"delete-fail")){int deleted=!strcmp(f->mode,"delete-fail");CHECK(ngp_fls_test_fault_v1(f->service,deleted?4:3)==0);r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==NGP_FLS_RETAINED);check_terminal(f,deleted?1:0,deleted?3:0,-9001);ngp_synthetic_bind_v1(NULL);return NULL;}
+#endif
+ f->expected=&f->values[1];r=report();CHECK(ngp_fls_set_v1(f->service,f->token,f->expected,&r)==0&&r.boxes_used==2);r=report();CHECK(ngp_fls_set_v1(f->service,f->token,NULL,&r)==0&&r.boxes_used==2);out=(void*)(uintptr_t)0x4568;r=report();CHECK(ngp_fls_get_v1(f->service,f->token,&out,&r)==0&&!out&&!atomic_load(&callbacks));f->expected=&f->values[2];r=report();CHECK(ngp_fls_set_v1(f->service,f->token,f->expected,&r)==0&&r.boxes_used==3);
+ CHECK(ngp_synthetic_enter_v1()==0);synthetic_frame();CHECK(ngp_synthetic_leave_v1()==0&&ngp_fls_environment_depth_v1()==0);
+ out=(void*)(uintptr_t)0x5678;ngp_synthetic_bind_v1(NULL);r=report();CHECK(ngp_fls_get_v1(f->service,f->token,&out,&r)==NGP_FLS_HOST&&out==(void*)(uintptr_t)0x5678&&!r.worker_observation);ngp_synthetic_bind_v1(f->host);pthread_t other;CHECK(pthread_create(&other,NULL,foreign,f)==0&&pthread_join(other,NULL)==0);out=NULL;r=report();CHECK(ngp_fls_get_v1(f->service,f->token,&out,&r)==0&&out==f->expected&&r.boxes_used==4&&!atomic_load(&callbacks));r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==0&&r.phase==NGP_FLS_CLOSED&&r.value_clear_ack&&r.callback_required&&r.callback_attempted&&r.callback_ack&&r.key_delete_ack&&atomic_load(&callbacks)==1);r=report();CHECK(ngp_fls_retire_v1(f->service,f->token,&r)==0&&atomic_load(&callbacks)==1);out=(void*)(uintptr_t)0x6788;r=report();CHECK(ngp_fls_get_v1(f->service,f->token,&out,&r)==NGP_FLS_STATE&&out==(void*)(uintptr_t)0x6788);
+#ifdef NGP_FLS_TESTING
+ if(!strcmp(f->mode,"late-exit")){CHECK(ngp_fls_test_late_exit_v1(f->service)==0);r=report();CHECK(ngp_fls_observe_v1(f->service,&r)==0&&r.phase==NGP_FLS_CLOSED&&r.owner_exit_observed&&!r.worker_observation&&atomic_load(&callbacks)==1);}
+#endif
+ ngp_synthetic_bind_v1(NULL);return NULL;
+}
+static void*early_nonmain(void*p){(void)p;CHECK(!pthread_main_np());CHECK(ngp_fls_prepare_process_v1()==NGP_FLS_OWNER);return NULL;}
+int main(int argc,char**argv){CHECK(argc==2);CHECK(pthread_main_np());pthread_t early;CHECK(pthread_create(&early,NULL,early_nonmain,NULL)==0&&pthread_join(early,NULL)==0);fixture.mode=argv[1];int known=!strcmp(argv[1],"normal")||!strcmp(argv[1],"capacity")||!strcmp(argv[1],"owner-exit")||!strcmp(argv[1],"callback-fail");
+#ifdef NGP_FLS_TESTING
+ known|=!strcmp(argv[1],"create-fail")||!strcmp(argv[1],"set-fail")||!strcmp(argv[1],"clear-fail")||!strcmp(argv[1],"delete-fail")||!strcmp(argv[1],"late-exit");
+#endif
+ CHECK(known&&ngp_fls_prepare_process_v1()==0&&ngp_fls_prepare_process_v1()==NGP_FLS_STATE);uint32_t tag=0xdeadbeef;CHECK(ngp_worker_tag_read_v1(&tag)==NGP_WORKER_TAG_UNBOUND_V1&&tag==0xdeadbeef);fixture.service=calloc(1,ngp_fls_size_v1());fixture.host=calloc(1,ngp_fls_environment_host_bytes_v1());CHECK(fixture.service&&fixture.host);CHECK((uintptr_t)fixture.service%ngp_fls_alignment_v1()==0&&ngp_synthetic_host_init_v1(fixture.host,ngp_fls_environment_host_bytes_v1())==0);for(unsigned i=0;i<65;i++)fixture.values[i]=i+1;NgpFlsCallbackV1 cb={own_callback,&fixture};NgpFlsReportV1 r=report();CHECK(ngp_fls_init_v1(fixture.service,ngp_fls_size_v1(),fixture.host,&cb,&r)==NGP_FLS_OWNER&&!r.worker_observation);CHECK(ngp_worker_tag_read_v1(&tag)==NGP_WORKER_TAG_UNBOUND_V1);pthread_t thread;CHECK(pthread_create(&thread,NULL,worker,&fixture)==0&&pthread_join(thread,NULL)==0);r=report();CHECK(ngp_fls_observe_v1(fixture.service,&r)==0&&!r.worker_observation&&!r.boxes_used&&!r.token&&!r.key_created);
+ if(!strcmp(fixture.mode,"owner-exit"))CHECK(r.phase==NGP_FLS_OWNER_EXITED&&r.owner_exit_observed&&!atomic_load(&callbacks));
+ if(!strcmp(fixture.mode,"set-fail"))CHECK(r.phase==NGP_FLS_OWNER_EXITED&&r.owner_exit_observed&&!atomic_load(&callbacks));
+ if(!strcmp(fixture.mode,"normal")||!strcmp(fixture.mode,"capacity")||!strcmp(fixture.mode,"late-exit"))CHECK(r.phase==NGP_FLS_CLOSED);
+ printf("PASS native-pthread-foundation mode=%s checks=%u callbacks=%u syntheticHost=1 actualPthreads=1 retainedBoxes=64\n",fixture.mode,checks,atomic_load(&callbacks));return 0;}

@@ -1,0 +1,11 @@
+# Native pthread-key foundation
+
+Self-authored C support only. One canonical process attempt on a real retained nonmain pthread, linked-once stable worker tags,64 retained value boxes, actual pthread key get/set and explicit clear/callback/delete acknowledgements. Partial failures remain terminal retained. The OS destructor publishes an atomic owner-exit observation only; it never calls the OWN callback or frees storage. Foreign observers do not read mutable tracking or prove resource absence.
+
+The production static archive contains exactly three C units and13 public functions. It deliberately leaves the three declared environment integration functions unresolved: actual host bytes, active host identity and depth. No engine, image, original data or host binding is supplied. The real Mac fixture alone links a clearly synthetic TLS identity/depth adapter. Actual pthread APIs are real; its depth is an explicit test condition, never an actual engine frame.
+
+Mac arm64 tests require genuine Apple pthread_main_np/cancellation/key/destructor behavior. An early nonmain prepare attempt must fail without consuming the main claim; actual main prepares, then the nonmain owner initializes. Cancelability is disabled and observed without enabling it. Nine positive processes cover normal,64-box capacity, owner exit, callback failure and explicitly synthetic post-API/late-event uncertainty. Three one-defect controls require exact assertion-only rejection. Source-derived counts are fixed before runtime. No reset/callback retry/free of retained published state.
+
+iPhone proof is genuine SDK compilation/repeat/archive/metadata only, minimum26/SDK>=27/arm64, unsigned static objects. It does not execute on iPhone or Simulator. No app/device/signing identity or engine integration is supplied. Provider sizes and opaque pthread types are queried/inspected from actual headers; no Windows layout is presumed.
+
+The driver emits bounded source/command/result/metadata/frame reports and own SDK objects only. It never copies SDK headers/libraries or reads secrets. Unknown metadata/imports/runtime failures are failures, not successful substitutions. All actual Apple results remain pending until an observed selected build.
