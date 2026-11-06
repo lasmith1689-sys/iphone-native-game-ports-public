@@ -1,0 +1,157 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3918,
+      "sha256": "08aa02be6d9c012f3d7f493c06efdde351ef3ad0c24b8ce20ce1a4cf2db77a70"
+    },
+    "bounded_process.py": {
+      "bytes": 5157,
+      "sha256": "c169f87e017f01565821f84a204e3a4f53ab88ee37833fa5aa7ff898e56434d2"
+    },
+    "expected_outcomes.json": {
+      "bytes": 709,
+      "sha256": "b4d9835e31de38251caf18cc406c32577839224cf8b39fc29ea2173ea9611bf0"
+    },
+    "expected_wait_controls.json": {
+      "bytes": 1764,
+      "sha256": "0f6a0420277424230d524ae4f9e26c1e43ad2b4fb26d203e9164da049bd178b3"
+    },
+    "fixture_os_smoke.c": {
+      "bytes": 3213,
+      "sha256": "ce128e75b42dcba62d0bf2aae8423bf1bdeee456850a2af21cd85e384fd6b41e"
+    },
+    "fixture_os_unit.c": {
+      "bytes": 3186,
+      "sha256": "607af36aa98e93a00b685c4ec86ed80687f2a6885de118c301ed83b37999bd6a"
+    },
+    "fixture_parent.c": {
+      "bytes": 6839,
+      "sha256": "83341ceacb5de0c1b35fb0c39996c705acddf455ce154a7f8a3122c56e6a329a"
+    },
+    "fixture_real.c": {
+      "bytes": 12106,
+      "sha256": "a23fb0939d1b22385a8225c88d8ea8ba008a419d7d3a66e0fd7ef4f22937b391"
+    },
+    "fixture_wait.c": {
+      "bytes": 10575,
+      "sha256": "471b1650bb4d276faa45f4ab2a04b0af943344e838b674046f7562a920b6aabf"
+    },
+    "image_checks.py": {
+      "bytes": 4871,
+      "sha256": "d7219b05fe4c7e9f4eeaf6c0ed582f2b58e7ca03d69f28cb3864adb330289a25"
+    },
+    "inspect_image.py": {
+      "bytes": 3901,
+      "sha256": "408e13fcb27838d5eea161491eb538e2a91cdd5ccecf84416191390d712efa52"
+    },
+    "ngp_audio_catalog_v1.c": {
+      "bytes": 10359,
+      "sha256": "782dbb81631ad50949404e30569c20241cc81ad9225e51202cf708b30d5fe4f4"
+    },
+    "ngp_audio_catalog_v1.h": {
+      "bytes": 2276,
+      "sha256": "31925ebb56262fef15ac3005fc8cce7803c2d34278db7e4cb90c27324531a5f8"
+    },
+    "ngp_audio_shared_impl_tokens_v1.c": {
+      "bytes": 149,
+      "sha256": "fa5a4d118fcf01e6d0ff93ba351359f751e970b68028ee25d2d2210206c06d0b"
+    },
+    "ngp_audio_shared_profile_v1.h": {
+      "bytes": 577,
+      "sha256": "8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397"
+    },
+    "ngp_audio_stop_os_v1.c": {
+      "bytes": 1158,
+      "sha256": "1a5fdffced3f1b1a10358b61cc763f2c71db3c9f6377b0022a1f5e0eb32b4d49"
+    },
+    "ngp_audio_stop_os_v1.h": {
+      "bytes": 577,
+      "sha256": "3ffd8cb6bc63e700ced41e5db7d4eaf8b1edd1447da278b9510ca1971bf3ee2b"
+    },
+    "ngp_audio_stop_terminal_v1.c": {
+      "bytes": 582,
+      "sha256": "d95e670adcc51437fa0a5619f7aaed4a15463d81ca39111384f793ebca49ae8e"
+    },
+    "ngp_audio_stop_terminal_v1.h": {
+      "bytes": 588,
+      "sha256": "50167e8c19048a8cfa214ddf727988e91f15cf6783480e420a888a9eaf5e95d5"
+    },
+    "ngp_audio_worker_broker_v1.m": {
+      "bytes": 1214,
+      "sha256": "daab3b849a8dc3de325790f1e8717e94f1bc668d46aaa7cb6330051901b6a2cb"
+    },
+    "ngp_audio_worker_runtime_v1.c": {
+      "bytes": 16186,
+      "sha256": "519e25f619a199d630a325c3a9a13035ead99d5f4bff2eb4c00405b469c54588"
+    },
+    "ngp_audio_worker_runtime_v1.h": {
+      "bytes": 3701,
+      "sha256": "ffbb835f803ca7c8f787f2647d712fcb51d73664927d6ce490a90b5282b33196"
+    },
+    "ngp_device_mixer_render_v1.c": {
+      "bytes": 3163,
+      "sha256": "dee442897e3eebd8faccba7fcef9f075e5f19a8fa473c2f0282c79810ba8818e"
+    },
+    "ngp_device_mixer_render_v1.h": {
+      "bytes": 1266,
+      "sha256": "aab3377efd6d3a4b016134d8e8f14b256f9d77ec1cc02d1b0b571f5a22d77baf"
+    },
+    "ngp_device_mixer_v1.h": {
+      "bytes": 2916,
+      "sha256": "13f8f5842b9a39fe2c4b4111669a621e1d3f9a5a35588ae6f943fd2209816c17"
+    },
+    "ngp_device_mixer_v1.m": {
+      "bytes": 21221,
+      "sha256": "e1b7e62d9e810d6e5b6c06903d2fe9a98daaba5a2d3dfeb4d525caf9c12326d6"
+    },
+    "ngp_positional_provider_v1.c": {
+      "bytes": 8043,
+      "sha256": "701ef9cc3b94d64c40db678287d87feef7ffa10c7b0be8ee73a5391c5a4ed7bf"
+    },
+    "ngp_positional_provider_v1.h": {
+      "bytes": 2336,
+      "sha256": "213629d542a8cf0d630cdc371041e8f94254cf0165eed7a382c39fa48119107a"
+    },
+    "ngp_voice_gain_balance_v2.h": {
+      "bytes": 1507,
+      "sha256": "3ff607a8db4cf14646bf6e4c91a6474d3a7f6508cc14318b85c6a6628b6590c9"
+    },
+    "ngp_voice_service_v1.c": {
+      "bytes": 25572,
+      "sha256": "0b84cb7b64cd0e7a47090e420b9fe0e6915584ad20b21bf2efac6af2b243def9"
+    },
+    "ngp_voice_service_v1.h": {
+      "bytes": 5102,
+      "sha256": "e849cc4a659286c53dc9b93741979d97544317a262a391318a5c11377ce5fae3"
+    },
+    "ngp_voice_tokens_v1.c": {
+      "bytes": 7632,
+      "sha256": "e21be2c2fee27452c76b3a433490bc32831a6014cc02332d143af0d4a8051415"
+    },
+    "ngp_voice_tokens_v1.h": {
+      "bytes": 2125,
+      "sha256": "a44169deb9401e5cff1dd9b6d26fe7982fd66a0c467b17835d9b374ff5ef9fb5"
+    },
+    "old_api_wait_admit.c": {
+      "bytes": 348,
+      "sha256": "98fb2d200d78ab90eca0e813fef894fdab41f7df3e866db2a73423a53239a1e3"
+    },
+    "retain.py": {
+      "bytes": 2969,
+      "sha256": "38d2b0270543a6c3a9a9ccfe786542372231a18bfca96d7c6cfc3c0cc2f74e62"
+    },
+    "run_sdk.py": {
+      "bytes": 28969,
+      "sha256": "95497812ff0c49853f447559d29a20b29e10db72e8ee2b893d4dca03e3c7865f"
+    },
+    "test_wait_provider.c": {
+      "bytes": 966,
+      "sha256": "bf3698073e628ddf90d9d73dd2a070d1b7abdd85622f80d1977b404a4a180ae6"
+    },
+    "test_wait_provider.h": {
+      "bytes": 299,
+      "sha256": "d494dc2cad6412d41b3478d39151e92550c73e951b7250d81c6976d02c2afca0"
+    }
+  },
+  "schema": "own-public-retained-stop-source-manifest-v1"
+}
