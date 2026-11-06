@@ -1,0 +1,150 @@
+{
+  "schema": "own-real-authority-join-pre-output-schedule-v1",
+  "firstNativeRun": "independent-parent",
+  "firstSharedAllocatorGreen": "production/normal",
+  "positive": {
+    "normal": {
+      "binary": "production",
+      "cases": 1024,
+      "faults": 0,
+      "foreignOps": 96,
+      "callbacks": 1,
+      "boxes": 3,
+      "lateEvent": 0
+    },
+    "capacity": {
+      "binary": "production",
+      "cases": 0,
+      "faults": 0,
+      "foreignOps": 0,
+      "callbacks": 0,
+      "boxes": 64,
+      "lateEvent": 0
+    },
+    "owner-exit": {
+      "binary": "production",
+      "cases": 0,
+      "faults": 0,
+      "foreignOps": 0,
+      "callbacks": 0,
+      "boxes": 3,
+      "lateEvent": 0
+    },
+    "callback-fail": {
+      "binary": "production",
+      "cases": 0,
+      "faults": 0,
+      "foreignOps": 0,
+      "callbacks": 1,
+      "boxes": 3,
+      "lateEvent": 0
+    },
+    "atomic-fault": {
+      "binary": "production",
+      "cases": 0,
+      "faults": 4,
+      "foreignOps": 0,
+      "callbacks": 1,
+      "boxes": 3,
+      "lateEvent": 0
+    },
+    "create-fail": {
+      "binary": "testing",
+      "cases": 0,
+      "faults": 0,
+      "foreignOps": 0,
+      "callbacks": 0,
+      "boxes": 0,
+      "lateEvent": 0
+    },
+    "set-fail": {
+      "binary": "testing",
+      "cases": 0,
+      "faults": 0,
+      "foreignOps": 0,
+      "callbacks": 0,
+      "boxes": 4,
+      "lateEvent": 0
+    },
+    "clear-fail": {
+      "binary": "testing",
+      "cases": 0,
+      "faults": 0,
+      "foreignOps": 0,
+      "callbacks": 0,
+      "boxes": 3,
+      "lateEvent": 0
+    },
+    "delete-fail": {
+      "binary": "testing",
+      "cases": 0,
+      "faults": 0,
+      "foreignOps": 0,
+      "callbacks": 1,
+      "boxes": 3,
+      "lateEvent": 0
+    },
+    "late-exit": {
+      "binary": "testing",
+      "cases": 0,
+      "faults": 0,
+      "foreignOps": 0,
+      "callbacks": 1,
+      "boxes": 3,
+      "lateEvent": 1
+    }
+  },
+  "negative": {
+    "independent-parent": {
+      "mode": "normal",
+      "function": "owner",
+      "line": 199,
+      "expression": "aliasTag==f.owner_tag",
+      "exitCode": 4,
+      "stdoutBytes": 0
+    },
+    "zero-depth": {
+      "mode": "normal",
+      "function": "authority",
+      "line": 54,
+      "expression": "ngp_fls_environment_depth_v1()==pc64_dispatch_depth()",
+      "exitCode": 4,
+      "stdoutBytes": 0
+    },
+    "wrong-host": {
+      "mode": "normal",
+      "function": "authority",
+      "line": 52,
+      "expression": "ngp_fls_environment_active_v1()==pc64_active_host()",
+      "exitCode": 4,
+      "stdoutBytes": 0
+    },
+    "skip-callback": {
+      "mode": "normal",
+      "function": "close_own",
+      "line": 193,
+      "expression": "atomic_load_explicit(&f.callbacks,memory_order_relaxed)==(unsigned)(f.expected!=NULL)",
+      "exitCode": 4,
+      "stdoutBytes": 0
+    },
+    "fake-atomic": {
+      "mode": "normal",
+      "function": "vector_cases",
+      "line": 146,
+      "expression": "memcmp(actual,wanted,16)==0",
+      "exitCode": 4,
+      "stdoutBytes": 0
+    }
+  },
+  "fixedReceiptFields": {
+    "tagThreads": 2,
+    "realHost": 1,
+    "realDepth": 1,
+    "ownCallback": 1,
+    "sourceReady": 0
+  },
+  "checkCounterNotUsedAsOracle": true,
+  "initialCorpus": "unchanged own256 ISA vectors x4toyprofiles, not a game corpus",
+  "countsFrozenBeforeNativeOutputs": true,
+  "noNativeOutputObservedForThisJoin": true
+}
