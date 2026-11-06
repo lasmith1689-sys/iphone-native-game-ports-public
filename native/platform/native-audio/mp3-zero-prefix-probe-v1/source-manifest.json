@@ -1,0 +1,115 @@
+{
+  "dependencyCommit": "f40cf03f80cdb7e741d43e53b7e706e8c1394bcf",
+  "files": {
+    "LICENSE": {
+      "bytes": 2597,
+      "sha256": "457f1b500e0adf6bc059edddfa78a2f62012e7c3bb43476c20e0bd23b25ba0eb"
+    },
+    "README.md": {
+      "bytes": 3032,
+      "sha256": "2b3126ceb62a6af8025cf3e9b20430233ef0a62db59cd77102c3d61d430bcf66"
+    },
+    "bounded_process.py": {
+      "bytes": 3293,
+      "sha256": "ce89924f280c180fe0ca9e6d68c45c4174bd5fe37d0aa93d94b0222d9b5c366a"
+    },
+    "cases.json": {
+      "bytes": 7040,
+      "sha256": "0f0c0b273b64c9c9c8d422a5b6b5ec17ac67c7fa6bbcb77b207f10728ac44c4c"
+    },
+    "fixture_adapter_cases.c": {
+      "bytes": 3418,
+      "sha256": "58cc923279e95d03c8aee4f1185d1ef077f80f6cc45acaa2e4c7ad1a8d3cc619"
+    },
+    "fixture_cases.h": {
+      "bytes": 794,
+      "sha256": "6475eaa69a87c65a46554763b02e5488589d59ad9fdae7ff3fea94bc5f60e14e"
+    },
+    "fixture_main.c": {
+      "bytes": 6029,
+      "sha256": "359863c217d194b10b04f140a2afafdd6d6bcab8a23d596f6723fe54632c1b0a"
+    },
+    "fixtures/mono44100.mp3": {
+      "bytes": 10031,
+      "sha256": "7f5d0343bd7011a1d73d790ad42ee2db7e34a3e01978b82c1269d608b2442542"
+    },
+    "fixtures/stereo22050.mp3": {
+      "bytes": 5224,
+      "sha256": "942070d4068191a50c72d692139b2478b48178fd944ee797daac965fff1ada00"
+    },
+    "fixtures/stereo44100.mp3": {
+      "bytes": 15046,
+      "sha256": "9a85978ed4c71b6f48d7311367e71f9f58717c008991a84ef21dc4b2e0545e97"
+    },
+    "fixtures/unsupported48000.mp3": {
+      "bytes": 14976,
+      "sha256": "46fb00a21f9ba6f52ac8a86290bf8fc82d30e417616d99e607d1c1e2d02b42cd"
+    },
+    "inspect_image.py": {
+      "bytes": 3901,
+      "sha256": "408e13fcb27838d5eea161491eb538e2a91cdd5ccecf84416191390d712efa52"
+    },
+    "ngp_audio_shared_implementation_v1.c": {
+      "bytes": 315,
+      "sha256": "696d991be6cf39957f4503d970dd1b87b3ed3d16c7bcc2e89ee08756d39f0d7b"
+    },
+    "ngp_audio_shared_profile_v1.h": {
+      "bytes": 577,
+      "sha256": "8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397"
+    },
+    "ngp_memory_mp3_internal_v1.h": {
+      "bytes": 406,
+      "sha256": "2a2529ac0d50dab2285810807ba5a5ea1d6419390efedae3d85f87e1fdf4fa47"
+    },
+    "ngp_memory_mp3_v1.c": {
+      "bytes": 5089,
+      "sha256": "4b3a0f9bced50d0e02e284f0f741209c8b12fee4393c18d869c187b8fd706e57"
+    },
+    "ngp_memory_mp3_v1.h": {
+      "bytes": 1926,
+      "sha256": "389c491b43319213db2b66674c942bd82cc44002ce7bd04663b5b8d54d3db71c"
+    },
+    "ngp_mp3_envelope_v1.c": {
+      "bytes": 3833,
+      "sha256": "306baefc87464329445af7d61775f4ea2c9cbb2c905d1921017dafe7e6a7956e"
+    },
+    "ngp_mp3_zero_prefix_decode_v1.c": {
+      "bytes": 830,
+      "sha256": "800be3f37faca65eaf4ffab0bfb0baff5f225535664d32d3a2942dfc1ce534e0"
+    },
+    "ngp_mp3_zero_prefix_internal_v1.h": {
+      "bytes": 368,
+      "sha256": "810ddf3dc365f63e9c83343e932fa0227c5c867f89a7db4c1fd0550225356007"
+    },
+    "ngp_mp3_zero_prefix_v1.c": {
+      "bytes": 1830,
+      "sha256": "85b2716521b7507a220506dbd5fbc566853680704fc548755d41107017e3bb4c"
+    },
+    "ngp_mp3_zero_prefix_v1.h": {
+      "bytes": 1515,
+      "sha256": "7b0799855f5bb2de19490febe6212b9d8c4ac316ef39a88e661b93baf4d8b067"
+    },
+    "padding_abi.c": {
+      "bytes": 430,
+      "sha256": "4b2a69976550c3bd8ca152de75f1ae56ab3038440af110dff91ac96cf3c2755f"
+    },
+    "run_probe.py": {
+      "bytes": 14004,
+      "sha256": "85adf282096a2a7fc19c9e4afedc0ec49f8914e6b7c5f4ebf3326e20a794fe07"
+    },
+    "tolerances.json": {
+      "bytes": 379,
+      "sha256": "91685ffb2821b52552b04933ae68a2d6714b66df724078caffdcadd4a9b88207"
+    },
+    "tone_contract.h": {
+      "bytes": 317,
+      "sha256": "b1c63aced90bd159480034702b7e5937a943ffff93d545fea458edeb00b53e58"
+    },
+    "validate_native.py": {
+      "bytes": 2357,
+      "sha256": "2d53676777748dff9c81c136b6cc0a465e6a40b442ba7f0fda6de5fce8488214"
+    }
+  },
+  "format": "NGP-own-zero-prefix-support-v1",
+  "ownSyntheticOnly": true
+}
