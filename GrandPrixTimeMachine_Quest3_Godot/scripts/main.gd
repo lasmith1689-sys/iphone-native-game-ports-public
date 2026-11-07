@@ -1,7 +1,7 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.13: safer headset diagnostics, historically precise pit-stop narration.
+## v0.14: native OpenXR frame pacing, focus-safe replay and FPS telemetry.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 138.0
@@ -71,6 +71,16 @@ var seeking_side := ""
 var beams: Dictionary = {}
 var hovered_action := ""
 var intro_time := 0.0
+# App-loop timing estimates, not compositor frame delivery measurements.
+var measured_fps := -1
+var measured_worst_ms := -1.0
+var expected_xr_hz := 0.0
+var frame_window_seconds := 0.0
+var frame_window_count := 0
+var frame_window_worst_ms := 0.0
+var perf_log_clock := 0.0
+var xr_focused := true
+var restore_playback_on_focus := false
 
 func _ready() -> void:
     _make_environment()
@@ -82,8 +92,18 @@ func _ready() -> void:
 
 func _start_xr() -> void:
     xr_interface = XRServer.find_interface("OpenXR")
+    # Subscribe before initialization; some runtimes begin sessions immediately.
+    if xr_interface != null:
+        if xr_interface.has_signal("session_begun"):
+            xr_interface.connect("session_begun", Callable(self, "_on_openxr_session_begun"))
+        if xr_interface.has_signal("session_visible"):
+            xr_interface.connect("session_visible", Callable(self, "_on_openxr_visible"))
+        if xr_interface.has_signal("session_focussed"):
+            xr_interface.connect("session_focussed", Callable(self, "_on_openxr_focussed"))
     if xr_interface != null and xr_interface.initialize():
         xr_active = true
+        # OpenXR owns presentation synchronization, not desktop-window VSync.
+        DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
         get_viewport().use_xr = true
         desktop_camera.current = false
         print("GPTM XR session initialized")
@@ -108,6 +128,84 @@ func _start_xr() -> void:
     await get_tree().create_timer(0.3).timeout
     _recenter()
     _update_xr_status()
+
+func _on_openxr_session_begun() -> void:
+    # Only the running headset session can report its actual refresh rate.
+    if xr_interface == null or not xr_interface.has_method("get_display_refresh_rate"):
+        return
+    var reported_hz := float(xr_interface.call("get_display_refresh_rate"))
+    if reported_hz >= 60.0 and reported_hz <= 144.0:
+        expected_xr_hz = reported_hz
+        Engine.physics_ticks_per_second = roundi(reported_hz)
+        print("GPTM XR refresh_hz=", reported_hz, " physics_ticks=", Engine.physics_ticks_per_second)
+    else:
+        print("GPTM XR refresh unavailable; leaving physics default")
+
+
+func _clear_xr_input_latches() -> void:
+    seeking_side = ""
+    hovered_action = ""
+    for side in ["left", "right"]:
+        trigger_down[side] = false
+        center_down[side] = false
+        quick_pause_down[side] = false
+        stick_direction[side] = 0
+        stick_vertical[side] = 0
+        if beams.has(side):
+            (beams[side] as MeshInstance3D).visible = false
+
+
+func _on_openxr_visible() -> void:
+    # The Quest menu / headset removal should not silently advance the story.
+    if not xr_focused:
+        return
+    xr_focused = false
+    restore_playback_on_focus = playing
+    playing = false
+    _clear_xr_input_latches()
+    frame_window_seconds = 0.0
+    frame_window_count = 0
+    frame_window_worst_ms = 0.0
+    if labels.has("state"):
+        _update_cars()
+    print("GPTM XR focus lost; playback paused")
+
+
+func _on_openxr_focussed() -> void:
+    # A manually paused story stays paused when the headset regains focus.
+    if xr_focused:
+        return
+    xr_focused = true
+    if restore_playback_on_focus:
+        playing = true
+    restore_playback_on_focus = false
+    _clear_xr_input_latches()
+    if labels.has("state"):
+        _update_cars()
+    print("GPTM XR focus restored")
+
+
+func _sample_frame_timing(delta: float) -> void:
+    if not xr_active or not xr_focused or intro_time < 3.0:
+        return
+    var bounded_delta := maxf(delta, 0.0)
+    frame_window_seconds += bounded_delta
+    frame_window_count += 1
+    frame_window_worst_ms = maxf(frame_window_worst_ms, bounded_delta * 1000.0)
+    if frame_window_seconds >= 2.0:
+        measured_fps = roundi(float(frame_window_count) / frame_window_seconds)
+        measured_worst_ms = frame_window_worst_ms
+        perf_log_clock += frame_window_seconds
+        frame_window_seconds = 0.0
+        frame_window_count = 0
+        frame_window_worst_ms = 0.0
+        if perf_log_clock >= 8.0:
+            perf_log_clock = 0.0
+            # Diagnostic logging is app-side; it cannot prove compositor FPS.
+            print("GPTM PERF app_fps=", measured_fps,
+                " max_frame_ms=", snappedf(measured_worst_ms, 0.1),
+                " xr_hz=", expected_xr_hz)
+
 
 func _make_environment() -> void:
     var world := WorldEnvironment.new()
@@ -578,6 +676,7 @@ func _update_cars() -> void:
 
 func _process(delta: float) -> void:
     intro_time += delta
+    _sample_frame_timing(delta)
     diagnostics_clock += delta
     if diagnostics_clock >= 0.25:
         diagnostics_clock = 0.0
@@ -601,7 +700,7 @@ func _process(delta: float) -> void:
     _read_controller()
 
 func _read_controller() -> void:
-    if not xr_active:
+    if not xr_active or not xr_focused:
         return
     var current_hover := ""
     var action_taken := false
@@ -743,7 +842,8 @@ func _update_xr_status() -> void:
         mode = "MR (UNVERIFIED)" if passthrough_active else "VR"
         left_state = "OK" if left_controller.get_is_active() and left_controller.get_has_tracking_data() else "LOST"
         right_state = "OK" if right_controller.get_is_active() and right_controller.get_has_tracking_data() else "LOST"
-    labels["xr_status"].text = "MODE: %s | L: %s | R: %s | HEIGHT: %d CM" % [mode, left_state, right_state, roundi(height_adjustment * 100.0)]
+    var fps_text := "--" if measured_fps < 0 else str(measured_fps)
+    labels["xr_status"].text = "MODE: %s | L: %s | R: %s | HEIGHT: %d CM | FPS: %s" % [mode, left_state, right_state, roundi(height_adjustment * 100.0), fps_text]
 
 func _unhandled_key_input(event: InputEvent) -> void:
     if not event is InputEventKey:

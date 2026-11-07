@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.13 Quest 3 standalone build
+# Grand Prix Time Machine — v0.14 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -7,7 +7,7 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a nine-chapter documentary playback and a floating action-button interface.
-**v0.13 remains a VR-first release.** Its default CI builds a standalone
+**v0.14 remains a VR-first release.** Its default CI builds a standalone
 Quest 3 OpenXR APK without the OpenXR Vendors plugin, which is **not yet bundled**
 because native versions 5.1.0 and 5.0.1 crashed the Linux Godot 4.6.3 headless
 editor while importing. **MR unverified:** actual Meta passthrough has not been
@@ -20,7 +20,29 @@ network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 202
 reconstructed historical telemetry.** Narrative beats are sourced; see
 `docs/HISTORICAL_SOURCES.md`.
 
-## New in v0.13: local headset startup diagnostic and improved historical precision
+## New in v0.14: native XR frame pacing, focus-safe replay and app FPS diagnostics
+
+Following official Godot 4.6 guidance, desktop VSync is disabled only when
+OpenXR successfully initializes. On `session_begun`, Godot's physics tick rate
+is synchronized to the runtime-reported display refresh rate if it is plausible
+(60–144 Hz). An unsupported report leaves defaults alone; the app does not
+force a new headset refresh mode.
+
+When the headset loses focus (e.g. opening Quest system menu or removal), replay
+pauses, seeks cancel and both controller latches reset. Playback resumes on
+refocus *only if it was playing before focus loss*.
+
+The in-headset diagnostic shows app-loop FPS after warmup, and occasional
+`GPTM PERF` log lines record sampled FPS, worst frame interval and runtime
+refresh rate. This is **not** compositor FPS or proof of headset performance.
+The logs contain no device serials and are never uploaded automatically.
+These changes have **not** been tested on a physical Quest 3.
+
+References:
+- https://docs.godotengine.org/en/4.6/tutorials/xr/setting_up_xr.html
+- https://docs.godotengine.org/en/4.6/tutorials/xr/a_better_xr_start_script.html
+
+## Previously in v0.13: local headset startup diagnostic and improved historical precision
 
 The Easy Install ZIP includes an optional **VERIFY_QUEST3_STARTUP.cmd** on Windows.
 After installing and authorizing USB debugging, double-click this to launch the

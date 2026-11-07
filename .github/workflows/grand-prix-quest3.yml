@@ -137,7 +137,7 @@ jobs:
       - name: Upload Quest APK
         uses: actions/upload-artifact@v4
         with:
-          name: GrandPrixTimeMachine_Quest3_v0.13_Easy_Install
+          name: GrandPrixTimeMachine_Quest3_v0.14_Easy_Install
           path: |
             GrandPrixTimeMachine_Quest3_Godot/build/GrandPrixTimeMachine_Quest3.apk
             GrandPrixTimeMachine_Quest3_Godot/build/SHA256SUMS.txt
