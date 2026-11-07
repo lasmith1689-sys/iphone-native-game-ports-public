@@ -1,0 +1,84 @@
+name: Native CoD audio owner SDK
+"on":
+  push:
+    branches: ['codex/native-miles-audio-owner-sdk-v3-20261107']
+    paths: ['.github/workflows/native-miles-audio-owner-sdk-v3.yml']
+permissions:
+  contents: read
+jobs:
+  sdk:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: native/support/miles-audio-owner-v3
+      - name: Verify and compile the two native source files twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = lasmith1689-sys/iphone-native-game-ports-public
+          test "$GITHUB_REF" = refs/heads/codex/native-miles-audio-owner-sdk-v3-20261107
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(uname -m)" = arm64
+          test "$(xcode-select -p)" = /Applications/Xcode_27.1.app/Contents/Developer
+          test "$(xcrun --sdk iphoneos --show-sdk-version)" = 27.1
+          sdk="$(xcrun --sdk iphoneos --show-sdk-path)"
+          src="$GITHUB_WORKSPACE/native/support/miles-audio-owner-v3"
+          cd "$src"
+          cat > "$RUNNER_TEMP/owner-shas.txt" <<'CHECKSUMS'
+          2c4608720ee89c1ff247b75bdf291e59fb67bf0feb11bfb099af56554269020d  NGPMilesAudioOwnerV1.h
+          4487b348c59edb1b23062aba9365c77eb8d5eba06f2854457cd52566e794c55e  NGPMilesAudioOwnerV1.m
+          24e8305fb0512aebeac00cf46de73fceb931f38f74cc069442c52cb3ea0e7224  audio_ticket.c
+          26635911e30c96084c12a8c145060104ca81a074b03eeb6c4ac96d41fc922457  audio_ticket.h
+          ffbb835f803ca7c8f787f2647d712fcb51d73664927d6ce490a90b5282b33196  ngp_audio_worker_runtime_v1.h
+          13f8f5842b9a39fe2c4b4111669a621e1d3f9a5a35588ae6f943fd2209816c17  ngp_device_mixer_v1.h
+          213629d542a8cf0d630cdc371041e8f94254cf0165eed7a382c39fa48119107a  ngp_positional_provider_v1.h
+          e849cc4a659286c53dc9b93741979d97544317a262a391318a5c11377ce5fae3  ngp_voice_service_v1.h
+          a44169deb9401e5cff1dd9b6d26fe7982fd66a0c467b17835d9b374ff5ef9fb5  ngp_voice_tokens_v1.h
+          CHECKSUMS
+          shasum -a 256 -c "$RUNNER_TEMP/owner-shas.txt"
+          out="$RUNNER_TEMP/ngp-audio-owner"
+          mkdir -p "$out/first" "$out/repeat"
+          for dest in "$out/first" "$out/repeat"; do
+            xcrun --sdk iphoneos clang -target arm64-apple-ios26.0 -isysroot "$sdk" -std=c17 -O2 -g0 -Wall -Wextra -Werror -fvisibility=hidden -fstack-usage -c audio_ticket.c -o "$dest/audio_ticket.o"
+            xcrun --sdk iphoneos clang -target arm64-apple-ios26.0 -isysroot "$sdk" -std=c17 -O2 -g0 -Wall -Wextra -Werror -fvisibility=hidden -fstack-usage -fobjc-arc -fobjc-exceptions -fobjc-arc-exceptions -fexceptions -fblocks -c NGPMilesAudioOwnerV1.m -o "$dest/NGPMilesAudioOwnerV1.o"
+          done
+          for object in audio_ticket NGPMilesAudioOwnerV1; do
+            cmp "$out/first/$object.o" "$out/repeat/$object.o"
+            cmp "$out/first/$object.su" "$out/repeat/$object.su"
+            xcrun llvm-nm -u "$out/first/$object.o" > "$out/$object-imports.txt"
+          done
+          shasum -a 256 "$out"/first/*.o
+          # Exact referenced subset of the retained native audio library's own exports.
+          cat > "$out/audio-provider-interface.tbd" <<'PROVIDER'
+          --- !tapi-tbd
+          tbd-version: 4
+          targets: [ arm64-ios ]
+          install-name: '@rpath/lib-native-audio-cooperative-wait-ios.dylib'
+          current-version: 0.0.0
+          compatibility-version: 0.0.0
+          exports:
+            - targets: [ arm64-ios ]
+              objc-classes: [ NGPDeviceMixerBrokerV1, NGPDeviceMixerIntentV1 ]
+              symbols: [ _ngp_audio_worker_v1_open, _ngp_audio_worker_v1_borrow, _ngp_audio_worker_v1_wait_stop ]
+          ...
+          PROVIDER
+          for dest in "$out/first" "$out/repeat"; do
+            xcrun --sdk iphoneos clang -target arm64-apple-ios26.0 -isysroot "$sdk" -dynamiclib \
+              -Wl,-no_adhoc_codesign -Wl,-install_name,@rpath/libNGPMilesAudioOwnerV1.dylib \
+              "$dest/NGPMilesAudioOwnerV1.o" "$dest/audio_ticket.o" "$out/audio-provider-interface.tbd" \
+              -framework Foundation -framework UIKit -o "$dest/libNGPMilesAudioOwnerV1.dylib"
+          done
+          cmp "$out/first/libNGPMilesAudioOwnerV1.dylib" "$out/repeat/libNGPMilesAudioOwnerV1.dylib"
+          xcrun otool -L "$out/first/libNGPMilesAudioOwnerV1.dylib" > "$out/linked-libraries.txt"
+          shasum -a 256 "$out/first/libNGPMilesAudioOwnerV1.dylib"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-miles-audio-owner-sdk
+          path: ${{ runner.temp }}/ngp-audio-owner/
+          if-no-files-found: error
+          retention-days: 1
