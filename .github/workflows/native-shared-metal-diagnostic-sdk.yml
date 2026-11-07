@@ -1,0 +1,42 @@
+name: Shared Metal diagnostic SDK
+on:
+  push:
+    branches: ['codex/shared-metal-diagnostic-sdk-v1-20261107']
+permissions:
+  contents: read
+jobs:
+  sdk:
+    runs-on: macos-26
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify owned source and build the diagnostic
+        shell: bash
+        run: |
+          set -euxo pipefail
+          src="$GITHUB_WORKSPACE/native/support/shared-metal-diagnostic-sdk-v1"
+          (cd "$src" && shasum -a 256 -c owned.sha256)
+          mkdir -p "$GITHUB_WORKSPACE/proof"
+          python3 -B "$src/test_policy.py" --out "$RUNNER_TEMP/metal-policy" --cc "$(xcrun --sdk macosx --find clang)"
+          cp "$RUNNER_TEMP/metal-policy/receipt.json" "$GITHUB_WORKSPACE/proof/policy.json"
+          build="$RUNNER_TEMP/shared-metal-diagnostic-build"
+          bash "$src/build_apple.sh" "$build" 26.5
+          app="$build/SharedMetalDiagnostic.app"
+          test -s "$app/SharedMetalDiagnostic"
+          test -s "$app/default.metallib"
+          plutil -lint "$app/Info.plist"
+          xcrun vtool -show-build "$app/SharedMetalDiagnostic" > "$GITHUB_WORKSPACE/proof/build-version.txt"
+          xcrun otool -L "$app/SharedMetalDiagnostic" > "$GITHUB_WORKSPACE/proof/dynamic-libraries.txt"
+          xcrun --sdk iphoneos --show-sdk-version > "$GITHUB_WORKSPACE/proof/sdk.txt"
+          xcodebuild -version > "$GITHUB_WORKSPACE/proof/xcode.txt"
+          cp "$src/owned.sha256" "$GITHUB_WORKSPACE/proof/owned.sha256"
+          cp "$build/receipt.json" "$GITHUB_WORKSPACE/proof/apple-receipt.json"
+          cp -R "$app" "$GITHUB_WORKSPACE/proof/SharedMetalDiagnostic.app"
+          cd "$GITHUB_WORKSPACE/proof"
+          shasum -a 256 SharedMetalDiagnostic.app/* > app.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shared-metal-diagnostic-sdk
+          path: proof
+          retention-days: 1
+          if-no-files-found: error

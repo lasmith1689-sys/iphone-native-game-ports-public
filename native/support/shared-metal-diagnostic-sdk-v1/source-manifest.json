@@ -1,0 +1,17 @@
+{
+  "schema": "owned-metal-source-closure-v1",
+  "files": {
+    "main.m": "7e9a32baff0657db57650100ade2859146c90228a7d5d4a1c5de57a2d45852e0",
+    "shell_policy.c": "00d45063007d245e7373233714f60218fd8c71b4cb6375ad9730efe6013efc15",
+    "shell_policy.h": "cac6e3666ac7a3e8ab2ed3301529906c64dd5f1499300f8bf97e51f027a45398",
+    "diagnostic.metal": "e3b464b17f979fc11b3a22b7345ccb64ae84abdbfabb81dba49027a2977fbd89",
+    "Info.plist": "50e01cb49a712e57d04ff0acc7d93c4c2ba853e44bc0dae24052dd9eb0e45b09",
+    "build_apple.sh": "f13f97661fdaf7d42dbdc50bbe1ca1d4c3e650b72ac852255607051ef0ab6177",
+    "apple_receipt.py": "0de241efc40e80f96f50b2ccc7f37b19b95e5e1329e791080ff7dcb74f920fe6",
+    "verify_manifest.py": "c97e5650a62c11476d96a207839377347388b47052505334170e94f44c93b3ed",
+    "test_shell_policy.c": "4dd1a15a815c1c937e7d4e5c26963e45b65c2f6e40cfffeadd0a03282efd95fc",
+    "test_policy.py": "555967b3843532b179b2fb199e16700f6aa544861f8e05500802fa434360b4e6",
+    "README.md": "5dce46a231bb9d89a3579cda0ef46be9357146ea1ac9896a0deb4568d9599566"
+  },
+  "no_game_sources_or_assets": true
+}
