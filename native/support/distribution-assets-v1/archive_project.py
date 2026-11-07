@@ -48,7 +48,9 @@ def prepare(ipa, out, expected):
     (out / 'copy-native-executable.sh').chmod(0o755)
     (out / 'archive-anchor.c').write_text('int main(void) { return 74; }\n', encoding='ascii')
     binary_hash = hashlib.sha256(data['NativeCoD']).hexdigest()
-    (out / 'link-input.sha256').write_text(binary_hash + '\n', encoding='ascii')
+    (out / 'archive-input.sha256').write_text(''.join(
+        f'{hashlib.sha256(raw).hexdigest()}  {prefix}{name}\n' for name, raw in sorted(data.items())),
+        encoding='ascii', newline='\n')
     (out / 'archive-input.json').write_text(json.dumps({'ipaSha256': expected, 'mainSha256': binary_hash,
         'files': {name: hashlib.sha256(raw).hexdigest() for name, raw in data.items()}}, indent=2) + '\n',
         encoding='utf-8')
