@@ -1,0 +1,46 @@
+name: Native audio controller SDK
+on:
+  push:
+    branches: ['codex/native-audio-controller-sdk-v1-20261107']
+permissions:
+  contents: read
+jobs:
+  sdk:
+    runs-on: macos-26
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Repeat the device SDK compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdk=$(xcrun --sdk iphoneos --show-sdk-path)
+          test "$(xcrun --sdk iphoneos --show-sdk-version)" = 27.1
+          src='native/support/audio-controller-sdk-v1'
+          include_flags=()
+          while IFS= read -r folder; do include_flags+=(-I "$folder"); done < <(find "$src" -type d | sort)
+          mkdir -p proof/first proof/repeat
+          for pass in first repeat; do
+            for name in NGPRetainedGameControllerV2 NGPMilesAudioOwnerV1; do
+              flags=(-target arm64-apple-ios26.0 -isysroot "$sdk" "${include_flags[@]}" -std=gnu11
+                     -fobjc-arc -fobjc-arc-exceptions -fobjc-exceptions -fstack-usage
+                     -fno-lto -fno-omit-frame-pointer -Wall -Wextra -Werror)
+              xcrun --sdk iphoneos clang "${flags[@]}" -c "$src/source/$name.m" -o "proof/$pass/$name.o"
+            done
+          done
+          for name in NGPRetainedGameControllerV2 NGPMilesAudioOwnerV1; do
+            cmp "proof/first/$name.o" "proof/repeat/$name.o"
+            cmp "proof/first/$name.su" "proof/repeat/$name.su"
+            xcrun nm -u "proof/first/$name.o" > "proof/$name-imports.txt"
+          done
+          grep -F ' _ngp_app_engine_bind_miles_v1' proof/NGPRetainedGameControllerV2-imports.txt
+          grep -F ' _OBJC_CLASS_$_NGPMilesAudioOwnerV1' proof/NGPRetainedGameControllerV2-imports.txt
+          grep -F ' _ngp_audio_worker_v1_open' proof/NGPMilesAudioOwnerV1-imports.txt
+          xcodebuild -version > proof/xcode.txt
+          shasum -a 256 proof/first/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-audio-controller-sdk
+          path: proof
+          retention-days: 1
+          if-no-files-found: error
