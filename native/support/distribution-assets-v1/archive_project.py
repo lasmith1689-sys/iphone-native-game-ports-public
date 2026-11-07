@@ -15,6 +15,7 @@ FILES = ('NativeCoD', 'Info.plist', 'Assets.car', 'AppIcon60x60@2x.png', 'AppIco
          'Frameworks/Input.framework/Info.plist', 'Frameworks/Input.framework/Input',
          'Frameworks/CoDGL.framework/Info.plist', 'Frameworks/CoDGL.framework/CoDGL',
          'Frameworks/Foreground.framework/Info.plist', 'Frameworks/Foreground.framework/Foreground')
+PRIVACY = 'PrivacyInfo.xcprivacy'
 
 
 def prepare(ipa, out, expected):
@@ -24,11 +25,14 @@ def prepare(ipa, out, expected):
     prefix = 'Payload/NativeCoD.app/'
     with ZipFile(ipa) as zipped:
         entries = zipped.infolist()
-        assert len(entries) == len(FILES) and {i.filename for i in entries} == {prefix + p for p in FILES}
+        names = {i.filename for i in entries}
+        included = FILES + (PRIVACY,) if prefix + PRIVACY in names else FILES
+        assert len(entries) == len(included) and names == {prefix + p for p in included}
         assert all(0 < i.file_size <= 120 * 1024**2 for i in entries)
-        data = {path: zipped.read(prefix + path) for path in FILES}
+        data = {path: zipped.read(prefix + path) for path in included}
     info = plistlib.loads(data['Info.plist'])
-    assert info['CFBundleExecutable'] == 'NativeCoD' and info['CFBundleVersion'] == '8'
+    assert info['CFBundleExecutable'] == 'NativeCoD' and info['CFBundleVersion'] in ('8', '9')
+    assert (info['CFBundleVersion'] == '9') == (PRIVACY in data)
     bundle_id = info['CFBundleIdentifier']
     assert re.fullmatch(r'[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+', bundle_id)
     project = out / 'NativeCoD.xcodeproj'
@@ -42,7 +46,10 @@ def prepare(ipa, out, expected):
             destination.chmod(0o755)
     text = (HERE / 'project.pbxproj.in').read_text(encoding='utf-8')
     assert text.count('@BUNDLE_ID@') == 1
-    (project / 'project.pbxproj').write_text(text.replace('@BUNDLE_ID@', bundle_id), encoding='utf-8', newline='\n')
+    text = text.replace('@BUNDLE_ID@', bundle_id)
+    text = text.replace('@PRIVACY_REF@', '000000000000000000000017, ' if PRIVACY in data else '')
+    text = text.replace('@PRIVACY_BUILD@', ', 000000000000000000000037' if PRIVACY in data else '')
+    (project / 'project.pbxproj').write_text(text, encoding='utf-8', newline='\n')
     shutil.copyfile(HERE / 'NativeCoD.xcscheme', scheme_dir / 'NativeCoD.xcscheme')
     shutil.copyfile(HERE / 'copy-native-executable.sh', out / 'copy-native-executable.sh')
     (out / 'copy-native-executable.sh').chmod(0o755)

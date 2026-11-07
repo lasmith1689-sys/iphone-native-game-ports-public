@@ -7,7 +7,7 @@ import plistlib
 import subprocess
 from zipfile import ZipFile
 
-from archive_project import FILES, prepare
+from archive_project import FILES, PRIVACY, prepare
 
 
 def run(*args):
@@ -36,7 +36,7 @@ def make_fixture(work, catalog):
             native, '-o', output)
         write_plist(folder / 'Info.plist', {
             'CFBundleExecutable': name, 'CFBundleIdentifier': identifier + '.' + name.lower(),
-            'CFBundlePackageType': 'FMWK', 'CFBundleVersion': '8', 'CFBundleShortVersionString': '0.1',
+            'CFBundlePackageType': 'FMWK', 'CFBundleVersion': '9', 'CFBundleShortVersionString': '0.1',
             'CFBundleSupportedPlatforms': ['iPhoneOS'], 'MinimumOSVersion': '26.0',
         })
         linked.append(output)
@@ -51,11 +51,12 @@ def make_fixture(work, catalog):
         '--output-partial-info-plist', partial, catalog)
     write_plist(source / 'Info.plist', dict(plistlib.loads(partial.read_bytes()),
         CFBundleExecutable='NativeCoD', CFBundleIdentifier=identifier, CFBundlePackageType='APPL',
-        CFBundleShortVersionString='0.1', CFBundleVersion='8', UIDeviceFamily=[1],
+        CFBundleShortVersionString='0.1', CFBundleVersion='9', UIDeviceFamily=[1],
         UILaunchScreen={}, UISupportedInterfaceOrientations=['UIInterfaceOrientationLandscapeRight']))
+    write_plist(source / PRIVACY, {'NSPrivacyAccessedAPITypes': []})
     ipa = work / 'synthetic.ipa'
     with ZipFile(ipa, 'x') as zipped:
-        for name in FILES:
+        for name in FILES + (PRIVACY,):
             zipped.write(source / name, 'Payload/NativeCoD.app/' + name)
     return ipa, source, identifier, framework_names
 
@@ -81,10 +82,10 @@ def main():
     assert sorted(p.name for p in (archive / 'Products/Applications').iterdir()) == ['NativeCoD.app']
     app = archive / 'Products' / properties['ApplicationPath']
     app_info = plistlib.loads((app / 'Info.plist').read_bytes())
-    assert app_info['CFBundleExecutable'] == 'NativeCoD' and app_info['CFBundleVersion'] == '8'
+    assert app_info['CFBundleExecutable'] == 'NativeCoD' and app_info['CFBundleVersion'] == '9'
     assert app_info['CFBundleIcons']['CFBundlePrimaryIcon']['CFBundleIconName'] == 'AppIcon'
     assert app_info['UILaunchScreen'] == {}
-    for name in FILES:
+    for name in FILES + (PRIVACY,):
         assert (app / name).is_file()
         if not name.endswith('/Info.plist') and name != 'Info.plist':
             assert (app / name).read_bytes() == (source / name).read_bytes(), name

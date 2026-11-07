@@ -32,7 +32,7 @@
       isa = PBXGroup;
       children = (000000000000000000000010, 000000000000000000000011, 000000000000000000000012,
                   000000000000000000000013, 000000000000000000000014, 000000000000000000000015,
-                  000000000000000000000016, 000000000000000000000004);
+                  000000000000000000000016, @PRIVACY_REF@000000000000000000000004);
       sourceTree = "<group>";
     };
     000000000000000000000004 = {
@@ -69,7 +69,7 @@
     00000000000000000000000B = {
       isa = PBXResourcesBuildPhase;
       buildActionMask = 2147483647;
-      files = (000000000000000000000031, 000000000000000000000032, 000000000000000000000033);
+      files = (000000000000000000000031, 000000000000000000000032, 000000000000000000000033@PRIVACY_BUILD@);
       runOnlyForDeploymentPostprocessing = 0;
     };
     00000000000000000000000C = {
@@ -88,6 +88,7 @@
     000000000000000000000014 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "Payload/NativeCoD.app/Frameworks/Input.framework"; sourceTree = "<group>";};
     000000000000000000000015 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "Payload/NativeCoD.app/Frameworks/CoDGL.framework"; sourceTree = "<group>";};
     000000000000000000000016 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "Payload/NativeCoD.app/Frameworks/Foreground.framework"; sourceTree = "<group>";};
+    000000000000000000000017 = {isa = PBXFileReference; explicitFileType = file; path = "Payload/NativeCoD.app/PrivacyInfo.xcprivacy"; sourceTree = "<group>";};
     000000000000000000000021 = {
       isa = XCBuildConfiguration;
       buildSettings = {
@@ -126,6 +127,7 @@
     000000000000000000000034 = {isa = PBXBuildFile; fileRef = 000000000000000000000014; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy);};};
     000000000000000000000035 = {isa = PBXBuildFile; fileRef = 000000000000000000000015; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy);};};
     000000000000000000000036 = {isa = PBXBuildFile; fileRef = 000000000000000000000016; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy);};};
+    000000000000000000000037 = {isa = PBXBuildFile; fileRef = 000000000000000000000017;};
   };
   rootObject = 000000000000000000000001;
 }
