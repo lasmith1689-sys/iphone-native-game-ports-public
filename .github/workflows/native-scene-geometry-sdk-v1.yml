@@ -1,0 +1,56 @@
+name: Native scene geometry SDK
+on:
+  push:
+    branches: ['codex/native-scene-geometry-sdk-v1-20261107']
+permissions:
+  contents: read
+jobs:
+  sdk:
+    runs-on: macos-26
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile the owned scene and controller twice
+        shell: bash
+        run: |
+          set -euxo pipefail
+          sdk=$(xcrun --sdk iphoneos --show-sdk-path)
+          version=$(xcrun --sdk iphoneos --show-sdk-version)
+          [[ "$version" =~ ^27\.1(\.[0-9]+)?$ ]]
+          src='native/support/scene-geometry-sdk-v1'
+          (cd "$src" && shasum -a 256 -c owned.sha256)
+          includes=(source resource adapter engine power composition composition/worker v12b
+                    support/native/platform/cod-gl-ios/input-v3-bind-v3
+                    support/native/platform/cod-gl-ios/input-v1)
+          include_flags=()
+          for directory in "${includes[@]}"; do include_flags+=(-I "$src/$directory"); done
+          mkdir -p proof/first proof/repeat
+          for pass in first repeat; do
+            for name in NGPNativeAppV3 NGPRetainedGameControllerV2; do
+              xcrun --sdk iphoneos clang -target arm64-apple-ios26.0 -isysroot "$sdk" "${include_flags[@]}" \
+                -std=c17 -O2 -g0 -Wall -Wextra -Werror -fno-omit-frame-pointer \
+                -fno-optimize-sibling-calls -fstack-usage -fno-common -fvisibility=hidden -fno-lto \
+                -fobjc-arc -fobjc-arc-exceptions -fexceptions -fblocks \
+                -c "$src/source/$name.m" -o "proof/$pass/$name.o"
+            done
+          done
+          for name in NGPNativeAppV3 NGPRetainedGameControllerV2; do
+            cmp "proof/first/$name.o" "proof/repeat/$name.o"
+            cmp "proof/first/$name.su" "proof/repeat/$name.su"
+          done
+          xcrun nm -u proof/first/NGPNativeAppV3.o | awk '{print $NF}' > proof/scene-imports.txt
+          grep -Fx _ngp_import_select_w1 proof/scene-imports.txt
+          if grep -Fx _ngp_import_select_v1 proof/scene-imports.txt; then exit 1; fi
+          xcrun --sdk macosx clang -arch arm64 -std=c17 -O2 -Wall -Wextra -Werror \
+            -I "$src/source" "$src/test_scene_geometry.c" -o "$RUNNER_TEMP/test-scene-geometry"
+          "$RUNNER_TEMP/test-scene-geometry" | tee proof/geometry-test.txt
+          xcodebuild -version > proof/xcode.txt
+          printf '%s\n' "$version" > proof/sdk.txt
+          cp "$src/owned.sha256" proof/owned.sha256
+          shasum -a 256 proof/first/* | tee proof/objects.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-scene-geometry-sdk
+          path: proof
+          retention-days: 1
+          if-no-files-found: error
