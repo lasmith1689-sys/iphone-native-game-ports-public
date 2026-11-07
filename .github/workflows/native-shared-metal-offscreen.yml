@@ -1,0 +1,46 @@
+name: Shared Metal offscreen Mac probe
+on:
+  push:
+    branches: ['codex/shared-metal-offscreen-v1-20261107']
+permissions:
+  contents: read
+jobs:
+  mac:
+    runs-on: macos-26
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run the owned offscreen probe
+        shell: bash
+        run: |
+          set -euxo pipefail
+          src="$GITHUB_WORKSPACE/native/support/shared-metal-diagnostic-sdk-v1"
+          probe="$GITHUB_WORKSPACE/native/support/shared-metal-offscreen-v1"
+          (cd "$src" && shasum -a 256 -c owned.sha256)
+          (cd "$probe" && shasum -a 256 -c offscreen.sha256)
+          work="$RUNNER_TEMP/metal-offscreen"
+          mkdir -p "$work" "$GITHUB_WORKSPACE/proof"
+          sdk="$(xcrun --sdk macosx --show-sdk-path)"
+          xcrun --sdk macosx --show-sdk-version > "$GITHUB_WORKSPACE/proof/sdk.txt"
+          xcrun --sdk macosx metal -target air64-apple-macos26.0 -c "$src/diagnostic.metal" -o "$work/diagnostic.air"
+          xcrun --sdk macosx metallib "$work/diagnostic.air" -o "$work/diagnostic.metallib"
+          xcrun --sdk macosx clang -arch arm64 -isysroot "$sdk" -std=c11 -O2 \
+            -Wall -Wextra -Werror -c "$src/shell_policy.c" -o "$work/policy.o"
+          xcrun --sdk macosx clang -arch arm64 -isysroot "$sdk" -fobjc-arc -O2 \
+            -Wall -Wextra -Werror -I "$src" "$probe/metal_offscreen_main.m" "$work/policy.o" \
+            -framework Foundation -framework Metal -o "$work/metal-offscreen"
+          shasum -a 256 "$work/diagnostic.metallib" "$work/metal-offscreen" > "$GITHUB_WORKSPACE/proof/compiled.sha256"
+          set +e
+          "$work/metal-offscreen" "$work/diagnostic.metallib" > "$GITHUB_WORKSPACE/proof/run.txt" 2>&1
+          result=$?
+          set -e
+          cat "$GITHUB_WORKSPACE/proof/run.txt"
+          printf '%s\n' "$result" > "$GITHUB_WORKSPACE/proof/exit.txt"
+          exit "$result"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-metal-offscreen-result
+          path: proof
+          retention-days: 1
+          if-no-files-found: ignore
