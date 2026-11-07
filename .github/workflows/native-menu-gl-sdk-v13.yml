@@ -1,0 +1,42 @@
+name: Native menu graphics ABI 13 SDK and boundary tests
+'on':
+  push:
+    branches: [codex/native-menu-gl-sdk-v13-20261107]
+permissions:
+  contents: read
+concurrency:
+  group: native-menu-gl-sdk-v13
+  cancel-in-progress: false
+jobs:
+  sdk:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.ref == 'refs/heads/codex/native-menu-gl-sdk-v13-20261107' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+        submodules: false
+        lfs: false
+    - name: Verify fixed public support inputs
+      shell: bash
+      run: |
+        python3 - <<'PY'
+        import hashlib,pathlib
+        pins = {'menu-gl-source.json': 'd3e007d8878711c09f199336766ce2abced2cd930b5c445f52b5316a4d3d087c', 'menu-gl-source.zip': 'b4599e64a509a26a4617bd92a51d6507e831cf55553695f31d4df513c16bc60c', 'sdk_build.py': 'e60e6fca80f6b80f5d66ca573be8b9be73e927336f4f3f420f5d1c61827a6887'}
+        for name, expected in pins.items():
+            assert hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() == expected, name
+        PY
+    - name: Compile the coherent support cohort and run synthetic boundary tests
+      run: python3 -B sdk_build.py
+    - name: Retain objects layout dumps and test receipts
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: native-menu-gl-sdk-v13
+        path: sdk-result
+        if-no-files-found: error
+        retention-days: 7
+        compression-level: 6

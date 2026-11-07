@@ -1,0 +1,43 @@
+{
+  "format": "native-menu-gl-public-support-abi13",
+  "archiveSha256": "b4599e64a509a26a4617bd92a51d6507e831cf55553695f31d4df513c16bc60c",
+  "files": {
+    "apple_alias_adapter.h": "249c6638bbf6291241626fd6da188119ef46fcd0424169866e7d5b368aa79487",
+    "composition/cod_gl_host_capsule_v1.m": "09792c4a5a4a367794cc34dfa2617198f2dd9bcc023fdc9b5911391e2fae1bb4",
+    "composition/cod_gl_host_v1.h": "a2a9641cf782fbc0e450a6390e907bbb3493adc204f6f583096bd8067c188a57",
+    "composition/worker/cod_gl_borrow_failure_policy_v1.h": "ef996806466e1a6c67dd390aae7b51e366833e26e3b7b0752fae1705159b8ea5",
+    "composition/worker/cod_gl_ios.h": "34c223639d98072d469bd4c0ecce3d311ff1248fde6299c13ceb4df23ba88f98",
+    "composition/worker/cod_gl_ios.m": "66d6ab79918d8c67ce543fa08d9bb8538c2cd1972518cb1c0459e4a8c57dd5d1",
+    "composition/worker/cod_gl_worker_stack_policy_v1.h": "66fb6877f54844e30df121769567b9f9b09ffafd571b4c0c95ec10e76ddbb923",
+    "compressed-dxt-v1/ngp_dxt_v1.c": "23d735574577b3b199a344bae0aa8701c3590ebc337153ff1c90f93863bcad41",
+    "compressed-dxt-v1/ngp_dxt_v1.h": "5e42572f2eaebd45ad7d4b49debbf4814768f30fa9494a1c4fda9e254a244b26",
+    "menu_fixture.c": "b3781e417f72a8a994a06344a350275b3ff1afe4b3b3d37ce91941f20cdbce7f",
+    "texture_fixture.c": "fd97919f377dbc959a8a8026edfdee9eaa8d34582b058c5cafbdb343a75a8a2e",
+    "v13/cod_gl4es_execute.c": "5997f95a59f3d58fa395367f596ba231a3178202eb97b0e86744d47c5aed6581",
+    "v13/cod_gl4es_unpack.c": "6263b0e262e52f6f183db269fe1fb2bd652e9273911a3a802d2cfd2b9e591097",
+    "v13/cod_gl_compressed_stage.c": "5efa986885c10c9d1332cc6fb93d26f77dc169c6f9a4408b7504528928cbae43",
+    "v13/cod_gl_compressed_stage.h": "9bbe93ea10c75c77cb66c01b4853b8ff1730c545cd91f30592da596cb1773e81",
+    "v13/cod_gl_dispatch.c": "920989cf52444762c693557f48fc8f742e831d2af147e2e0c6a72a1c4a1d8145",
+    "v13/cod_gl_dispatch.h": "c3ef463013e4c3315c28ef3983a46a9c1fa26b87e13350eeb711e41d72b263b0",
+    "v13/cod_gl_fresh51_policy_v1.h": "7a206a2751cdd1870eb77430579feac033898944ea673332531d30820457392a",
+    "v13/cod_gl_owned_profile.c": "4bd8e885828278ba390b7ec479094dc330fdec836742ef4567a553a57db481d4",
+    "v13/cod_gl_owned_profile.h": "3443aaf4c3f0c661f62022e90303d1fe3033ed6b0f9933c3f8b675feb3efff49"
+  },
+  "backendPins": {
+    "LICENSE": "69a3049c77abd88658f6ad7cf6a5b6ceb5cf03b80e60f7c4657d90322cfab7bd",
+    "README.md": "3009610981bd589f29e5b3efe06331041a69899f8dfa4c684e36217775cafe2c",
+    "COMPILE.md": "fdd7a2d8f08bb3cf7d41b881114eb15e666a76dc6755b1dc8037dd96cce70360",
+    "CMakeLists.txt": "3ea6228a4b3e527a01645fe223afd8b7c170281ed358020c7efa979bb7feda2e",
+    "src/CMakeLists.txt": "141450dea053a650fbf2e0a6d22f930eda7fa801563e59004ddb73daa85264ce",
+    "src/gl/attributes.h": "c65c44765d2c00bb1f360f7ce51fcd7c0d2d25edd56e732810bb4421106f1467",
+    "src/gl/directstate.c": "a805b7631f331a2437eeaa358037fc69fe42c9d9450800ecc04aac2944dde613",
+    "src/gl/loader.c": "62896167f73fe5fcb38acad339750f6cfbb4a7db2573df34415fb1b43c078bde",
+    "src/gl/loader.h": "3a3de23684db3957a3843850e5d3399ee9afb03b92bae6ea433aee74bd42f625",
+    "src/gl/init.c": "35804e977fb5bd3e8a7cdae192a95bfb93e89bbb201392f65daaecdd7d165969",
+    "include/GL/gl.h": "d03e03f7874502bcb5125dac530993555d37ebcfcf602354426a812f68160366",
+    "include/gl4esinit.h": "3da0beccca54312010e74e1e99814ae64b38e9ccceb782648afcaa83283af6ad"
+  },
+  "recoveredGameCodeIncluded": false,
+  "retailAssetsIncluded": false,
+  "credentialsIncluded": false
+}
