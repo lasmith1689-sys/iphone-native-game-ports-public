@@ -25,7 +25,7 @@ jobs:
       run: |
         python3 - <<'PY'
         import hashlib,pathlib
-        pins = {'menu-gl-source.json': 'd3e007d8878711c09f199336766ce2abced2cd930b5c445f52b5316a4d3d087c', 'menu-gl-source.zip': 'b4599e64a509a26a4617bd92a51d6507e831cf55553695f31d4df513c16bc60c', 'sdk_build.py': 'e60e6fca80f6b80f5d66ca573be8b9be73e927336f4f3f420f5d1c61827a6887'}
+        pins = {'menu-gl-source.json': 'd3e007d8878711c09f199336766ce2abced2cd930b5c445f52b5316a4d3d087c', 'menu-gl-source.zip': 'b4599e64a509a26a4617bd92a51d6507e831cf55553695f31d4df513c16bc60c', 'sdk_build.py': 'fcd8d7acff9b7eddbe2915ecc807b90dbac6de9f5f6f3f0837fc6d90273ad0d6'}
         for name, expected in pins.items():
             assert hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() == expected, name
         PY

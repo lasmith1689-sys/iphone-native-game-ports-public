@@ -110,7 +110,8 @@ def main():
     # Run the same synthetic bridge boundary tests on Darwin, separate from GL.
     test_sources=[WORK/p for n,p in sources.items() if p.endswith('.c') and n!='cod_gl4es_execute']
     test=RESULT/'boundary-tests.dylib'
-    run('darwin-tests-compile',[clang,'-std=c11','-O2','-fno-fast-math','-fno-builtin','-fvisibility=hidden',
+    mac_sdk=run('mac-sdk-path',['xcrun','--sdk','macosx','--show-sdk-path'])
+    run('darwin-tests-compile',[clang,'-target','arm64-apple-macos15.0','-isysroot',mac_sdk,'-std=c11','-O2','-fno-fast-math','-fno-builtin','-fvisibility=hidden',
         '-Wall','-Wextra','-Werror','-I',WORK/'v13','-dynamiclib',*test_sources,WORK/'texture_fixture.c',WORK/'menu_fixture.c','-o',test])
     lib=ctypes.CDLL(str(test));texture=lib.texture_fixture
     texture.argtypes=(ctypes.c_uint32,ctypes.c_uint32,ctypes.c_uint32,ctypes.c_int);texture.restype=ctypes.c_int
