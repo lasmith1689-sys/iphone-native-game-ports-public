@@ -141,8 +141,9 @@ static int monotonic_ns(uint64_t *out) {
     !CGAffineTransformIsIdentity(_drawable.transform) || !CATransform3DIsIdentity(_drawable.layer.transform)) return NO;
  UIWindowSceneGeometry *geometry=scene.effectiveGeometry;
  if(geometry.interfaceOrientation!=UIInterfaceOrientationLandscapeRight || !geometry.coordinateSpace) return NO;
+ id<UICoordinateSpace> sceneSpace=geometry.coordinateSpace;
  const CGRect rectangles[NGP_SCENE_RECT_COUNT_V1]={
-  geometry.systemFrame,geometry.coordinateSpace.bounds,window.frame,window.bounds,
+  [window convertRect:window.bounds toCoordinateSpace:sceneSpace],sceneSpace.bounds,window.frame,window.bounds,
   root.frame,root.bounds,_drawable.frame,_drawable.bounds
  };
  NgpSceneGeometryV1 snapshot={

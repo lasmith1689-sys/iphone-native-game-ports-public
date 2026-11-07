@@ -37,10 +37,14 @@ jobs:
           for name in NGPNativeAppV3 NGPRetainedGameControllerV2; do
             cmp "proof/first/$name.o" "proof/repeat/$name.o"
             cmp "proof/first/$name.su" "proof/repeat/$name.su"
+            xcrun nm -u "proof/first/$name.o" | awk '{print $NF}' | sort -u > "proof/$name-imports.txt"
           done
-          xcrun nm -u proof/first/NGPNativeAppV3.o | awk '{print $NF}' > proof/scene-imports.txt
-          grep -Fx _ngp_import_select_w1 proof/scene-imports.txt
-          if grep -Fx _ngp_import_select_v1 proof/scene-imports.txt; then exit 1; fi
+          grep -Fx _ngp_import_select_w1 proof/NGPNativeAppV3-imports.txt
+          if grep -Fx _ngp_import_select_v1 proof/NGPNativeAppV3-imports.txt; then exit 1; fi
+          {
+            grep -oF _CGAffineTransformIsIdentity "$sdk/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics.tbd" | sort -u
+            grep -oF _CATransform3DIsIdentity "$sdk/System/Library/Frameworks/QuartzCore.framework/QuartzCore.tbd" | sort -u
+          } > proof/sdk-transform-symbols.txt
           xcrun --sdk macosx clang -arch arm64 -std=c17 -O2 -Wall -Wextra -Werror \
             -I "$src/source" "$src/test_scene_geometry.c" -o "$RUNNER_TEMP/test-scene-geometry"
           "$RUNNER_TEMP/test-scene-geometry" | tee proof/geometry-test.txt
