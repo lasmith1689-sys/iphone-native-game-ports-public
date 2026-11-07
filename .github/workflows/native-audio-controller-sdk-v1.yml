@@ -13,9 +13,10 @@ jobs:
       - name: Repeat the device SDK compile
         shell: bash
         run: |
-          set -euo pipefail
+          set -euxo pipefail
           sdk=$(xcrun --sdk iphoneos --show-sdk-path)
-          test "$(xcrun --sdk iphoneos --show-sdk-version)" = 27.1
+          version=$(xcrun --sdk iphoneos --show-sdk-version)
+          [[ "$version" =~ ^27\.1(\.[0-9]+)?$ ]]
           src='native/support/audio-controller-sdk-v1'
           include_flags=()
           while IFS= read -r folder; do include_flags+=(-I "$folder"); done < <(find "$src" -type d | sort)
@@ -31,11 +32,11 @@ jobs:
           for name in NGPRetainedGameControllerV2 NGPMilesAudioOwnerV1; do
             cmp "proof/first/$name.o" "proof/repeat/$name.o"
             cmp "proof/first/$name.su" "proof/repeat/$name.su"
-            xcrun nm -u "proof/first/$name.o" > "proof/$name-imports.txt"
+            xcrun nm -u "proof/first/$name.o" | awk '{print $NF}' | sort -u > "proof/$name-imports.txt"
           done
-          grep -F ' _ngp_app_engine_bind_miles_v1' proof/NGPRetainedGameControllerV2-imports.txt
-          grep -F ' _OBJC_CLASS_$_NGPMilesAudioOwnerV1' proof/NGPRetainedGameControllerV2-imports.txt
-          grep -F ' _ngp_audio_worker_v1_open' proof/NGPMilesAudioOwnerV1-imports.txt
+          grep -Fx '_ngp_app_engine_bind_miles_v1' proof/NGPRetainedGameControllerV2-imports.txt
+          grep -Fx '_OBJC_CLASS_$_NGPMilesAudioOwnerV1' proof/NGPRetainedGameControllerV2-imports.txt
+          grep -Fx '_ngp_audio_worker_v1_open' proof/NGPMilesAudioOwnerV1-imports.txt
           xcodebuild -version > proof/xcode.txt
           shasum -a 256 proof/first/*
       - uses: actions/upload-artifact@v4
