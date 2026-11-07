@@ -83,8 +83,8 @@
     };
     000000000000000000000010 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "archive-anchor.c"; sourceTree = "<group>";};
     000000000000000000000011 = {isa = PBXFileReference; lastKnownFileType = file; path = "Payload/NativeCoD.app/Assets.car"; sourceTree = "<group>";};
-    000000000000000000000012 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Payload/NativeCoD.app/AppIcon60x60@2x.png"; sourceTree = "<group>";};
-    000000000000000000000013 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Payload/NativeCoD.app/AppIcon76x76@2x~ipad.png"; sourceTree = "<group>";};
+    000000000000000000000012 = {isa = PBXFileReference; explicitFileType = file; path = "Payload/NativeCoD.app/AppIcon60x60@2x.png"; sourceTree = "<group>";};
+    000000000000000000000013 = {isa = PBXFileReference; explicitFileType = file; path = "Payload/NativeCoD.app/AppIcon76x76@2x~ipad.png"; sourceTree = "<group>";};
     000000000000000000000014 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "Payload/NativeCoD.app/Frameworks/Input.framework"; sourceTree = "<group>";};
     000000000000000000000015 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "Payload/NativeCoD.app/Frameworks/CoDGL.framework"; sourceTree = "<group>";};
     000000000000000000000016 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "Payload/NativeCoD.app/Frameworks/Foreground.framework"; sourceTree = "<group>";};
