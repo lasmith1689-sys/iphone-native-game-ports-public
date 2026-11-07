@@ -16,7 +16,7 @@ jobs:
           set -euxo pipefail
           sdk=$(xcrun --sdk iphoneos --show-sdk-path)
           version=$(xcrun --sdk iphoneos --show-sdk-version)
-          [[ "$version" =~ ^27\.1(\.[0-9]+)?$ ]]
+          test "$version" = 26.5
           src='native/support/scene-geometry-sdk-v1'
           (cd "$src" && shasum -a 256 -c owned.sha256)
           includes=(source resource adapter engine power composition composition/worker v12b
@@ -45,6 +45,10 @@ jobs:
             grep -oF _CGAffineTransformIsIdentity "$sdk/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics.tbd" | sort -u
             grep -oF _CATransform3DIsIdentity "$sdk/System/Library/Frameworks/QuartzCore.framework/QuartzCore.tbd" | sort -u
           } > proof/sdk-transform-symbols.txt
+          {
+            grep -oF _objc_retain_x25 "$sdk/usr/lib/libobjc.A.tbd" | sort -u
+            grep -oF _objc_retain_x28 "$sdk/usr/lib/libobjc.A.tbd" | sort -u
+          } > proof/sdk-objc-symbols.txt
           xcrun --sdk macosx clang -arch arm64 -std=c17 -O2 -Wall -Wextra -Werror \
             -I "$src/source" "$src/test_scene_geometry.c" -o "$RUNNER_TEMP/test-scene-geometry"
           "$RUNNER_TEMP/test-scene-geometry" | tee proof/geometry-test.txt
