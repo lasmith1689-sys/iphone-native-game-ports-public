@@ -1,0 +1,26 @@
+name: Shared Metal iPhone Simulator probe
+on:
+  push:
+    branches: ['codex/shared-metal-simulator-v2-20261107']
+permissions:
+  contents: read
+jobs:
+  simulator:
+    runs-on: macos-26
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and observe the owned simulator fixture
+        shell: bash
+        run: |
+          set -euxo pipefail
+          src="$GITHUB_WORKSPACE/native/support/shared-metal-simulator-v2"
+          (cd "$src" && shasum -a 256 -c simulator.sha256)
+          python3 -B "$src/run_simulator_probe.py" "$RUNNER_TEMP/owned-simulator-build" "$GITHUB_WORKSPACE/proof"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-metal-simulator-result
+          path: proof
+          retention-days: 1
+          if-no-files-found: ignore
