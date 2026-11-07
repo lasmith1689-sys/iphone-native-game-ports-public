@@ -33,10 +33,10 @@ class Version07Tests(unittest.TestCase):
         self.assertIn("$confirmation -cne 'REPLACE'",INSTALL)
         self.assertLess(INSTALL.index("$confirmation -cne 'REPLACE'"),INSTALL.index("$adb -s $deviceSerial uninstall"))
     def test_version_and_public_release(self):
-        self.assertIn('version/code=13',PRESET)
-        self.assertIn('version/name="0.13.0"',PRESET)
+        self.assertIn('version/code=14',PRESET)
+        self.assertIn('version/name="0.14.0"',PRESET)
         self.assertIn('package/unique_name="com.gptimemachine.quest3"',PRESET)
-        self.assertIn('GrandPrixTimeMachine_Quest3_v0.13_Easy_Install',WORKFLOW)
+        self.assertIn('GrandPrixTimeMachine_Quest3_v0.14_Easy_Install',WORKFLOW)
     def test_unverified_mr_remains_disclosed(self):
         readme=(ROOT/'README.md').read_text()
         self.assertIn('MR unverified',readme)

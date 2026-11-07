@@ -24,9 +24,9 @@ class ShortcutAndRainTests(unittest.TestCase):
             self.assertIn(s,SRC)
         self.assertNotIn('GPUParticles3D.new()',SRC)
     def test_release_metadata(self):
-        self.assertIn('version/code=13',PRESET)
-        self.assertIn('version/name="0.13.0"',PRESET)
-        self.assertIn('GrandPrixTimeMachine_Quest3_v0.13_Easy_Install',WORKFLOW)
+        self.assertIn('version/code=14',PRESET)
+        self.assertIn('version/name="0.14.0"',PRESET)
+        self.assertIn('GrandPrixTimeMachine_Quest3_v0.14_Easy_Install',WORKFLOW)
     def test_no_mr_claim(self):
         readme=(ROOT/'README.md').read_text()
         self.assertIn('VR-first',readme)

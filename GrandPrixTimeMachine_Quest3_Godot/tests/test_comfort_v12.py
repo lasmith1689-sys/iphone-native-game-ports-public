@@ -23,8 +23,8 @@ def chosen_axis(x, y):
 
 class HeightAndDiagnostics(unittest.TestCase):
     def test_version_and_package_identity(self):
-        self.assertIn('version/code=13', PRESET)
-        self.assertIn('version/name="0.13.0"', PRESET)
+        self.assertIn('version/code=14', PRESET)
+        self.assertIn('version/name="0.14.0"', PRESET)
         self.assertIn('package/unique_name="com.gptimemachine.quest3"', PRESET)
 
     def test_independent_vertical_latches(self):
@@ -67,7 +67,7 @@ class HeightAndDiagnostics(unittest.TestCase):
         self.assertIn('_label("xr_status",', SRC)
         self.assertIn('diagnostics_clock >= 0.25', SRC)
         self.assertIn('get_has_tracking_data()', SRC)
-        self.assertIn('MODE: %s | L: %s | R: %s | HEIGHT: %d CM', SRC)
+        self.assertIn('MODE: %s | L: %s | R: %s | HEIGHT: %d CM | FPS: %s', SRC)
         self.assertIn('MR (UNVERIFIED)', SRC)
 
     def test_no_user_movement_required(self):
