@@ -17,8 +17,11 @@ jobs:
           src="$GITHUB_WORKSPACE/native/support/shared-metal-diagnostic-sdk-v1"
           (cd "$src" && shasum -a 256 -c owned.sha256)
           mkdir -p "$GITHUB_WORKSPACE/proof"
-          python3 -B "$src/test_policy.py" --out "$RUNNER_TEMP/metal-policy" --cc "$(xcrun --sdk macosx --find clang)"
-          cp "$RUNNER_TEMP/metal-policy/receipt.json" "$GITHUB_WORKSPACE/proof/policy.json"
+          mac_sdk="$(xcrun --sdk macosx --show-sdk-path)"
+          xcrun --sdk macosx clang -arch arm64 -isysroot "$mac_sdk" -std=c11 -O2 \
+            -Wall -Wextra -Werror -pedantic "$src/shell_policy.c" "$src/test_shell_policy.c" \
+            -o "$RUNNER_TEMP/metal-policy-test"
+          "$RUNNER_TEMP/metal-policy-test" | tee "$GITHUB_WORKSPACE/proof/policy.txt"
           build="$RUNNER_TEMP/shared-metal-diagnostic-build"
           bash "$src/build_apple.sh" "$build" 26.5
           app="$build/SharedMetalDiagnostic.app"
