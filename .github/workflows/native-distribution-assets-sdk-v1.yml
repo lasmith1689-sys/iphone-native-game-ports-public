@@ -1,0 +1,51 @@
+name: Native distribution icon SDK
+"on":
+  push:
+    branches: ['codex/native-distribution-assets-sdk-v1-20261107']
+    paths: ['.github/workflows/native-distribution-assets-sdk-v1.yml']
+permissions:
+  contents: read
+jobs:
+  sdk:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: native/support/distribution-assets-v1
+      - name: Compile the original icon and capture the SDK metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/codex/native-distribution-assets-sdk-v1-20261107
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(uname -m)" = arm64
+          test "$(xcode-select -p)" = /Applications/Xcode_27.1.app/Contents/Developer
+          test "$(xcrun --sdk iphoneos --show-sdk-version)" = 27.1
+          cd native/support/distribution-assets-v1
+          shasum -a 256 -c <<'CHECKSUMS'
+          72c7d24704014fc43418caf0de10610912623033478dc1cfe1a4f8458970f0db  Assets.xcassets/Contents.json
+          ca7e19fd4f441bc0e804d181941973d519a1a57a9b859ee6b6e45994a20dd2d6  Assets.xcassets/AppIcon.appiconset/AppIcon.png
+          7dd13173667206bbd858ff45143033edfc7cfd110a10d363daa10ca7a07ad8ec  Assets.xcassets/AppIcon.appiconset/Contents.json
+          CHECKSUMS
+          out="$RUNNER_TEMP/native-distribution-assets"
+          mkdir -p "$out/icons"
+          xcrun --sdk iphoneos actool --compile "$out/icons" --platform iphoneos \
+            --minimum-deployment-target 26.0 --target-device iphone --app-icon AppIcon \
+            --output-partial-info-plist "$out/asset-info.plist" --output-format human-readable-text \
+            --warnings --notices Assets.xcassets
+          test -s "$out/icons/Assets.car"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIcons:CFBundlePrimaryIcon:CFBundleIconName' "$out/asset-info.plist"
+          xcodebuild -version > "$out/xcode.txt"
+          xcodebuild -version -sdk iphoneos > "$out/iphoneos.txt"
+          sw_vers -buildVersion > "$out/macos-build.txt"
+          (cd "$out" && shasum -a 256 icons/* asset-info.plist xcode.txt iphoneos.txt macos-build.txt) | tee "$out/checksums.txt"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-distribution-assets-sdk
+          path: ${{ runner.temp }}/native-distribution-assets/
+          if-no-files-found: error
+          retention-days: 1
