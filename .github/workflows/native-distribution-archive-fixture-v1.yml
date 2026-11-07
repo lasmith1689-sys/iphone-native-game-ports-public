@@ -1,0 +1,29 @@
+name: Native distribution archive fixture
+"on":
+  push:
+    branches: ['codex/native-distribution-archive-fixture-v1-20261107']
+    paths: ['.github/workflows/native-distribution-archive-fixture-v1.yml']
+permissions:
+  contents: read
+jobs:
+  sdk:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: native/support/distribution-assets-v1
+      - name: Archive and inspect SDK-built synthetic iPhone binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/codex/native-distribution-archive-fixture-v1-20261107
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(uname -m)" = arm64
+          test "$(xcode-select -p)" = /Applications/Xcode_27.1.app/Contents/Developer
+          test "$(xcrun --sdk iphoneos --show-sdk-version)" = 27.1
+          cd native/support/distribution-assets-v1
+          python3 -B test_archive.py "$RUNNER_TEMP/native-archive-fixture" "$PWD/Assets.xcassets"
