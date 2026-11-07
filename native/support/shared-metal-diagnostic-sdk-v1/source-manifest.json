@@ -1,7 +1,7 @@
 {
   "schema": "owned-metal-source-closure-v1",
   "files": {
-    "main.m": "7e9a32baff0657db57650100ade2859146c90228a7d5d4a1c5de57a2d45852e0",
+    "main.m": "7a2edf2cd03ffd8a18034962804cef458e0fa709bacb28385ba8d1fb4bb35547",
     "shell_policy.c": "00d45063007d245e7373233714f60218fd8c71b4cb6375ad9730efe6013efc15",
     "shell_policy.h": "cac6e3666ac7a3e8ab2ed3301529906c64dd5f1499300f8bf97e51f027a45398",
     "diagnostic.metal": "e3b464b17f979fc11b3a22b7345ccb64ae84abdbfabb81dba49027a2977fbd89",

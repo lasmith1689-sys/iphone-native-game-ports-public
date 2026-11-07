@@ -259,21 +259,26 @@
         sourceSize:MTLSizeMake(64, 64, 1) toBuffer:_readback destinationOffset:0
         destinationBytesPerRow:256 destinationBytesPerImage:64u * 256u];
     [blit endEncoding];
+    __weak MDController *weakOwner = self;
     [_drawable addPresentedHandler:^(id<MTLDrawable> presented) {
         double time = presented.presentedTime;
         dispatch_async(dispatch_get_main_queue(), ^{
-            md_presented(&self->_policy, time);
-            [self publish:@"drawable-presented-callback" detail:@"System presented callback; not a human visibility assertion."];
+            MDController *owner = weakOwner;
+            if (!owner) return;
+            md_presented(&owner->_policy, time);
+            [owner publish:@"drawable-presented-callback" detail:@"System presented callback; not a human visibility assertion."];
         });
     }];
     [_command addCompletedHandler:^(id<MTLCommandBuffer> completed) {
         BOOL completedOK = completed.status == MTLCommandBufferStatusCompleted && completed.error == nil;
         NSString *detail = completed.error.localizedDescription ?: @"GPU completion observed; independent offscreen samples checked.";
         dispatch_async(dispatch_get_main_queue(), ^{
+            MDController *owner = weakOwner;
+            if (!owner) return;
             /* No CPU read of shared output until a successful completion callback. */
-            int pixelsOK = completedOK && md_pixels_match(self->_readback.contents, self->_readback.length);
-            md_complete(&self->_policy, completedOK, pixelsOK);
-            [self publish:@"command-completed-callback" detail:detail];
+            int pixelsOK = completedOK && md_pixels_match(owner->_readback.contents, owner->_readback.length);
+            md_complete(&owner->_policy, completedOK, pixelsOK);
+            [owner publish:@"command-completed-callback" detail:detail];
         });
     }];
     MDGeometry commitGeometry = [self captureGeometry];
