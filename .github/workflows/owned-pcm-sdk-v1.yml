@@ -1,0 +1,42 @@
+name: Owned PCM Apple SDK and Darwin tests
+'on':
+  push:
+    branches: [codex/owned-pcm-sdk-v1-20261107]
+permissions:
+  contents: read
+concurrency:
+  group: owned-pcm-sdk-v1
+  cancel-in-progress: false
+jobs:
+  sdk:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.ref == 'refs/heads/codex/owned-pcm-sdk-v1-20261107' && github.event_name == 'push'
+    runs-on: xcode-27
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 1
+        submodules: false
+        lfs: false
+    - name: Verify owned support package
+      shell: bash
+      run: |
+        python3 - <<'PY'
+        import hashlib,pathlib
+        pins = {'pcm-source.json': '311790f85d4b69db508845e2b76a96c2875610c1a0f32083b2d5403cfcb6c49d', 'pcm-source.zip': '5be388258837a86f2c96a0c63ef2faeea942abd232388ddabbcf8f95f80bb5bd', 'sdk_build.py': '934ae978f96de30704601a4e61de24a8e933ce7abebf605d74af5fc1f47dac8b'}
+        for name, expected in pins.items():
+            assert hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() == expected, name
+        PY
+    - name: Compile coherent Apple objects and run actual Darwin synthetic PCM
+      run: python3 -B sdk_build.py
+    - name: Retain objects stack reports and mixer results
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: owned-pcm-sdk-v1
+        path: sdk-result
+        if-no-files-found: error
+        retention-days: 7
+        compression-level: 6

@@ -1,0 +1,33 @@
+{
+  "schema": "owned-pcm-sdk-v1",
+  "archiveSha256": "5be388258837a86f2c96a0c63ef2faeea942abd232388ddabbcf8f95f80bb5bd",
+  "files": {
+    "source/graph.c": "93acf4858341e7d6320e7f552273115f79a977898ce379d24284fa0aead16958",
+    "source/ngp_audio_shared_profile_v1.h": "8ad2671d8f30595b5f2acfddcea086f4fcd278d9bf0121fd92afba57c429d397",
+    "source/ngp_positional_provider_v1.c": "701ef9cc3b94d64c40db678287d87feef7ffa10c7b0be8ee73a5391c5a4ed7bf",
+    "source/ngp_positional_provider_v1.h": "213629d542a8cf0d630cdc371041e8f94254cf0165eed7a382c39fa48119107a",
+    "source/ngp_voice_gain_balance_v2.h": "3ff607a8db4cf14646bf6e4c91a6474d3a7f6508cc14318b85c6a6628b6590c9",
+    "source/ngp_voice_service_v1.c": "0b84cb7b64cd0e7a47090e420b9fe0e6915584ad20b21bf2efac6af2b243def9",
+    "source/ngp_voice_service_v1.h": "e849cc4a659286c53dc9b93741979d97544317a262a391318a5c11377ce5fae3",
+    "source/ngp_voice_tokens_v1.c": "e21be2c2fee27452c76b3a433490bc32831a6014cc02332d143af0d4a8051415",
+    "source/ngp_voice_tokens_v1.h": "a44169deb9401e5cff1dd9b6d26fe7982fd66a0c467b17835d9b374ff5ef9fb5",
+    "source/sample_control.c": "6fb06bdc82b517f8d4e27f6fac849cdfe6138ef215cd70125b0cfc02632f8f3c",
+    "source/sample_control.h": "c5f3d4a599cf229c98ac7b9f5eac9c1db7c0ef275e53af3d91033cac34e166f8",
+    "source/sample_playback.c": "95a6ebe809a46a6a9759bcaaaa494c9016f73735caa41abf4bd6fb684df85f3f",
+    "source/sample_playback.h": "808bd409e230648e97235ab0a77995ce4d756c5b8872dface8bb9e80269b748b",
+    "source/stereo_gain.c": "619829399d9c36c0f1e25e044dcc081bee5fb9330bfb2a895ee25a06b255f346",
+    "source/stereo_gain.h": "7df8385a13126caf27faa059a1b54f14bc0ccaa7bae02385bcc8a0cce38a10c9",
+    "source/test_gain.c": "ca2bd1151d2c4e28112589b58f523b04d922317bbfda68d9240fb033e74be4f0",
+    "source/test_playback.c": "6c2b1bea2b83d699d89c878101ab0e03a7033a6cd687e1ad12bd34196369cf4c",
+    "vendor/LICENSE": "457f1b500e0adf6bc059edddfa78a2f62012e7c3bb43476c20e0bd23b25ba0eb",
+    "vendor/miniaudio.h": "7e4f3f13c8fe66df2080ac3dd12a89193e3c2463cb7f067c798abd7331cd8ee6"
+  },
+  "vendor": {
+    "name": "miniaudio",
+    "revision": "f40cf03f80cdb7e741d43e53b7e706e8c1394bcf"
+  },
+  "units": 7,
+  "fixtures": 2,
+  "guestAdapterIncluded": false,
+  "retailInputsIncluded": false
+}
