@@ -1,0 +1,42 @@
+{
+  "format": "owned-gl-simulator-source-v1",
+  "abi": 13,
+  "functionCount": 57,
+  "backendCommit": "2037865590d410bcd7b8d1f22b841472ed6d39ac",
+  "backendPins": {
+    "LICENSE": "69a3049c77abd88658f6ad7cf6a5b6ceb5cf03b80e60f7c4657d90322cfab7bd",
+    "README.md": "3009610981bd589f29e5b3efe06331041a69899f8dfa4c684e36217775cafe2c",
+    "COMPILE.md": "fdd7a2d8f08bb3cf7d41b881114eb15e666a76dc6755b1dc8037dd96cce70360",
+    "CMakeLists.txt": "3ea6228a4b3e527a01645fe223afd8b7c170281ed358020c7efa979bb7feda2e",
+    "src/CMakeLists.txt": "141450dea053a650fbf2e0a6d22f930eda7fa801563e59004ddb73daa85264ce",
+    "src/gl/attributes.h": "c65c44765d2c00bb1f360f7ce51fcd7c0d2d25edd56e732810bb4421106f1467",
+    "src/gl/directstate.c": "a805b7631f331a2437eeaa358037fc69fe42c9d9450800ecc04aac2944dde613",
+    "src/gl/loader.c": "62896167f73fe5fcb38acad339750f6cfbb4a7db2573df34415fb1b43c078bde",
+    "src/gl/loader.h": "3a3de23684db3957a3843850e5d3399ee9afb03b92bae6ea433aee74bd42f625",
+    "src/gl/init.c": "35804e977fb5bd3e8a7cdae192a95bfb93e89bbb201392f65daaecdd7d165969",
+    "include/GL/gl.h": "d03e03f7874502bcb5125dac530993555d37ebcfcf602354426a812f68160366",
+    "include/gl4esinit.h": "3da0beccca54312010e74e1e99814ae64b38e9ccceb782648afcaa83283af6ad"
+  },
+  "archiveSha256": "0b2ffa033762e69248609ad695e33a50fb6bfe629ceb6cf9548f4a776df4eb6c",
+  "files": {
+    "apple_alias_adapter.h": "249c6638bbf6291241626fd6da188119ef46fcd0424169866e7d5b368aa79487",
+    "compressed-dxt-v1/ngp_dxt_v1.c": "23d735574577b3b199a344bae0aa8701c3590ebc337153ff1c90f93863bcad41",
+    "compressed-dxt-v1/ngp_dxt_v1.h": "5e42572f2eaebd45ad7d4b49debbf4814768f30fa9494a1c4fda9e254a244b26",
+    "fixture/Info.plist": "5bc1eab2b428e306e18e4d2b2893ab2927af5cee3053d021aa56718741919c65",
+    "fixture/PixelProbe.c": "48005e487d3069e422efa872c6eff0e5f1bda11e3e51fd40dfc40f583d2990f2",
+    "fixture/PixelProbe.h": "9c34775ba4e42299aa5c7c228ea905a746ad191d7956357fbcca23dc46c7670d",
+    "fixture/main.m": "6b8a7f13754b6713190600efdc23839e9ce6e06784fb4ce4c5065f28e98d3acf",
+    "v13/cod_gl4es_execute.c": "e11c6492e430dc6844853dbe17626c0ffb02ab8e6405547a4d6f3fa565d21ad9",
+    "v13/cod_gl4es_unpack.c": "6263b0e262e52f6f183db269fe1fb2bd652e9273911a3a802d2cfd2b9e591097",
+    "v13/cod_gl_compressed_stage.c": "5efa986885c10c9d1332cc6fb93d26f77dc169c6f9a4408b7504528928cbae43",
+    "v13/cod_gl_compressed_stage.h": "9bbe93ea10c75c77cb66c01b4853b8ff1730c545cd91f30592da596cb1773e81",
+    "v13/cod_gl_dispatch.c": "9dcad72a1dad1d858df7e891391d3cfe4dab6f0e95e374a27eec7898ed23755d",
+    "v13/cod_gl_dispatch.h": "9ee502c6a9a8e6765a9d6423d10af8e04e1e96853e93553e6e76ca34046bd087",
+    "v13/cod_gl_fresh51_policy_v1.h": "7a206a2751cdd1870eb77430579feac033898944ea673332531d30820457392a",
+    "v13/cod_gl_owned_profile.c": "74f5b44f471e001d3d0318ce42b4cb021c7876f1025d4762093cc0df59a812b8",
+    "v13/cod_gl_owned_profile.h": "3443aaf4c3f0c661f62022e90303d1fe3033ed6b0f9933c3f8b675feb3efff49"
+  },
+  "sourceScope": "Self-authored native support and synthetic fixture only; no recovered code or retail assets",
+  "simulatorOnly": true,
+  "actualGpuResultIncluded": false
+}
