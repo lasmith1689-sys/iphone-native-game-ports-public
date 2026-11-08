@@ -1,0 +1,26 @@
+name: Owned GL4ES iPhone Simulator pixels
+on:
+  push:
+    branches: ['codex/owned-gl-pixels-v1-20261107']
+permissions:
+  contents: read
+jobs:
+  pixels:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public'
+    runs-on: macos-26
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and observe owned GL pixels
+        shell: bash
+        run: |
+          set -euxo pipefail
+          src="$GITHUB_WORKSPACE/native/support/owned-gl-pixels-v1"
+          python3 -B "$src/run_probe.py" "$RUNNER_TEMP/owned-gl-pixel-build" "$GITHUB_WORKSPACE/proof" --expected-sdk 26.5
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: owned-gl-pixel-result
+          path: proof
+          retention-days: 1
+          if-no-files-found: ignore
