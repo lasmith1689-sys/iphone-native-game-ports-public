@@ -1,4 +1,4 @@
-# Grand Prix Time Machine — v0.14 Quest 3 standalone build
+# Grand Prix Time Machine — v0.15 Quest 3 standalone build
 
 This is a **Godot 4.6.3 OpenXR port** of the prototype, created because this environment
 cannot install or activate Unity. The original Unity v0.2 project remains untouched.
@@ -7,7 +7,7 @@ cannot install or activate Unity. The original Unity v0.2 project remains untouc
 
 The program creates a stylized 1976 Japanese GP diorama, four original 1970s open-wheel
 car models, a nine-chapter documentary playback and a floating action-button interface.
-**v0.14 remains a VR-first release.** Its default CI builds a standalone
+**v0.15 remains a VR-first release.** Its default CI builds a standalone
 Quest 3 OpenXR APK without the OpenXR Vendors plugin, which is **not yet bundled**
 because native versions 5.1.0 and 5.0.1 crashed the Linux Godot 4.6.3 headless
 editor while importing. **MR unverified:** actual Meta passthrough has not been
@@ -20,7 +20,20 @@ network requirement. v0.5 and v0.6 signed APKs were built October 29 and 30, 202
 reconstructed historical telemetry.** Narrative beats are sourced; see
 `docs/HISTORICAL_SOURCES.md`.
 
-## New in v0.14: native XR frame pacing, focus-safe replay and app FPS diagnostics
+## New in v0.15: the exhibit reaches a deliberate ending
+
+The 138-second editorial presentation now plays **once from the opening rain delay
+through the championship conclusion**. It no longer wraps silently back to the
+start, which could make the historical story feel like an endless loop. At the
+end, the final World Champion chapter remains visible and playback stops.
+The state display changes to **REPLAY READY**. Press PLAY or A/X to return to
+the opening chapter and begin a fresh run. A manual pause before the ending still
+resumes from the same position.
+
+The nine chapter beats and illustrative race animation are unchanged. This is a
+playback and exhibit-flow improvement, not a claim of lap-accurate telemetry.
+
+## Previously in v0.14: native XR frame pacing, focus-safe replay and app FPS diagnostics
 
 Following official Godot 4.6 guidance, desktop VSync is disabled only when
 OpenXR successfully initializes. On `session_begun`, Godot's physics tick rate
@@ -110,6 +123,7 @@ Official results are factual, but car motions and track shape are illustrative.
 - The pointer hides when tracking is lost. Keep a safe Quest boundary.
 - Aim at the diorama’s gold timeline, hold trigger to scrub, and release to pause.
 - The fixed-scale floating control rail remains accessible when the diorama expands.
+- The documentary plays once; at its end, PLAY or A/X restarts from the opening chapter.
 - Green = play/pause; grey = previous chapter; gold = next chapter;
   blue = expand/shrink; red = 1x/2x/4x speed.
 - In desktop preview: Space/N/P/M/F/R/D = pause/next/previous/scale/speed/recenter/next driver; Up/Down arrows adjust diorama height.

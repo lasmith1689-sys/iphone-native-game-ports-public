@@ -15,7 +15,7 @@ class QuestStartupVerifierTests(unittest.TestCase):
         self.assertIn("root/'install/VERIFY_QUEST3_STARTUP.cmd'", WORKFLOW)
         self.assertIn("root/'install/VERIFY_QUEST3_STARTUP.ps1'", WORKFLOW)
         self.assertIn("VERIFY_QUEST3_STARTUP.ps1", CMD)
-        self.assertIn("GrandPrixTimeMachine_Quest3_v0.14_Easy_Install", WORKFLOW)
+        self.assertIn("GrandPrixTimeMachine_Quest3_v0.15_Easy_Install", WORKFLOW)
 
     def test_validates_connected_and_authorized_device(self):
         self.assertIn("unauthorized", PS1)
@@ -40,8 +40,8 @@ class QuestStartupVerifierTests(unittest.TestCase):
         self.assertNotIn(" logcat -d", PS1)
 
     def test_version_and_sourced_detail(self):
-        self.assertIn("version/code=14", PRESET)
-        self.assertIn('version/name="0.14.0"', PRESET)
+        self.assertIn("version/code=15", PRESET)
+        self.assertIn('version/name="0.15.0"', PRESET)
         self.assertIn("Hunt's left-front tyre deflates", SRC)
         self.assertIn("Hunt passes Regazzoni and Jones", SRC)
         self.assertIn("Motor Sport", README)

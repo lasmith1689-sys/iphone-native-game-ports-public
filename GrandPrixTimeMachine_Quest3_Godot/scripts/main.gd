@@ -1,7 +1,7 @@
 extends Node3D
 ## Grand Prix Time Machine — Fuji 1976 standalone OpenXR experience.
 ## Historical BEATS are documented. Geometry, cars and playback are illustrative.
-## v0.14: native OpenXR frame pacing, focus-safe replay and FPS telemetry.
+## v0.15: one-shot exhibit playback with intentional replay.
 
 const Track = preload("res://scripts/track.gd")
 const LENGTH := 138.0
@@ -669,10 +669,35 @@ func _update_cars() -> void:
         var hunt_car: Node3D = car_nodes["HUNT"]
         hunt_car.position = Vector3(-0.18, 0.052, -0.310)
         hunt_car.rotation.y = 0.0
-    labels["state"].text = ("PLAY " if playing else "PAUSE ") + "%dX" % int(speed)
+    labels["state"].text = "REPLAY READY" if not playing and playback >= LENGTH else ("PLAY " if playing else "PAUSE ") + "%dX" % int(speed)
     cursor.position.x = -0.44 + 0.88 * playback / LENGTH
     if spotlight_driver != "":
         (driver_beacons[spotlight_driver] as Node3D).visible = (car_nodes[spotlight_driver] as Node3D).visible
+
+func _advance_playback(delta: float) -> void:
+    if not playing:
+        return
+    var previous := chapter
+    # A documentary exhibit plays once; it must not silently jump back to the start.
+    playback = minf(playback + maxf(delta, 0.0) * speed, LENGTH)
+    var new_chapter := 0
+    for i in range(1, BEATS.size()):
+        if playback >= float(BEATS[i].at):
+            new_chapter = i
+    if previous != new_chapter:
+        _update_story()
+    if chapter < 5:
+        rain_clock += maxf(delta, 0.0)
+        rain_accum += maxf(delta, 0.0)
+        if rain_accum >= 0.04:
+            rain_accum = 0.0
+            _update_rain()
+    if playback >= LENGTH:
+        playback = LENGTH
+        playing = false
+        print("GPTM exhibit completed; playback stopped at final chapter")
+    _update_cars()
+
 
 func _process(delta: float) -> void:
     intro_time += delta
@@ -682,21 +707,7 @@ func _process(delta: float) -> void:
         diagnostics_clock = 0.0
         _update_xr_status()
     if playing:
-        var previous := chapter
-        playback = fposmod(playback + maxf(delta, 0.0) * speed, LENGTH)
-        var new_chapter := 0
-        for i in range(1, BEATS.size()):
-            if playback >= float(BEATS[i].at):
-                new_chapter = i
-        if previous != new_chapter:
-            _update_story()
-        _update_cars()
-        if chapter < 5:
-            rain_clock += maxf(delta, 0.0)
-            rain_accum += maxf(delta, 0.0)
-            if rain_accum >= 0.04:
-                rain_accum = 0.0
-                _update_rain()
+        _advance_playback(delta)
     _read_controller()
 
 func _read_controller() -> void:
@@ -800,7 +811,13 @@ func _read_controller() -> void:
 
 func _action(action: String) -> void:
     match action:
-        "pause": playing = not playing
+        "pause":
+            # Natural completion is an invitation to replay, not a hidden loop.
+            if not playing and playback >= LENGTH:
+                playback = 0.0
+                chapter = 0
+                _update_story()
+            playing = not playing
         "next":
             chapter = (chapter + 1) % BEATS.size()
             playback = float(BEATS[chapter].at)

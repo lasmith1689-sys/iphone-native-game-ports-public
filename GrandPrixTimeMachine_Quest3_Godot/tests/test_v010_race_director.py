@@ -19,7 +19,7 @@ class RaceDirector(unittest.TestCase):
             self.assertIn(s,SRC)
         self.assertIn('motorsportmagazine.com/archive/article/december-1976/34/japanese-grand-prix-4',LEDGER)
     def test_version(self):
-        self.assertIn('version/code=14',PRESET)
-        self.assertIn('version/name="0.14.0"',PRESET)
-        self.assertIn('GrandPrixTimeMachine_Quest3_v0.14_Easy_Install',WORKFLOW)
+        self.assertIn('version/code=15',PRESET)
+        self.assertIn('version/name="0.15.0"',PRESET)
+        self.assertIn('GrandPrixTimeMachine_Quest3_v0.15_Easy_Install',WORKFLOW)
 if __name__=='__main__': unittest.main()

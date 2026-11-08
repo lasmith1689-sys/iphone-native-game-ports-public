@@ -1,7 +1,19 @@
 # Public build of Grand Prix Time Machine (Quest 3)
 
-This standalone game source is shared publicly to enable GitHub Actions standard runners at no charge. The original `project-hq` repository remains private; no unrelated project files or history are included in this branch's tree.
+This standalone Godot 4.6.3 game source is maintained on the isolated public
+branch `quest3/grand-prix-time-machine` of this repository. The current
+installable milestone is v0.15. Standard public GitHub Actions runners build
+the Android ARM64 APK and Windows Easy Install package at no charge.
 
-This is an independently maintained branch of a pre-existing public game repository, not the default branch or a separate standalone repository. The host repository's default branch is untouched. Source is visible publicly, but no explicit open-source redistribution license is granted by this publication.
+The original private `project-hq` repository is separate and remains private.
+The host repository's default branch is not a development target and must not
+be modified or merged into.
 
-Current state: successful public GitHub Actions builds produce signed ARM64 APKs and Windows Easy Install ZIPs. Download the artifact from the latest successful `Quest 3 APK / Fuji 1976` run **on this branch**, extract its inner `GrandPrixTimeMachine_Quest3_Easy_Install.zip`, and run `INSTALL_ON_QUEST3.cmd` on Windows 11. See `install/READ_ME_FIRST.txt` for Developer Mode and USB permission details. Neither GitHub CI nor the Windows installer proves physical headset rendering, controller functionality or Meta passthrough, which remain unverified.
+Current product status: VR-first standalone OpenXR APK. True Meta passthrough,
+room anchoring, and physical Quest 3 controller/rendering acceptance remain
+unverified. See `docs/QUEST_ACCEPTANCE.md` and `docs/MR_CI_BLOCKER.md`.
+
+Only the signed APK inside the Easy Install artifact is installable. Do not
+install source ZIPs. Windows users extract the Easy Install ZIP and run
+`INSTALL_ON_QUEST3.cmd`; Developer Mode and USB debugging authorization are
+required. See `install/READ_ME_FIRST.txt`.

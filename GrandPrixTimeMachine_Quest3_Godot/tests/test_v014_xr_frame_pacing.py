@@ -59,9 +59,9 @@ class FramePacingAndFocus(unittest.TestCase):
         self.assertEqual(sampled_fps([1/90] * 180), 90)
 
     def test_version_and_explanatory_limits(self):
-        self.assertIn("version/code=14", PRESET)
-        self.assertIn('version/name="0.14.0"', PRESET)
-        self.assertIn("GrandPrixTimeMachine_Quest3_v0.14_Easy_Install", WORKFLOW)
+        self.assertIn("version/code=15", PRESET)
+        self.assertIn('version/name="0.15.0"', PRESET)
+        self.assertIn("GrandPrixTimeMachine_Quest3_v0.15_Easy_Install", WORKFLOW)
         self.assertIn("not** compositor FPS", README)
         self.assertIn("not** been tested", README)
 

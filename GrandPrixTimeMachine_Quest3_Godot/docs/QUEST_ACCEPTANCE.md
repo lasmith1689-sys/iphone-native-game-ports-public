@@ -1,4 +1,4 @@
-# Quest 3 delivery acceptance | Grand Prix Time Machine v0.14
+# Quest 3 delivery acceptance | Grand Prix Time Machine v0.15
 
 **Source-only packages are not installable.** The actual deliverable is
 a signed Android ARM64 APK in a Windows Easy Install ZIP.
@@ -6,7 +6,7 @@ a signed Android ARM64 APK in a Windows Easy Install ZIP.
 The Oct 29 2026 [v0.5 build](https://github.com/lasmith1689-sys/iphone-native-game-ports-public/actions/runs/40946624259)
 passed 69/69 automated checks, Godot parser, headless startup, Android export,
 apksigner and ZIP integrity. v0.6 also passed public CI on October 30, 2026.
-Each release, including v0.14, requires its own green source/test and Android build before delivery.
+Each release, including v0.15, requires its own green source/test and Android build before delivery.
 
 ## Automated release gates
 
@@ -37,3 +37,19 @@ Each release, including v0.14, requires its own green source/test and Android bu
 
 **Never claim physical headset, controller tracking or MR testing without
 evidence from an actual Quest 3.**
+
+
+## v0.15 playback acceptance
+
+- The 138-second presentation advances monotonically and clamps at LENGTH; it
+  must never wrap to the opening chapter automatically.
+- Reaching the end selects the ninth World Champion chapter, stops playback,
+  leaves the final card visible and reports REPLAY READY.
+- PLAY or A/X after natural completion restarts at chapter one and time zero.
+- A manual pause before completion resumes from its prior time; focus-loss
+  pause/refocus behavior remains unchanged.
+- Seeking near the end does not falsely count as natural completion.
+- Verify at 1x, 2x and 4x, including a frame delta that crosses the end boundary.
+
+These are code/CI acceptance criteria. Physical headset interaction remains
+unverified until performed on an actual Quest 3.
