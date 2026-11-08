@@ -1,4 +1,4 @@
-"""v0.15 one-shot exhibit playback and intentional replay contracts.
+""""v0.15 one-shot exhibit playback and intentional replay contracts.
 
 These source-contract tests do not simulate OpenXR or a physical Quest 3.
 """
@@ -16,6 +16,14 @@ def advance(position, delta, speed, length=138.0):
     """Independent model of the monotonic, clamped exhibit clock."""
     next_position = min(length, position + max(0.0, delta) * speed)
     return next_position, next_position >= length
+
+
+def tick(position, delta, speed, playing, length=138.0):
+    """Model the _process gate: a stopped exhibit does not advance again."""
+    if not playing:
+        return position, False
+    next_position, completed = advance(position, delta, speed, length)
+    return next_position, not completed
 
 
 class ExhibitCompletion(unittest.TestCase):
@@ -39,9 +47,17 @@ class ExhibitCompletion(unittest.TestCase):
         self.assertIn('"title": "WORLD CHAMPION"', SRC)
 
     def test_completion_does_not_repeatedly_advance(self):
+        # The guard belongs in _process, not redundantly inside the helper.
+        # This keeps every call site subject to the same playing state.
+        process = SRC.split("func _process(delta: float)", 1)[1].split("func _read_controller()", 1)[0]
+        self.assertRegex(process, r"if playing:\\s+_advance_playback\\(delta\\)")
         block = SRC.split("func _advance_playback(delta: float)", 1)[1].split("func _process(delta: float)", 1)[0]
-        self.assertTrue(block.lstrip().startswith("\n    if not playing:\n        return"))
+        self.assertIn("playing = false", block)
         self.assertIn('print("GPTM exhibit completed; playback stopped at final chapter")', block)
+        position, playing = tick(137.9, 1.0, 1.0, True)
+        self.assertEqual(position, 138.0)
+        self.assertFalse(playing)
+        self.assertEqual(tick(position, 1.0, 4.0, playing), (138.0, False))
 
     def test_play_restarts_only_after_natural_completion(self):
         action = SRC.split("func _action(action: String)", 1)[1].split("func _recenter()", 1)[0]
