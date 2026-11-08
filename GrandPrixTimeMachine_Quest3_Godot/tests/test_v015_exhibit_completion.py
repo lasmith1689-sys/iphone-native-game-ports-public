@@ -50,7 +50,9 @@ class ExhibitCompletion(unittest.TestCase):
         # The guard belongs in _process, not redundantly inside the helper.
         # This keeps every call site subject to the same playing state.
         process = SRC.split("func _process(delta: float)", 1)[1].split("func _read_controller()", 1)[0]
-        self.assertIn("if playing:", process)\n        self.assertIn("_advance_playback(delta)", process)\n        self.assertLess(process.index("if playing:"), process.index("_advance_playback(delta)"))
+        self.assertIn("if playing:", process)
+        self.assertIn("_advance_playback(delta)", process)
+        self.assertLess(process.index("if playing:"), process.index("_advance_playback(delta)"))
         block = SRC.split("func _advance_playback(delta: float)", 1)[1].split("func _process(delta: float)", 1)[0]
         self.assertIn("playing = false", block)
         self.assertIn('print("GPTM exhibit completed; playback stopped at final chapter")', block)
