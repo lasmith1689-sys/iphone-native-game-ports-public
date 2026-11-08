@@ -1,0 +1,50 @@
+{
+  "schema": "native-pcm-cache-support-source-manifest-v1",
+  "files": {
+    "cache_registry.c": {
+      "bytes": 13458,
+      "sha256": "8d6f1f4713b04dcb3f7cc1500c21746dc095bfbd4b8b068fa3e34e6585ee39f9"
+    },
+    "cache_registry.h": {
+      "bytes": 5698,
+      "sha256": "79479e5754f289390b377420348fc694a2aa06e898417e435e1aef8d27cf555b"
+    },
+    "ngp_wave_pcm_v1.c": {
+      "bytes": 2380,
+      "sha256": "8cf23893a883b8708859bb433fac17e1995e1a007ee522a0a1ef3fda0edefcc9"
+    },
+    "ngp_wave_pcm_v1.h": {
+      "bytes": 740,
+      "sha256": "2487b4b14b72cc99bad51dee2748c216babd06fa4979d84a37545a582da92c07"
+    },
+    "process_pcm.c": {
+      "bytes": 6845,
+      "sha256": "29dfd3daac89754b1bb726b24245fd1495136c6dbdc83d0fa2479498ec1876eb"
+    },
+    "process_pcm.h": {
+      "bytes": 1013,
+      "sha256": "94bbef8f09d1e0fda80e4dafc35778ab4b473b111926ff2bb14a1961cdc4a4e2"
+    },
+    "size_process_pcm.c": {
+      "bytes": 1708,
+      "sha256": "cdbd8792cbdef8c98fbedb034876e5942303aa05effb8761a0a0a40330af1765"
+    },
+    "size_process_pcm.h": {
+      "bytes": 1102,
+      "sha256": "f35adc7fa640bdd438024a003b479ed1e7800f5cfee1d87a16e63120834a8794"
+    },
+    "wave_info_pcm.c": {
+      "bytes": 1160,
+      "sha256": "feace50d049f775e69a74ffe6dc914de05afcaf7ebf838cd0bbd0c2a50d69929"
+    },
+    "wave_info_pcm.h": {
+      "bytes": 710,
+      "sha256": "94b07f0e256d14a7eb5ff11ea0dcdf41e4b877323a5580725bc30a01198348c3"
+    }
+  },
+  "sourceCount": 10,
+  "sourceBytes": 34814,
+  "actualAppleSdk": false,
+  "linked": false,
+  "phone": false
+}

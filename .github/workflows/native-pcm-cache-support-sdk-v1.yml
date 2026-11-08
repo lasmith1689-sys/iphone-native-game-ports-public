@@ -1,0 +1,90 @@
+name: PCM/cache support iPhoneOS SDK compile
+
+on:
+  push:
+    branches:
+      - codex/native-pcm-cache-support-sdk-v1-20261108
+    paths:
+      - .github/workflows/native-pcm-cache-support-sdk-v1.yml
+      - native/platform/native-pcm-cache-support/v1/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-pcm-cache-support-sdk-v1
+  cancel-in-progress: false
+
+jobs:
+  compile:
+    if: github.repository == 'lasmith1689-sys/iphone-native-game-ports-public' && github.event.repository.private == false && github.ref == 'refs/heads/codex/native-pcm-cache-support-sdk-v1-20261108'
+    runs-on: xcode-27
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact branch commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: false
+          lfs: false
+
+      - name: Verify public repository, branch and pinned inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, pathlib, re, subprocess
+          repo = 'lasmith1689-sys/iphone-native-game-ports-public'
+          ref = 'refs/heads/codex/native-pcm-cache-support-sdk-v1-20261108'
+          assert os.environ['GITHUB_REPOSITORY'] == repo
+          assert os.environ['GITHUB_REF'] == ref
+          assert re.fullmatch('[a-f0-9]{40}', os.environ['GITHUB_SHA'])
+          assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == os.environ['GITHUB_SHA']
+          event = json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+          assert event['repository']['full_name'] == repo and event['repository']['private'] is False
+          kind = os.environ['GITHUB_EVENT_NAME']
+          assert kind in ('push', 'workflow_dispatch')
+          if kind == 'push':
+              assert event['ref'] == ref and event['after'] == os.environ['GITHUB_SHA'] and not event.get('deleted', False)
+          driver = 'native/platform/native-pcm-cache-support/v1/compile_support.py'
+          manifest = 'native/platform/native-pcm-cache-support/v1/support-source-manifest.json'
+          expected = {
+              driver: 'cce07b8e0bbbbfc60118891aa9a361db6b322a75168417acda42f34f6aecb505',
+              manifest: '2fb8c3e7d88a1ba95985a35053944224df3ede7fdc0e1a9d7e3159183735a064',
+          }
+          for name, digest in expected.items():
+              assert subprocess.check_output(['shasum', '-a', '256', name], text=True).split()[0] == digest
+          print('Exact public support source, manifest, repository and branch verified.')
+          PY
+
+      - name: Compile and repeat the five support units with the iPhoneOS SDK
+        id: compile
+        shell: bash
+        timeout-minutes: 15
+        run: |
+          set -euo pipefail
+          python3 native/platform/native-pcm-cache-support/v1/compile_support.py --output "$RUNNER_TEMP/pcm-cache-output"
+
+      - name: Upload compile objects and bounded receipts for one day
+        id: upload
+        if: always() && steps.compile.outcome != 'skipped'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: pcm-cache-support-sdk-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pcm-cache-output/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+          include-hidden-files: false
+          archive: true
+
+      - name: Require complete SDK compile and artifact upload
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ steps.compile.outcome }}' = 'success'
+          test '${{ steps.upload.outcome }}' = 'success'
