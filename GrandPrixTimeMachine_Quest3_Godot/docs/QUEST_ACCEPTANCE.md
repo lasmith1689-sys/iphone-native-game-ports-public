@@ -1,55 +1,41 @@
 # Quest 3 delivery acceptance | Grand Prix Time Machine v0.15
 
-**Source-only packages are not installable.** The actual deliverable is
-a signed Android ARM64 APK in a Windows Easy Install ZIP.
+**Release status:** The November 8, 2026 v0.15 public Actions run
+[42486791626](https://github.com/lasmith1689-sys/iphone-native-game-ports-public/actions/runs/42486791626)
+passed source tests, Godot headless startup, Android ARM64 APK export, Android signature verification and Windows installer packaging.
+These are **build/CI gates only**. No physical Quest 3 rendering, controllers, frame pacing or passthrough have been verified.
 
-The Oct 29 2026 [v0.5 build](https://github.com/lasmith1689-sys/iphone-native-game-ports-public/actions/runs/40946624259)
-passed 69/69 automated checks, Godot parser, headless startup, Android export,
-apksigner and ZIP integrity. v0.6 also passed public CI on October 30, 2026.
-Each release, including v0.15, requires its own green source/test and Android build before delivery.
+## Automated release gates (required for each new version)
 
-## Automated release gates
-
-- Python unit tests: source, history, geometry, independent controller latches,
-  scene/hand aim poses, Android export presets and installer.
-- Godot 4.6.3 editor import/parser, and startup smoke test must show no script
-  errors. (Neither proves XR hardware behavior.)
-- Export ARM64 APK, run Android verifier and Android apksigner, calculate SHA256.
-- Package installer CMD, PS1, installation guide, APK and checksum into
-  an integrity-checked ZIP.
-- Build job depends on passing Python source tests.
+1. Run the entire Python test suite; report actual passing counts, not a historical count.
+2. Godot 4.6.3 headless import/parser and scene startup: reject script/runtime errors.
+3. Export a signed Android ARM64 OpenXR APK and inspect its manifest and ARM64 native libraries.
+4. Verify the Android APK cryptographic signature with `apksigner`, and SHA-256 checksum.
+5. Package and integrity-check the ZIP containing APK, checksums, `INSTALL_ON_QUEST3.cmd`, `INSTALL_ON_QUEST3.ps1`, `READ_ME_FIRST.txt`, and the optional `VERIFY_QUEST3_STARTUP.cmd/.ps1`.
+6. Verify the exact commit SHA of the passing public workflow on `quest3/grand-prix-time-machine`; do not touch `main` or the private `project-hq` repository.
 
 ## Physical Quest 3 acceptance — NOT YET PERFORMED
 
-1. With Developer Mode freely enabled once, sideload via Windows USB-C.
-2. Launch entirely on Quest without a PC/Quest Link.
-3. Both controllers show rays only when tracked and activate all six buttons; simultaneous presses should not double-skip.
-4. Holding trigger must NOT repeatedly skip chapters. B/Y recenters the model.
-5. A/X quick pause and either thumbstick left/right step exactly one chapter per fresh flick. Up/down adjusts diorama height by 8 cm, limited to ±32 cm. Diagonal flicks should affect only the dominant axis. Controller loss-of-tracking resets both latches.
-6. SCALE keeps the interface readable and reachable; XR status shows tracking, mode, height and sampled *app-loop* FPS. Target 72+ FPS remains unmeasured on physical hardware and is not compositor FPS.
-6a. OpenXR bypasses desktop VSync; session startup uses only a plausible runtime refresh rate for physics. Verify actual headset frame pacing separately.
-6b. Quest system menu/headset removal pauses playback and clears both controllers' latches; refocus resumes only if the story had been playing. Verify with real headset interactions.
-7. Story correctly notes Andretti won the race and Hunt was third to become
-   champion; virtual racing is illustrative, not accurate telemetry.
-8. Opaque VR must work. True Quest passthrough requires OpenXR Vendors plugin
-   and device verification; not implemented or confirmed in this version.
-9. Reinstall upgrade: debug signing keys can differ between CI runs. Require typed REPLACE permission before uninstalling old app (and deleting its local data).
+The following must be observed on a real Quest 3 before claiming headset-tested operation.
+Keep results in a locally reviewed, redacted checklist. Do not automatically upload raw Android logs.
 
-**Never claim physical headset, controller tracking or MR testing without
-evidence from an actual Quest 3.**
+1. Enable Developer Mode and authorize USB debugging on the headset. Run the Windows installer using a USB-C data cable. Verify the app appears in the headset's installed/unknown-sources library.
+2. Disconnect USB/PC and launch the app **standalone**. Confirm both-eye rendering, stable orientation, readable UI and no immediate crashes. A five-second Android PID check alone is insufficient.
+3. Run `VERIFY_QUEST3_STARTUP.cmd` if needed. It produces a local-only report. Review it before sharing. The tool confirms only launch/process survival, not display, tracking or frame rate.
+4. Both controllers: tracking-dependent rays, six selectable buttons, hover feedback and trigger press. Ensure simultaneous triggers never double-activate an action; losing tracking hides the ray and resets latches.
+5. Timeline: hold trigger to scrub, release to pause. A/X toggles playback; B/Y recenters; either thumbstick left/right advances one chapter per fresh flick. Up/down adjusts diorama height in 8 cm steps, clamped to ±32 cm; diagonal inputs must choose only the dominant axis.
+6. Scaling and recentering must leave controls readable/reachable. Test seated and standing-still use, with Quest boundary enabled. Do **not** physically walk around the enlarged circuit expecting room geometry collision.
+7. Start at chapter 1 and watch all nine chapters. At 138 presentation seconds the exhibit must stop on **WORLD CHAMPION** and show **REPLAY READY**; PLAY or A/X restarts. A manual pause must resume rather than restart.
+8. Confirm historical narrative: Andretti won Fuji; Depailler second; Hunt third and 1976 champion by one point; Lauda withdrew after two laps. The track, vehicle paths, weather visuals and presentation seconds remain illustrative, not reconstructed telemetry.
+9. Record actual observed frame rate and headset thermals if suitable on-device tooling is available. Target 72+ FPS. The in-app frame-timing diagnostic is **not** compositor FPS and is not sufficient by itself.
+10. Opaque immersive VR must work reliably. Genuine Meta passthrough is **not shipped**: the official OpenXR Vendors plugin previously crashed CI. MR requires a separately validated plugin integration, Android export and actual headset passthrough test.
+11. Reinstall an older debug-signed build if necessary. A signing mismatch must require explicit typed `REPLACE` permission before uninstalling the previous app and deleting its local data.
 
+## Release language
 
-## v0.15 playback acceptance
+- **CI-verified / installable APK**: allowed only after the exact version's passing public workflow and artifact checks.
+- **Quest-installed / launched**: allowed only with observed real-device evidence.
+- **Quest-rendered / controller-tested / performance-tested**: requires separate observed physical-device evidence for each claim.
+- **Mixed reality / passthrough works**: requires actual passthrough integration and a successful physical Quest 3 test.
 
-- The 138-second presentation advances monotonically and clamps at LENGTH; it
-  must never wrap to the opening chapter automatically.
-- Reaching the end selects the ninth World Champion chapter, stops playback,
-  leaves the final card visible and reports REPLAY READY.
-- PLAY or A/X after natural completion restarts at chapter one and time zero.
-- A manual pause before completion resumes from its prior time; focus-loss
-  pause/refocus behavior remains unchanged.
-- Seeking near the end does not falsely count as natural completion.
-- Verify at 1x, 2x and 4x, including a frame delta that crosses the end boundary.
-
-These are code/CI acceptance criteria. Physical headset interaction remains
-unverified until performed on an actual Quest 3.
+Do not promote a speculative MR build over the working immersive VR fallback.
