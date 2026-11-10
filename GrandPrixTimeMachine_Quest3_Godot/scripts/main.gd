@@ -62,6 +62,8 @@ var center_down := {"left": false, "right": false}
 var quick_pause_down := {"left": false, "right": false}
 var stick_direction := {"left": 0, "right": 0}
 var stick_vertical := {"left": 0, "right": 0}
+# Ignore buttons already held when a controller first gains tracking.
+var controller_was_tracked := {"left": false, "right": false}
 var height_adjustment := 0.0
 var diagnostics_clock := 0.0
 var rain_mesh: MultiMeshInstance3D
@@ -146,6 +148,7 @@ func _clear_xr_input_latches() -> void:
     seeking_side = ""
     hovered_action = ""
     for side in ["left", "right"]:
+        controller_was_tracked[side] = false
         trigger_down[side] = false
         center_down[side] = false
         quick_pause_down[side] = false
@@ -721,6 +724,7 @@ func _read_controller() -> void:
         var tracked := controller.get_is_active() and controller.get_has_tracking_data()
         (beams[side] as MeshInstance3D).visible = tracked
         if not tracked:
+            controller_was_tracked[side] = false
             trigger_down[side] = false
             center_down[side] = false
             quick_pause_down[side] = false
@@ -728,6 +732,17 @@ func _read_controller() -> void:
             stick_vertical[side] = 0
             if seeking_side == side:
                 seeking_side = ""
+            continue
+        if not bool(controller_was_tracked[side]):
+            # On reacquisition, consume the current held state without firing.
+            # A fresh release and press/flick is required for any action.
+            controller_was_tracked[side] = true
+            trigger_down[side] = controller.get_float("trigger") > 0.65 or controller.is_button_pressed("trigger_click")
+            center_down[side] = controller.is_button_pressed("by_button")
+            quick_pause_down[side] = controller.is_button_pressed("ax_button")
+            var initial_stick: Vector2 = controller.get_vector2("primary")
+            stick_direction[side] = 1 if initial_stick.x > 0.35 else (-1 if initial_stick.x < -0.35 else 0)
+            stick_vertical[side] = 1 if initial_stick.y > 0.35 else (-1 if initial_stick.y < -0.35 else 0)
             continue
         var hit := _hit_control(controller)
         var timeline := _timeline_fraction(controller) if hit == "" else -1.0
