@@ -56,9 +56,26 @@ jobs:
       - name: Install Python for APK verification and Windows installer ZIP
         run: |
           set -eu
-          apt-get update -qq
-          apt-get install -y --no-install-recommends python3
-          python3 --version
+          # Avoid a network dependency when the CI image already provides Python.
+          if command -v python3 >/dev/null 2>&1; then
+            python3 --version
+            exit 0
+          fi
+          # Ubuntu mirror DNS can fail transiently on public runners.
+          # Retry the package index before attempting an installation.
+          for attempt in 1 2 3; do
+            if apt-get update -qq -o APT::Update::Error-Mode=any \
+              -o Acquire::Retries=3 && \
+              apt-get install -y --no-install-recommends \
+              -o Acquire::Retries=3 python3; then
+              python3 --version
+              exit 0
+            fi
+            echo "Python installation attempt ${attempt}/3 failed"
+            sleep 10
+          done
+          echo "ERROR: Python unavailable; refusing unverified APK packaging."
+          exit 1
       - name: Show build environment
         run: |
           mkdir -p build
