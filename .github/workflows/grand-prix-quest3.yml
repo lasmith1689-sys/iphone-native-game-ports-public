@@ -141,7 +141,22 @@ jobs:
           with ZipFile(dest) as archive:
               assert archive.testzip() is None
               assert set(archive.namelist()) == set(files.values())
-          print(f'Complete Quest Easy Install kit: {dest}, bytes={dest.stat().st_size}')
+          # Verify the bytes a Windows user will actually extract, not only
+          # the APK before it was copied into the release ZIP.
+          import hashlib
+          import re
+          apk_path = root/'build/GrandPrixTimeMachine_Quest3.apk'
+          apk_digest = hashlib.sha256(apk_path.read_bytes()).hexdigest()
+          with ZipFile(dest) as archive:
+              apk_in_zip = archive.read('GrandPrixTimeMachine_Quest3.apk')
+              checksum_in_zip = archive.read('SHA256SUMS.txt').decode('ascii')
+              assert hashlib.sha256(apk_in_zip).hexdigest() == apk_digest, 'ZIP APK differs from signed APK'
+              lines = [line.strip() for line in checksum_in_zip.splitlines() if line.strip()]
+              assert len(lines) == 1, 'Unexpected SHA256 manifest entries'
+              match = re.fullmatch(r'([0-9a-fA-F]{64})\\s+\\*?GrandPrixTimeMachine_Quest3\\.apk', lines[0])
+              assert match is not None, 'Malformed or unexpected SHA256 manifest'
+              assert match.group(1).lower() == apk_digest, 'SHA256 manifest does not match ZIP APK'
+          print(f'Complete Quest Easy Install kit: {dest}, bytes={dest.stat().st_size}, apk_sha256={apk_digest}')
           PY2
       - name: Upload logs (even for failed exports)
         if: always()
