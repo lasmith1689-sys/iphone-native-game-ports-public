@@ -381,6 +381,28 @@ func _make_car(key: String, body_color: Color, accent_color: Color) -> void:
     _box(car, "front wing", Vector3(0, 0.005, -0.059), Vector3(0.065, 0.004, 0.012), accent_color)
     _box(car, "rear wing", Vector3(0, 0.029, 0.046), Vector3(0.064, 0.005, 0.014), accent_color)
     _box(car, "rear wing mounts", Vector3(0, 0.018, 0.047), Vector3(0.005, 0.021, 0.006), body_color)
+    # Low-poly 1970s open-cockpit details. Original, illustrative geometry.
+    # Each addition uses inexpensive primitive meshes and no texture assets.
+    _box(car, "cockpit surround", Vector3(0.0, 0.020, 0.010),
+        Vector3(0.030, 0.004, 0.029), body_color.darkened(0.18))
+    _box(car, "cockpit opening", Vector3(0.0, 0.023, 0.010),
+        Vector3(0.018, 0.001, 0.019), Color(0.025, 0.028, 0.031))
+    _box(car, "left sidepod", Vector3(-0.022, 0.010, 0.011),
+        Vector3(0.018, 0.012, 0.040), body_color)
+    _box(car, "right sidepod", Vector3(0.022, 0.010, 0.011),
+        Vector3(0.018, 0.012, 0.040), body_color)
+    _box(car, "roll hoop", Vector3(0.0, 0.041, 0.020),
+        Vector3(0.004, 0.020, 0.004), Color(0.65, 0.67, 0.69))
+    _box(car, "rear diffuser silhouette", Vector3(0.0, 0.006, 0.054),
+        Vector3(0.042, 0.003, 0.020), Color(0.055, 0.058, 0.062))
+    _box(car, "front wing left endplate", Vector3(-0.031, 0.010, -0.059),
+        Vector3(0.003, 0.015, 0.014), accent_color)
+    _box(car, "front wing right endplate", Vector3(0.031, 0.010, -0.059),
+        Vector3(0.003, 0.015, 0.014), accent_color)
+    _box(car, "rear wing left endplate", Vector3(-0.032, 0.031, 0.046),
+        Vector3(0.003, 0.017, 0.019), accent_color)
+    _box(car, "rear wing right endplate", Vector3(0.032, 0.031, 0.046),
+        Vector3(0.003, 0.017, 0.019), accent_color)
     _sphere(car, "driver helmet", Vector3(0, 0.025, 0.007), 0.010, Color(0.92, 0.88, 0.77))
     # Tyrrell P34: two small front axles, not a standard four-wheel car.
     var wheel_sites: Array[Vector2] = [
