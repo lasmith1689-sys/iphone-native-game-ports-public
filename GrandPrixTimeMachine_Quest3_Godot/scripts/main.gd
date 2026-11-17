@@ -694,7 +694,10 @@ func _update_cars() -> void:
         var hunt_car: Node3D = car_nodes["HUNT"]
         hunt_car.position = Vector3(-0.18, 0.052, -0.310)
         hunt_car.rotation.y = 0.0
-    labels["state"].text = "REPLAY READY" if not playing and playback >= LENGTH else ("PLAY " if playing else "PAUSE ") + "%dX" % int(speed)
+    # Show elapsed documentary time without adding geometry or draw calls.
+    var elapsed_seconds := clampi(int(playback), 0, int(LENGTH))
+    var clock_text := "%02d:%02d / %02d:%02d" % [elapsed_seconds / 60, elapsed_seconds % 60, int(LENGTH) / 60, int(LENGTH) % 60]
+    labels["state"].text = ("REPLAY READY" if not playing and playback >= LENGTH else ("PLAY " if playing else "PAUSE ") + "%dX" % int(speed)) + "  |  " + clock_text
     cursor.position.x = -0.44 + 0.88 * playback / LENGTH
     if spotlight_driver != "":
         (driver_beacons[spotlight_driver] as Node3D).visible = (car_nodes[spotlight_driver] as Node3D).visible
