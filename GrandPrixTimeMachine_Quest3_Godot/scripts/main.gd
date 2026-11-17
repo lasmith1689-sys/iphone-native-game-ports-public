@@ -696,7 +696,7 @@ func _update_cars() -> void:
         hunt_car.rotation.y = 0.0
     # Show elapsed documentary time without adding geometry or draw calls.
     var elapsed_seconds := clampi(int(playback), 0, int(LENGTH))
-    var clock_text := "%02d:%02d / %02d:%02d" % [elapsed_seconds / 60, elapsed_seconds % 60, int(LENGTH) / 60, int(LENGTH) % 60]
+    var clock_text := "%02d:%02d / %02d:%02d" % [floori(float(elapsed_seconds) / 60.0), elapsed_seconds % 60, floori(LENGTH / 60.0), int(LENGTH) % 60]
     labels["state"].text = ("REPLAY READY" if not playing and playback >= LENGTH else ("PLAY " if playing else "PAUSE ") + "%dX" % int(speed)) + "  |  " + clock_text
     cursor.position.x = -0.44 + 0.88 * playback / LENGTH
     if spotlight_driver != "":
