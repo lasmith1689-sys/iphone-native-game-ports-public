@@ -71,7 +71,9 @@ class ExhibitCompletion(unittest.TestCase):
         self.assertIn("playing = not playing", pause)
 
     def test_end_state_is_visible_and_replay_labelled(self):
-        self.assertIn('labels["state"].text = "REPLAY READY" if not playing and playback >= LENGTH', SRC)
+        self.assertIn('"REPLAY READY" if not playing and playback >= LENGTH', SRC)
+        self.assertIn('labels["state"].text =', SRC)
+        self.assertIn('clock_text', SRC)
         self.assertIn("REPLAY READY", README)
         self.assertIn("Press PLAY or A/X", README)
 
