@@ -365,7 +365,10 @@ func _update_rain() -> void:
     if not rain_mesh.visible:
         return
     var multi: MultiMesh = rain_mesh.multimesh
-    for i in range(multi.instance_count):
+    # Fade rain density as the documentary moves from heavy rain to a drying track.
+    # Preserve one instanced draw call and avoid spawning per-drop scene nodes.
+    multi.visible_instance_count = 48 if chapter < 3 else (24 if chapter < 4 else 10)
+    for i in range(multi.visible_instance_count):
         var x := -0.58 + 1.16 * fposmod(float(i) * 0.75487766, 1.0)
         var z := -0.32 + 0.66 * fposmod(float(i) * 0.56984029, 1.0)
         # Falling streaks update at most 25 Hz, not each XR refresh.
