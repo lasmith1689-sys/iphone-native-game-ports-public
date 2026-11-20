@@ -643,13 +643,17 @@ func _show_hover(action: String) -> void:
 func _select_driver(key: String) -> void:
     if not DRIVER_CARDS.has(key):
         return
-    spotlight_driver = key
+    # Selecting the same car again exits inspection without changing playback.
+    spotlight_driver = "" if spotlight_driver == key else key
     _update_spotlight()
 
 func _update_spotlight() -> void:
     for key in DRIVER_ORDER:
         (driver_beacons[key] as Node3D).visible = key == spotlight_driver and (car_nodes[key] as Node3D).visible
     if spotlight_driver == "":
+        labels["focus_title"].text = "DRIVER SPOTLIGHT"
+        labels["focus_facts"].text = "POINT AT ANY CAR + TRIGGER"
+        labels["focus_note"].text = "SELECT AGAIN TO CLOSE | D CYCLES ON DESKTOP"
         return
     var card: Dictionary = DRIVER_CARDS[spotlight_driver]
     labels["focus_title"].text = str(card["heading"])
