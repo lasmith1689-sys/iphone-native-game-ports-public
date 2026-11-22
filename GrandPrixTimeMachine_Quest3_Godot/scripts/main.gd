@@ -45,6 +45,7 @@ var ui_panel: Node3D
 var track: GPTrack
 var asphalt_material: StandardMaterial3D
 var pit_marker: MeshInstance3D
+var pit_crew: Node3D
 var car_nodes: Dictionary = {}
 var driver_beacons: Dictionary = {}
 var spotlight_driver := ""
@@ -473,6 +474,20 @@ func _build_diorama() -> void:
     _box(board, "pit building", Vector3(-0.065, 0.066, -0.348), Vector3(0.58, 0.06, 0.024), COLORS.cream)
     pit_marker = _box(board, "Pit highlight", Vector3(-0.18, 0.040, -0.316), Vector3(0.09, 0.004, 0.015), COLORS.gold)
     pit_marker.visible = false
+    # Three simplified, original pit-crew silhouettes; an illustrative tableau,
+    # not a reconstruction of individual mechanics or the exact pit procedure.
+    pit_crew = Node3D.new()
+    pit_crew.name = "Illustrative Hunt pit crew"
+    pit_crew.visible = false
+    board.add_child(pit_crew)
+    for i in range(3):
+        var x := -0.245 + float(i) * 0.065
+        _box(pit_crew, "crew torso", Vector3(x, 0.082, -0.332),
+            Vector3(0.016, 0.032, 0.012), Color(0.87, 0.84, 0.76))
+        _sphere(pit_crew, "crew helmet", Vector3(x, 0.108, -0.332),
+            0.010, Color(0.94, 0.83, 0.45))
+        _box(pit_crew, "crew legs", Vector3(x, 0.055, -0.332),
+            Vector3(0.011, 0.024, 0.010), Color(0.15, 0.18, 0.23))
     for i in range(8):
         var t := 0.008 + 0.007 * float(i)
         var p: Vector3 = track.at(t)
@@ -697,6 +712,7 @@ func _update_cars() -> void:
     # Illustrative pit-stop tableau, NOT lap-accurate car telemetry.
     var hunt_in_pits := playback >= 90.0 and playback < 103.0
     pit_marker.visible = hunt_in_pits
+    pit_crew.visible = hunt_in_pits
     if hunt_in_pits:
         var hunt_car: Node3D = car_nodes["HUNT"]
         hunt_car.position = Vector3(-0.18, 0.052, -0.310)
