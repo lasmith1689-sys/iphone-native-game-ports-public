@@ -368,7 +368,15 @@ func _update_rain() -> void:
     var multi: MultiMesh = rain_mesh.multimesh
     # Fade rain density as the documentary moves from heavy rain to a drying track.
     # Preserve one instanced draw call and avoid spawning per-drop scene nodes.
-    multi.visible_instance_count = 48 if chapter < 3 else (24 if chapter < 4 else 10)
+    # Progressively thin the shower across the drying-track sequence instead of
+    # visibly halving the number of drops at chapter boundaries.
+    # Weather is illustrative, not a measured 1976 rain record.
+    var rain_fraction := 1.0
+    if playback >= 28.0:
+        rain_fraction = lerpf(1.0, 0.5, clampf((playback - 28.0) / 32.0, 0.0, 1.0))
+    if playback >= 60.0:
+        rain_fraction = lerpf(0.5, 0.21, clampf((playback - 60.0) / 16.0, 0.0, 1.0))
+    multi.visible_instance_count = clampi(roundi(48.0 * rain_fraction), 1, 48)
     for i in range(multi.visible_instance_count):
         var x := -0.58 + 1.16 * fposmod(float(i) * 0.75487766, 1.0)
         var z := -0.32 + 0.66 * fposmod(float(i) * 0.56984029, 1.0)
